@@ -1,2 +1,6 @@
-# aqiqah-management
-Order Management untuk Bisnis Aqiqah
+# Aqiqah - Management
+System Management untuk Bisnis Aqiqah
+by : MotherTree Studio
+
+
+
