@@ -21,3 +21,15 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::view('test', 'test');
+
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], function () {
+	Route::get('/', 'Admin\HomeController@index')->name('home');
+});
+
+Route::group(['prefix' => 'kepala_cabang', 'as' => 'kepala_cabang.', 'middleware' => 'kepala.cabang'], function () {
+	Route::get('/', 'KepalaCabang\HomeController@index')->name('home');
+});
+
+Route::group(['prefix' => 'cabang', 'as' => 'cabang.', 'middleware' => 'cabang'], function () {
+	Route::get('/', 'Cabang\HomeController@index')->name('home');
+});
