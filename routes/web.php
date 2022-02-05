@@ -14,10 +14,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-	return view('welcome');
+	return redirect('login');
 });
 
 Auth::routes();
+
+Route::get('init', function(){
+	\Artisan::call('key:generate');
+	\Artisan::call('view:clear');
+	\Artisan::call('config:cache');
+	\Artisan::call('migrate:fresh');
+	\Artisan::call('db:seed');
+});
+
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('order', OrderController::class);
 
