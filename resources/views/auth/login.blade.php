@@ -50,7 +50,7 @@
                                     </span>
                                 @enderror
 							</div>
-							<button type="submit" class="btn btn-primary mt-3" style="width: 100%;background: #3751FF;box-shadow: 0px 4px 12px rgba(55, 81, 255, 0.24);border-radius: 8px;">Login</button>
+							<button type="submit" class="btn btn-primary mt-3" style="width: 100%;background: #3751FF;box-shadow: 0px 4px 12px rgba(55, 81, 255, 0.24);border-radius: 8px;">Log In</button>
 						</form>
 					</div>
 				</div>

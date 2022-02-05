@@ -1,42 +1,41 @@
 <nav class="mt-2">
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item menu-open">
-            <a href="#" class="nav-link active">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
+            <a href="pages/widgets.html" class="nav-link active">
+                <i class="nav-icon fas fa-chart-pie"></i>
                 <p>
                     Dashboard
+                </p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-book"></i>
+                <p>
+                    Order Management
                     <i class="right fas fa-angle-left"></i>
                 </p>
             </a>
-            <ul class="nav nav-treeview">
+            <ul class="nav nav-treeview" style="padding-left: 25px;">
                 <li class="nav-item">
-                    <a href="./index.html" class="nav-link active">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Dashboard v1</p>
+                    <a href="#" class="nav-link" style="width: 100%">
+                        <p>New Order</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="./index2.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Dashboard v2</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="./index3.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Dashboard v3</p>
+                    <a href="#" class="nav-link" style="width: 100%">
+                        <p>Order List</p>
                     </a>
                 </li>
             </ul>
         </li>
         <li class="nav-item">
-            <a href="pages/widgets.html" class="nav-link">
-                <i class="nav-icon fas fa-th"></i>
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-users-cog"></i>
                 <p>
-                    Widgets
-                    <span class="right badge badge-danger">New</span>
+                    Roles
                 </p>
             </a>
-        </li>
+        </li>        
     </ul>
 </nav>
