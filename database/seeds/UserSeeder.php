@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
         User::insert([
         	[
         		'name' 			 => 'Admin John Doe',
+                'username'       => 'admin',
         		'email'			 => 'admin@mail.com',
         		'password' 		 => \Hash::make(123123),
         		'role_id'		 => 1,
@@ -22,6 +23,7 @@ class UserSeeder extends Seeder
         	],
         	[
         		'name' 			 => 'Kepala Cabang Billy',
+                'username'       => 'kepala',
         		'email'			 => 'kepala@mail.com',
         		'password' 		 => \Hash::make(123123),
         		'role_id'		 => 2,
@@ -29,6 +31,7 @@ class UserSeeder extends Seeder
         	],
         	[
         		'name' 			 => 'Kaptain Dapur Rizky',
+                'username'       => 'kaptain',
         		'email'			 => 'kaptain@mail.com',
         		'password' 		 => \Hash::make(123123),
         		'role_id'		 => 3,
@@ -36,6 +39,7 @@ class UserSeeder extends Seeder
         	],
             [
                 'name'           => 'CS Rifky',
+                'username'       => 'cs',
                 'email'          => 'cs@mail.com',
                 'password'       => \Hash::make(123123),
                 'role_id'        => 4,
@@ -43,6 +47,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name'           => 'Crew Aditya',
+                'username'       => 'crew',
                 'email'          => 'crew@mail.com',
                 'password'       => \Hash::make(123123),
                 'role_id'        => 5,
@@ -50,6 +55,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name'           => 'Direktur Teddy',
+                'username'       => 'direktur',
                 'email'          => 'direktur@mail.com',
                 'password'       => \Hash::make(123123),
                 'role_id'        => 6,
@@ -57,6 +63,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name'           => 'Manager Rifai',
+                'username'       => 'manager',
                 'email'          => 'manager@mail.com',
                 'password'       => \Hash::make(123123),
                 'role_id'        => 7,
@@ -64,6 +71,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name'           => 'PPIC Pambudi',
+                'username'       => 'ppic',
                 'email'          => 'ppic@mail.com',
                 'password'       => \Hash::make(123123),
                 'role_id'        => 8,

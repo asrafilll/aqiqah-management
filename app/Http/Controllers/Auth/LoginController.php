@@ -27,6 +27,11 @@ class LoginController extends Controller
      * @var string
      */
     // protected $redirectTo = RouteServiceProvider::HOME;
+    public function username()
+    {
+        return 'username';
+    }
+
     protected function redirectTo(){
         if (\Auth::user()->roles->nama == 'Admin') {
             return 'admin';
