@@ -68,6 +68,11 @@ class Kernel extends HttpKernel
          */
         'admin'         => \App\Http\Middleware\Admin::class,
         'kepala.cabang' => \App\Http\Middleware\KepalaCabang::class,
-        'cabang'        => \App\Http\Middleware\Cabang::class
+        'kaptain.dapur' => \App\Http\Middleware\KaptainDapur::class,
+        'cs'            => \App\Http\Middleware\CS::class,
+        'crew'          => \App\Http\Middleware\Crew::class,
+        'direktur'      => \App\Http\Middleware\Direktur::class,
+        'manager'       => \App\Http\Middleware\Manager::class,
+        'ppic'          => \App\Http\Middleware\PPIC::class,
     ];
 }

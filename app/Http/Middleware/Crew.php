@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 
-class Cabang
+class Crew
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class Cabang
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->roles->nama == 'Cabang') {
+        if (Auth::check() && Auth::user()->roles->nama == 'Crew') {
             return $next($request);
         }
         abort(403);

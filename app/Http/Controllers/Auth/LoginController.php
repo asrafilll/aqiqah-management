@@ -32,8 +32,18 @@ class LoginController extends Controller
             return 'admin';
         }elseif (\Auth::user()->roles->nama == 'Kepala Cabang') {
             return 'kepala_cabang';
-        }elseif (\Auth::user()->roles->nama == 'Cabang') {
-            return 'cabang';
+        }elseif (\Auth::user()->roles->nama == 'Kaptain Dapur') {
+            return 'kaptain_dapur';
+        }elseif (\Auth::user()->roles->nama == 'CS') {
+            return 'cs';
+        }elseif (\Auth::user()->roles->nama == 'Crew') {
+            return 'crew';
+        }elseif (\Auth::user()->roles->nama == 'Direktur') {
+            return 'direktur';
+        }elseif (\Auth::user()->roles->nama == 'Manager') {
+            return 'manager';
+        }elseif (\Auth::user()->roles->nama == 'PPIC') {
+            return 'ppic';
         }else{
             abort(404);
         }

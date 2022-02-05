@@ -22,9 +22,29 @@ class RoleSeeder extends Seeder
         		'keterangan' => 'Ini role Kepala Cabang'
         	],
         	[
-        		'nama'		 => 'Cabang',
-        		'keterangan' => 'Ini role Cabang'
-        	]
+        		'nama'		 => 'Kaptain Dapur',
+        		'keterangan' => 'Ini role Kaptain Dapur'
+        	],
+            [
+                'nama'       => 'CS',
+                'keterangan' => 'Ini role CS'
+            ],
+            [
+                'nama'       => 'Crew',
+                'keterangan' => 'Ini role Crew'
+            ],
+            [
+                'nama'       => 'Direktur',
+                'keterangan' => 'Ini role Direktur'
+            ],
+            [
+                'nama'       => 'Manager',
+                'keterangan' => 'Ini role Manager'
+            ],
+            [
+                'nama'       => 'PPIC',
+                'keterangan' => 'Ini role PPIC'
+            ]
         ]);
     }
 }

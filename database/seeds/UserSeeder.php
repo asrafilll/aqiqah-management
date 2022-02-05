@@ -28,26 +28,47 @@ class UserSeeder extends Seeder
         		'kota_cabang_id' => null
         	],
         	[
-        		'name' 			 => 'Cabang Depok Rizky',
-        		'email'			 => 'cabang_depok@mail.com',
+        		'name' 			 => 'Kaptain Dapur Rizky',
+        		'email'			 => 'kaptain@mail.com',
         		'password' 		 => \Hash::make(123123),
         		'role_id'		 => 3,
         		'kota_cabang_id' => 1
         	],
-        	[
-        		'name' 			 => 'Cabang Bekasi Ilham',
-        		'email'			 => 'cabang_bekasi@mail.com',
-        		'password' 		 => \Hash::make(123123),
-        		'role_id'		 => 3,
-        		'kota_cabang_id' => 2
-        	],
-        	[
-        		'name' 			 => 'Cabang Jakarta Rizky',
-        		'email'			 => 'cabang_jakarta@mail.com',
-        		'password' 		 => \Hash::make(123123),
-        		'role_id'		 => 3,
-        		'kota_cabang_id' => 3
-        	]
+            [
+                'name'           => 'CS Rifky',
+                'email'          => 'cs@mail.com',
+                'password'       => \Hash::make(123123),
+                'role_id'        => 4,
+                'kota_cabang_id' => 1
+            ],
+            [
+                'name'           => 'Crew Aditya',
+                'email'          => 'crew@mail.com',
+                'password'       => \Hash::make(123123),
+                'role_id'        => 5,
+                'kota_cabang_id' => 1
+            ],
+            [
+                'name'           => 'Direktur Teddy',
+                'email'          => 'direktur@mail.com',
+                'password'       => \Hash::make(123123),
+                'role_id'        => 6,
+                'kota_cabang_id' => 1
+            ],
+            [
+                'name'           => 'Manager Rifai',
+                'email'          => 'manager@mail.com',
+                'password'       => \Hash::make(123123),
+                'role_id'        => 7,
+                'kota_cabang_id' => 1
+            ],
+            [
+                'name'           => 'PPIC Pambudi',
+                'email'          => 'ppic@mail.com',
+                'password'       => \Hash::make(123123),
+                'role_id'        => 8,
+                'kota_cabang_id' => 1
+            ]
         ]);
     }
 }

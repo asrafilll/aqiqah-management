@@ -30,6 +30,26 @@ Route::group(['prefix' => 'kepala_cabang', 'as' => 'kepala_cabang.', 'middleware
 	Route::get('/', 'KepalaCabang\HomeController@index')->name('home');
 });
 
-Route::group(['prefix' => 'cabang', 'as' => 'cabang.', 'middleware' => 'cabang'], function () {
-	Route::get('/', 'Cabang\HomeController@index')->name('home');
+Route::group(['prefix' => 'kaptain_dapur', 'as' => 'kaptain_dapur.', 'middleware' => 'kaptain.dapur'], function () {
+	Route::get('/', 'KaptainDapur\HomeController@index')->name('home');
+});
+
+Route::group(['prefix' => 'cs', 'as' => 'cs.', 'middleware' => 'cs'], function () {
+	Route::get('/', 'CS\HomeController@index')->name('home');
+});
+
+Route::group(['prefix' => 'crew', 'as' => 'crew.', 'middleware' => 'crew'], function () {
+	Route::get('/', 'Crew\HomeController@index')->name('home');
+});
+
+Route::group(['prefix' => 'direktur', 'as' => 'direktur.', 'middleware' => 'direktur'], function () {
+	Route::get('/', 'Direktur\HomeController@index')->name('home');
+});
+
+Route::group(['prefix' => 'manager', 'as' => 'manager.', 'middleware' => 'manager'], function () {
+	Route::get('/', 'Manager\HomeController@index')->name('home');
+});
+
+Route::group(['prefix' => 'ppic', 'as' => 'ppic.', 'middleware' => 'ppic'], function () {
+	Route::get('/', 'Ppic\HomeController@index')->name('home');
 });
