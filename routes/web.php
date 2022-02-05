@@ -14,12 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+	if (\Auth::check()) {
+		return back();
+	}
 	return redirect('login');
 });
 
 Auth::routes();
 
 Route::get('init', function(){
+	\Artisan::call('storage:link');
 	\Artisan::call('key:generate');
 	\Artisan::call('view:clear');
 	\Artisan::call('config:cache');
