@@ -6,5 +6,6 @@
 		<h3>Haloo, {{\Auth::user()->name}}</h3>
 	</div>
 </div>
+@include('test-card')
 <!-- live test card in template -->
 @endsection

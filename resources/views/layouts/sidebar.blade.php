@@ -1,15 +1,15 @@
 <nav class="mt-2">
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <li class="nav-item menu-open">
-            <a href="pages/widgets.html" class="nav-link active">
+        <li class="nav-item">
+            <a href="pages/widgets.html" class="nav-link">
                 <i class="nav-icon fas fa-chart-pie"></i>
                 <p>
                     Dashboard
                 </p>
             </a>
         </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
+        <li class="nav-item {{\Request::is('order*') ? 'menu-open' : ''}}" class="menu @yield('order')">
+            <a href="#" class="nav-link @yield('order')">
                 <i class="nav-icon fas fa-book"></i>
                 <p>
                     Order Management
@@ -18,7 +18,7 @@
             </a>
             <ul class="nav nav-treeview" style="padding-left: 25px;">
                 <li class="nav-item">
-                    <a href="#" class="nav-link" style="width: 100%">
+                    <a href="{{route('order.create')}}" class="nav-link @yield('order')" style="width: 100%">
                         <p>New Order</p>
                     </a>
                 </li>

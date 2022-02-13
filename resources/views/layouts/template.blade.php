@@ -66,7 +66,7 @@
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         @yield('content')
-        @include('test-card')
+        
         <!-- /.row -->
         <!-- Main row -->
         

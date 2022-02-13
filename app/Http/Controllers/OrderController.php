@@ -13,6 +13,9 @@ class OrderController extends Controller
 
     public function create()
     {
-        return view('order.create');
+    	$data['source'] = ['IG', 'FB', 'Google adds', 'offline'];
+    	$data['grup']   = ['Jabodetabek', 'Jawa Barat', 'Banten'];
+    	$data['masak_cabang']   = ['Depok', 'Jakarta', 'Bekasi Kota', 'Kabupaten Bekasi', 'Tangerang Kota', 'Kapubaten Tangerang', 'Bogor', 'Karawang', 'Sukabumi'];
+        return view('order.create')->with($data);
     }
 }

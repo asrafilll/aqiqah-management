@@ -8,4 +8,5 @@
 	</div>
 	<!-- ./col -->
 </div>
+@include('test-card')
 @endsection
