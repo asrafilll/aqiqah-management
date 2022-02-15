@@ -27,7 +27,7 @@ class CreateOrderInformationTable extends Migration
             $table->enum('jenis_paket', ['Paket Ekonomis Manis (Bento)', 'Paket Ekonomis Mewah (Bento)', 'Paket Kambing Masak', 'Paket Nasi Box Hemat', 'Paket Nasi Box Praktis', 'Paket Nasi Box Special', 'Paket Nasi Box Arab', 'Paket Aqiqah Tumpeng']);
             $table->enum('pilihan_nasi', ['Nasi Putih', 'Nasi Kuning', 'Nasi Mandhi', 'Nasi Kebuli', 'Nasi Biryani', 'Nasi Uduk']);
             $table->text('alamat');
-            $table->string('jenis_beras_arab');
+            $table->enum('jenis_beras_arab', ['Beras Lokal', 'Beras', 'Basmati']);
             $table->integer('jumlah_order');
             $table->string('tanggal_kirim');
             $table->string('jam_tiba_lokasi');
