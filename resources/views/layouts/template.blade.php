@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="{{asset('template/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
   <!-- iCheck -->
   <link rel="stylesheet" href="{{asset('template/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{asset('template/plugins/toastr/toastr.min.css')}}">
   <!-- JQVMap -->
   <link rel="stylesheet" href="{{asset('template/plugins/jqvmap/jqvmap.min.css')}}">
   <!-- Theme style -->
@@ -96,8 +97,11 @@
 </script>
 <!-- Bootstrap 4 -->
 <script src="{{asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{asset('template/plugins/toastr/toastr.min.js')}}"></script>
 <!-- ChartJS -->
 <script src="{{asset('template/plugins/chart.js/Chart.min.js')}}"></script>
+<script src="{{asset('js/custom.js')}}"></script>
+@yield('scripts')
 <!-- Sparkline -->
 <script src="{{asset('template/plugins/sparklines/sparkline.js')}}"></script>
 <!-- JQVMap -->

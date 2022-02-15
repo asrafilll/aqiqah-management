@@ -33,6 +33,8 @@ Route::get('init', function(){
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('order', OrderController::class);
+Route::post('order_detail/store-customer-information' , 'OrderController@storeCustomerInformation')->name('order.store-customer-information');
+Route::post('order_detail/store-order-information' , 'OrderController@storeOrderInformation')->name('order.store-order-information');
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], function () {
 	Route::get('/', 'Admin\HomeController@index')->name('home');
