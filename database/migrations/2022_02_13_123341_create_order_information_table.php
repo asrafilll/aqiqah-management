@@ -34,9 +34,10 @@ class CreateOrderInformationTable extends Migration
             $table->string('jam_konsumsi');
             $table->enum('pengiriman', ['Dikirim', 'Diambil sendiri', 'Disalurkan']);
             $table->integer('total_harga');
-            $table->integer('adjusment')->nullable();
+            $table->integer('biaya_tambahan')->nullable();
+            $table->integer('diskon')->nullable();
             $table->string('keterangan')->nullable();
-            $table->integer('total_harga_Setelah_adjusment')->nullable();
+            $table->integer('total_harga_setelah_adjusment')->nullable();
             $table->bigInteger('created_by')->unsigned();
             $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();

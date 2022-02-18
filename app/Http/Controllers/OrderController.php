@@ -143,9 +143,9 @@ class OrderController extends Controller
         $validator = \Validator::make($request->all(), 
             [ 
                 'cara_pembayaran'      => ['required'],
-                'dokumen_ktp'      => ['required'],
-                'dokumen_kk'      => ['required'],
-                'dokumen_bukti_tf'      => ['required'],
+                // 'dokumen_ktp'      => ['required'],
+                // 'dokumen_kk'      => ['required'],
+                // 'dokumen_bukti_tf'      => ['required'],
                 'jumlah_kambing'=> ['required', 'string', 'max:255'],
                 'jenis_kelamin_kambing'      => ['required'],
                 'jenis_pesanan'      => ['required'],
@@ -160,7 +160,6 @@ class OrderController extends Controller
                 'jam_konsumsi'      => ['required'],
                 'pengiriman'      => ['required'],
                 'total_harga'      => ['required'],
-                'adjusment'      => ['required', 'numeric'],
                 'keterangan'      => ['required'],
             ]);
         if($validator->fails()) {
@@ -181,7 +180,7 @@ class OrderController extends Controller
             if ($request->hasFile('dokumen_bukti_tf')) {
                 $request['bukti_tf'] = $this->storeFile("users/bukti_tf", $request->dokumen_bukti_tf);
             }
-            $request['is_maklon'] = $request->is_maklon == "Ya" ? 1 : 0;
+            $request['total_harga_setelah_adjusment'] = $request->total_harga + $request->biaya_tambahan - $request->diskon;
 
             $order = OrderInformation::updateOrCreate(
                 ['id' => $request->order_id],

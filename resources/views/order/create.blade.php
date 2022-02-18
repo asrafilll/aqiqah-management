@@ -239,7 +239,7 @@
 														@endforeach
 													</select>
 												</div>
-												<div class="col-md-12">
+												<div class="col-md-6">
 													<label>Alamat</label>
 													<textarea name="alamat" class="form-control" rows="2">{{isset($data) && $data->orderInformation ? ($data->orderInformation->alamat ?? '') : ''}}
 													</textarea>
@@ -252,6 +252,11 @@
 													<label>Tanggal Kirim</label>
 													<input type="text" class="form-control" placeholder="Tanggal Kirim" name="tanggal_kirim" value="{{isset($data) && $data->orderInformation ? ($data->orderInformation->tanggal_kirim ?? '') : ''}}">
 												</div>
+												<div class="col-md-6">
+													<label>Keterangan</label>
+													<textarea name="keterangan" class="form-control" rows="2">{{isset($data) && $data->orderInformation ? ($data->orderInformation->keterangan ?? '') : ''}}
+													</textarea>
+												</div>												
 												<div class="col-md-3">
 													<label>Jam Tiba Lokasi</label>
 													<input type="text" class="form-control" placeholder="Jam Tiba Lokasi" name="jam_tiba_lokasi" value="{{isset($data) && $data->orderInformation ? ($data->orderInformation->jam_tiba_lokasi ?? '') : ''}}">
@@ -274,13 +279,13 @@
 													<input type="text" class="form-control" placeholder="Total Harga" name="total_harga" value="{{isset($data) && $data->orderInformation ? ($data->orderInformation->total_harga ?? '') : ''}}">
 												</div>
 												<div class="col-md-3">
-													<label>Adjustment</label>
-													<input type="number" class="form-control" placeholder="Adjustment" name="adjusment" value="{{isset($data) && $data->orderInformation ? ($data->orderInformation->adjusment ?? '') : ''}}">
+													<label>Biaya Tambahan</label>
+													<input type="number" class="form-control" placeholder="Biaya Tambahan" name="biaya_tambahan" value="{{isset($data) && $data->orderInformation ? ($data->orderInformation->biaya_tambahan ?? '') : ''}}">
 												</div>
 												<div class="col-md-3">
-													<label>Keterangan</label>
-													<input type="text" class="form-control" placeholder="Keterangan" name="keterangan" value="{{isset($data) && $data->orderInformation ? ($data->orderInformation->keterangan ?? '') : ''}}">
-												</div>
+													<label>Diskon</label>
+													<input type="number" class="form-control" placeholder="Diskon" name="diskon" value="{{isset($data) && $data->orderInformation ? ($data->orderInformation->diskon ?? '') : ''}}">
+												</div>												
 											</div>
 										</div>
 										<div class="card-footer">
@@ -378,7 +383,16 @@
 		})
 
 		$('#form-order-information').submit(function(e) {
-			e.preventDefault();			
+			e.preventDefault();
+			let harga = parseInt($('[name=total_harga]').val())
+			if (parseInt($('[name=biaya_tambahan]').val()) > harga) {
+				toastr["error"](`Biaya tambahan melebihi total harga, yaitu : ${harga}`);
+				return
+			}
+			if (parseInt($('[name=diskon]').val()) > harga) {
+				toastr["error"](`Harga diskon melebihi total harga, yaitu : ${harga}`);
+				return
+			}
 
 			$.ajaxSetup({
 				headers: {
