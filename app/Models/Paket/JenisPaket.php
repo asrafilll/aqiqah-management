@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\Order;
+namespace App\Models\Paket;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MenuPilihan extends Model
+class JenisPaket extends Model
 {
     //
 }

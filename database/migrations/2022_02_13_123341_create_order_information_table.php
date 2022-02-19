@@ -24,8 +24,8 @@ class CreateOrderInformationTable extends Migration
             $table->enum('jenis_kelamin_kambing', ['Jantan', 'Betina']);
             $table->enum('jenis_pesanan', ['Paket Aqiqah', 'Catering Umum', 'Qurban']);
             $table->boolean('is_maklon');
-            $table->enum('jenis_paket', ['Paket Ekonomis Manis (Bento)', 'Paket Ekonomis Mewah (Bento)', 'Paket Kambing Masak', 'Paket Nasi Box Hemat', 'Paket Nasi Box Praktis', 'Paket Nasi Box Special', 'Paket Nasi Box Arab', 'Paket Aqiqah Tumpeng']);
-            $table->enum('pilihan_nasi', ['Nasi Putih', 'Nasi Kuning', 'Nasi Mandhi', 'Nasi Kebuli', 'Nasi Biryani', 'Nasi Uduk']);
+            $table->bigInteger('jenis_paket_id')->unsigned();
+            $table->bigInteger('nasi_id')->unsigned();
             $table->text('alamat');
             $table->enum('jenis_beras_arab', ['Beras Lokal', 'Beras', 'Basmati']);
             $table->integer('jumlah_order');
@@ -42,6 +42,8 @@ class CreateOrderInformationTable extends Migration
             $table->bigInteger('updated_by')->unsigned()->nullable();
             $table->timestamps();
 
+            $table->foreign('nasi_id')->references('id')->on('nasis');
+            $table->foreign('jenis_paket_id')->references('id')->on('jenis_pakets');
             $table->foreign('order_id')->references('id')->on('orders');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');
