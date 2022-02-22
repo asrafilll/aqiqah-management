@@ -296,7 +296,52 @@
 							</div>
 						</div>
 						<div class="tab-pane fade" id="tab-pilihan" role="tabpanel">
-							Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra. Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet accumsan ex sit amet facilisis.
+							<div class="col-md-12">
+								<form action="{{route('order.store')}}" method="POST" id="form-store-order" enctype="multipart/form-data">
+									@csrf
+									<input type="hidden" value="{{isset($data) ? $data->id : null}}" name="order_id">
+									<div class="card">
+										<div class="card-body">
+											<div class="row">
+												Lorem ipsum, dolor sit amet, consectetur adipisicing elit. Quos dolore, quisquam. Voluptatum cum ipsam unde laudantium, ad quis fugit similique totam officiis atque nostrum iure provident eaque nesciunt repellat ullam?
+												<div class="col-md-4">
+													<label>Olahan Daging</label>
+													<select name="olahan_daging" class="form-control">
+
+													</select>
+												</div>
+												<div class="col-md-4">
+													<label>Olahan Jeroan</label>
+													<select name="olahan_jeroan" class="form-control">
+
+													</select>
+												</div>
+												<div class="col-md-4">
+													<label>Nasi</label>
+													<select name="nasi" class="form-control">
+
+													</select>
+												</div>
+												<div class="col-md-6">
+													<label>Menu Pilihan</label>
+													<select name="menu_pilihan1" class="form-control">
+
+													</select>
+												</div>
+												<div class="col-md-6">
+													<label>Menu Pilihan 2</label>
+													<select name="menu_pilihan2" class="form-control">
+
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="card-footer">
+											<button type="submit" class="btn btn-primary btn-sm float-right" disabled>Simpan</button>
+										</div>
+									</div>
+								</form>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -309,6 +354,98 @@
 @section('scripts')
 <script>
 	$(document).ready(function(){
+		function getOlahanDaging(){
+			$.ajax({
+				type: 'get',
+				url: "{{route('api.olahan_daging')}}",
+				beforeSend: function(){
+
+				},
+				success: function(data) {
+					opt = ''
+					$.each(data, function(k, v){
+						opt += `<option value=${v.id}>${v.nama}</option>`
+					})
+					$('[name=olahan_daging]').html(opt)
+				},
+				error: function(data){
+					console.log(data.responseText)
+				}
+			});
+		}
+
+		function getOlahanJeroan(){
+			$.ajax({
+				type: 'get',
+				url: "{{route('api.olahan_jeroan')}}",
+				beforeSend: function(){
+
+				},
+				success: function(data) {
+					opt = ''
+					$.each(data, function(k, v){
+						opt += `<option value=${v.id}>${v.nama}</option>`
+					})
+					$('[name=olahan_jeroan]').html(opt)
+				},
+				error: function(data){
+					console.log(data.responseText)
+				}
+			});
+		}
+
+		function getMenuPilihan(urutan_menu){
+			$.ajax({
+				type: 'get',
+				url: "{{route('api.menu_pilihan')}}",
+				data: {
+					urutan_menu: urutan_menu
+				},
+				beforeSend: function(){
+
+				},
+				success: function(data) {
+					console.log(data)
+					opt = ''
+					$.each(data, function(k, v){
+						opt += `<option value=${v.menu_pilihan.id}>${v.menu_pilihan.nama}</option>`
+					})
+					if (urutan_menu == 1) {
+						$('[name=menu_pilihan1]').html(opt)
+					}else{
+						$('[name=menu_pilihan2]').html(opt)
+					}
+				},
+				error: function(data){
+					console.log(data.responseText)
+				}
+			});
+		}
+
+		function getNasi(){
+			$.ajax({
+				type: 'get',
+				url: "{{route('api.nasi')}}",
+				beforeSend: function(){
+
+				},
+				success: function(data) {
+					opt = ''
+					$.each(data, function(k, v){
+						opt += `<option value=${v.id}>${v.nama}</option>`
+					})
+					$('[name=nasi]').html(opt)
+				},
+				error: function(data){
+					console.log(data.responseText)
+				}
+			});
+		}
+		getOlahanDaging()
+		getOlahanJeroan()
+		getMenuPilihan(1)
+		getMenuPilihan(2)
+		getNasi()
 		$('#form-store-order').submit(function(e) {
 			e.preventDefault();			
 
