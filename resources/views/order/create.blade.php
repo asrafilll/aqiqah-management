@@ -17,10 +17,10 @@
 							<a class="nav-link" data-toggle="pill" href="#tab-customer-information" role="tab">Customer Information</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link active" data-toggle="pill" href="#tab-order-detail" role="tab">Order Information</a>
+							<a class="nav-link" data-toggle="pill" href="#tab-order-detail" role="tab">Order Information</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" data-toggle="pill" href="#tab-pilihan" role="tab">Pilihan Menu</a>
+							<a class="nav-link active" data-toggle="pill" href="#tab-pilihan" role="tab">Pilihan Menu</a>
 						</li>
 					</ul>
 				</div>
@@ -147,7 +147,7 @@
 								</form>
 							</div>
 						</div>
-						<div class="tab-pane fade show active" id="tab-order-detail" role="tabpanel">
+						<div class="tab-pane fade" id="tab-order-detail" role="tabpanel">
 							<div class="col-md-12">
 								<form action="{{route('order.store-order-information')}}" method="POST" id="form-order-information" enctype="multipart/form-data">
 									@csrf
@@ -217,7 +217,7 @@
 													<select name="jenis_paket" class="form-control">
 														<option value="">Pilih</option>
 														@foreach($jenis_paket as $jp)
-														<option value="{{$jp}}" {{isset($data) && $data->orderInformation ? ($data->orderInformation->jenis_paket == $jp ? 'selected' : '') : ''}} >{{$jp}}</option>
+														<option value="{{$jp->id}}" {{isset($data) && $data->orderInformation ? ($data->orderInformation->jenis_paket_id == $jp->id ? 'selected' : '') : ''}} >{{$jp->nama}}</option>
 														@endforeach
 													</select>
 												</div>
@@ -295,7 +295,7 @@
 								</form>
 							</div>
 						</div>
-						<div class="tab-pane fade" id="tab-pilihan" role="tabpanel">
+						<div class="tab-pane fade show active" id="tab-pilihan" role="tabpanel">
 							<div class="col-md-12">
 								<form action="{{route('order.store')}}" method="POST" id="form-store-order" enctype="multipart/form-data">
 									@csrf
@@ -304,33 +304,48 @@
 										<div class="card-body">
 											<div class="row">
 												Lorem ipsum, dolor sit amet, consectetur adipisicing elit. Quos dolore, quisquam. Voluptatum cum ipsam unde laudantium, ad quis fugit similique totam officiis atque nostrum iure provident eaque nesciunt repellat ullam?
-												<div class="col-md-4">
+												<div class="col-md-12">
+													<label>Pilih Paket</label>
+													<select name="jenis_paket" class="form-control">
+														<option value="">Pilih</option>
+														@foreach($jenis_paket as $jp)
+														<option value="{{$jp->id}}" data-olahan_daging="{{$jp->is_olahan_daging}}" data-olahan_jeroan="{{$jp->is_olahan_jeroan}}" {{isset($data) && $data->orderInformation ? ($data->orderInformation->jenis_paket_id == $jp->id ? 'selected' : '') : ''}}>{{$jp->nama}}</option>
+														@endforeach
+													</select>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-6" id="div-olahan_daging" style="display: none">
 													<label>Olahan Daging</label>
 													<select name="olahan_daging" class="form-control">
 
 													</select>
 												</div>
-												<div class="col-md-4">
+												<div class="col-md-6" id="div-olahan_jeroan" style="display: none;">
 													<label>Olahan Jeroan</label>
 													<select name="olahan_jeroan" class="form-control">
 
 													</select>
 												</div>
-												<div class="col-md-4">
-													<label>Nasi</label>
-													<select name="nasi" class="form-control">
-
-													</select>
-												</div>
-												<div class="col-md-6">
+											</div>
+											<div class="row">
+												<div class="col-md-6" id="div-menu_pilihan1" style="display: none;">
 													<label>Menu Pilihan</label>
 													<select name="menu_pilihan1" class="form-control">
 
 													</select>
 												</div>
-												<div class="col-md-6">
+												<div class="col-md-6" id="div-menu_pilihan2" style="display: none;">
 													<label>Menu Pilihan 2</label>
 													<select name="menu_pilihan2" class="form-control">
+
+													</select>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-4">
+													<label>Nasi</label>
+													<select name="nasi" class="form-control">
 
 													</select>
 												</div>
@@ -354,6 +369,26 @@
 @section('scripts')
 <script>
 	$(document).ready(function(){
+		$('[name=jenis_paket]').change(function(){
+			let olahan_daging = parseInt($(this).find(":selected").attr('data-olahan_daging'))
+			let olahan_jeroan = parseInt($(this).find(":selected").attr('data-olahan_jeroan'))
+			if (olahan_daging == 1) {
+				$('#div-olahan_daging').show(500)
+				getOlahanDaging()
+			}else{
+				$('#div-olahan_daging').hide(500)
+			}
+
+			if (olahan_jeroan == 1) {
+				$('#div-olahan_jeroan').show(500)
+				getOlahanJeroan()
+			}else{
+				$('#div-olahan_jeroan').hide(500)
+			}
+			getMenuPilihan(1, $(this).find(":selected").val())
+			getMenuPilihan(2, $(this).find(":selected").val())
+		})
+
 		function getOlahanDaging(){
 			$.ajax({
 				type: 'get',
@@ -394,27 +429,39 @@
 			});
 		}
 
-		function getMenuPilihan(urutan_menu){
+		function getMenuPilihan(urutan_menu, jenis_paket_id=''){
 			$.ajax({
 				type: 'get',
 				url: "{{route('api.menu_pilihan')}}",
 				data: {
-					urutan_menu: urutan_menu
+					urutan_menu: urutan_menu,
+					jenis_paket_id: jenis_paket_id			
 				},
 				beforeSend: function(){
 
 				},
 				success: function(data) {
-					console.log(data)
-					opt = ''
-					$.each(data, function(k, v){
-						opt += `<option value=${v.menu_pilihan.id}>${v.menu_pilihan.nama}</option>`
-					})
-					if (urutan_menu == 1) {
-						$('[name=menu_pilihan1]').html(opt)
+					if (data.length > 0) {
+						opt = ''
+						$.each(data, function(k, v){
+							opt += `<option value=${v.id}>${v.nama}</option>`
+						})
+						if (urutan_menu == 1) {
+							$('#div-menu_pilihan1').show(500)
+							$('[name=menu_pilihan1]').html(opt)
+						}else{
+							$('#div-menu_pilihan2').show(500)
+							$('[name=menu_pilihan2]').html(opt)
+						}
 					}else{
-						$('[name=menu_pilihan2]').html(opt)
-					}
+						if (urutan_menu == 1) {
+							$('#div-menu_pilihan1').hide(500)
+							$('[name=menu_pilihan1]').html('')
+						}else{
+							$('#div-menu_pilihan2').hide(500)
+							$('[name=menu_pilihan2]').html('')
+						}
+					}				
 				},
 				error: function(data){
 					console.log(data.responseText)
@@ -441,10 +488,10 @@
 				}
 			});
 		}
-		getOlahanDaging()
-		getOlahanJeroan()
-		getMenuPilihan(1)
-		getMenuPilihan(2)
+		// getOlahanDaging()
+		// getOlahanJeroan()
+		// getMenuPilihan(1)
+		// getMenuPilihan(2)
 		getNasi()
 		$('#form-store-order').submit(function(e) {
 			e.preventDefault();			
@@ -463,7 +510,6 @@
 					loadButton($('#form-store-order button[type=submit]'))
 				},
 				success: function(data) {
-					console.log(data)
 					if(data.status == "ok"){
 						toastr["success"](data.messages);
 					}
@@ -501,7 +547,6 @@
 					loadButton($('#form-customer-information button[type=submit]'))
 				},
 				success: function(data) {
-					console.log(data)
 					if(data.status == "ok"){
 						toastr["success"](data.messages);
 					}
@@ -550,7 +595,6 @@
 					loadButton($('#form-order-information button[type=submit]'))
 				},
 				success: function(data) {
-					console.log(data)
 					if(data.status == "ok"){
 						toastr["success"](data.messages);
 					}

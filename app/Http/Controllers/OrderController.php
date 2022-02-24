@@ -8,6 +8,7 @@ use App\Models\Order\{
     CustInformation,
     OrderInformation
 };
+use App\Models\Paket\JenisPaket;
 use DB;
 
 class OrderController extends Controller
@@ -24,7 +25,7 @@ class OrderController extends Controller
     	$data['masak_cabang']     = ['Depok', 'Jakarta', 'Bekasi Kota', 'Kabupaten Bekasi', 'Tangerang Kota', 'Kapubaten Tangerang', 'Bogor', 'Karawang', 'Sukabumi'];
         $data['cara_bayar']       = ['Credit', 'Tunai'];
         $data['jenis_pesanan']    = ['Paket Aqiqah', 'Catering Umum', 'Qurban'];
-        $data['jenis_paket']      = ['Paket Ekonomis Manis (Bento)', 'Paket Ekonomis Mewah (Bento)', 'Paket Kambing Masak', 'Paket Nasi Box Hemat', 'Paket Nasi Box Praktis', 'Paket Nasi Box Special', 'Paket Nasi Box Arab', 'Paket Aqiqah Tumpeng'];
+        $data['jenis_paket']      = JenisPaket::all();
         $data['pilihan_nasi']     = ['Nasi Putih', 'Nasi Kuning', 'Nasi Mandhi', 'Nasi Kebuli', 'Nasi Biryani', 'Nasi Uduk'];
         $data['jenis_beras_arab'] = ['Beras Lokal', 'Beras', 'Basmati'];
         $data['pengiriman']       = ['Dikirim', 'Diambil sendiri', 'Disalurkan'];
