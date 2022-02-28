@@ -26,17 +26,13 @@ class OlahanController extends Controller
 
     public function getMenuPilihan(Request $request)
     {
-        return MenuPilihan::with('pilihanPaket')
-        ->when($request->urutan_menu, function($q)use($request){
-            $q->whereHas('pilihanPaket', function($q2)use($request){
-                $q2->where('urutan_menu', $request->urutan_menu);
-            });
+        return PaketMenuPilihan::when($request->urutan_menu, function($q)use($request){
+            $q->where('urutan_menu', $request->urutan_menu);
         })
-        ->when($request->jenis_paket_id, function($q)use($request){
-            $q->whereHas('pilihanPaket', function($q2)use($request){
-                $q2->where('jenis_paket_id', $request->jenis_paket_id);
-            });
+        ->when($request->jenis_paket_id, function($qq)use($request){
+            $qq->where('jenis_paket_id', $request->jenis_paket_id);
         })
+        ->with(['menuPilihan.olahanAyam', 'menuPilihan.olahanTelur'])
         ->latest()->get();
     }
 

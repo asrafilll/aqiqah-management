@@ -9,7 +9,9 @@ use App\Models\Paket\{
 	PaketMenuPilihan,
 	Nasi,
 	OlahanDaging,
-	OlahanJeroan
+	OlahanJeroan,
+    OlahanTelur,
+    OlahanAyam
 };
 
 
@@ -158,185 +160,219 @@ class PaketSeeder extends Seeder
     		'updated_by' 	 => 1
     	]);
 
-    	PaketMenuPilihan::insert([
-    		[
-    			'urutan_menu' 	  => 1,
-    			'menu_pilihan_id' => $olahanTelur->id,
-    			'jenis_paket_id'  => $paketNasiBoxPraktis->id,
-    			'created_by' 	  => 1,
-    			'updated_by' 	  => 1
-    		],
-    		[
-    			'urutan_menu' 	  => 2,
-    			'menu_pilihan_id' => $mixVegetable->id,
-    			'jenis_paket_id'  => $paketNasiBoxPraktis->id,
-    			'created_by' 	  => 1,
-    			'updated_by' 	  => 1
-    		],
-    		[
-    			'urutan_menu' 	  => 1,
-    			'menu_pilihan_id' => $olahanAyam->id,
-    			'jenis_paket_id'  => $paketNasiBoxSpecial->id,
-    			'created_by' 	  => 1,
-    			'updated_by' 	  => 1
-    		],
-    		[
-    			'urutan_menu' 	  => 1,
-    			'menu_pilihan_id' => $mixVegetable->id,
-    			'jenis_paket_id'  => $paketNasiBoxSpecial->id,
-    			'created_by' 	  => 1,
-    			'updated_by' 	  => 1
-    		],
-    		[
-    			'urutan_menu' 	  => 2,
-    			'menu_pilihan_id' => $mixVegetable->id,
-    			'jenis_paket_id'  => $paketEkonomisMewah->id,
-    			'created_by' 	  => 1,
-    			'updated_by' 	  => 1
-    		],
-    		[
-    			'urutan_menu' 	  => 1,
-    			'menu_pilihan_id' => $olahanAyam->id,
-    			'jenis_paket_id'  => $paketEkonomisManis->id,
-    			'created_by' 	  => 1,
-    			'updated_by' 	  => 1
-    		],
-    		[
-    			'urutan_menu' 	  => 1,
-    			'menu_pilihan_id' => $olahanTelur->id,
-    			'jenis_paket_id'  => $paketAqiqahTumpeng->id,
-    			'created_by' 	  => 1,
-    			'updated_by' 	  => 1
-    		]
-    	]);
+        OlahanTelur::insert([
+            [
+                'nama'            => 'Telur Balado',
+                'menu_pilihan_id' => $olahanTelur->id,
+                'is_utama'        => 1,
+                'created_by'      => 1,
+                'updated_by'      => 1
+            ],
+            [
+                'nama'            => 'Telur Rebus',
+                'menu_pilihan_id' => $olahanTelur->id,
+                'is_utama'        => 1,
+                'created_by'      => 1,
+                'updated_by'      => 1
+            ]
+        ]);
 
-    	$nasiPutih = Nasi::create([
-    		'nama' 			   => 'Nasi Putih',
-    		'created_by' 	   => 1,
-    		'updated_by' 	   => 1
-    	]);
+        OlahanAyam::insert([
+            [
+                'nama'            => 'Ayam Goreng',
+                'menu_pilihan_id' => $olahanAyam->id,
+                'is_utama'        => 1,
+                'created_by'      => 1,
+                'updated_by'      => 1
+            ],
+            [
+                'nama'            => 'Ayam Bakar',
+                'menu_pilihan_id' => $olahanAyam->id,
+                'is_utama'        => 1,
+                'created_by'      => 1,
+                'updated_by'      => 1
+            ]
+        ]);
 
-    	$nasiMandhi = Nasi::create([
-    		'nama' 			   => 'Nasi Mandhi',
-    		'created_by' 	   => 1,
-    		'updated_by' 	   => 1
-    	]);
+        PaketMenuPilihan::insert([
+          [
+            'urutan_menu' 	  => 1,
+            'menu_pilihan_id' => $olahanTelur->id,
+            'jenis_paket_id'  => $paketNasiBoxPraktis->id,
+            'created_by' 	  => 1,
+            'updated_by' 	  => 1
+        ],
+        [
+            'urutan_menu' 	  => 2,
+            'menu_pilihan_id' => $mixVegetable->id,
+            'jenis_paket_id'  => $paketNasiBoxPraktis->id,
+            'created_by' 	  => 1,
+            'updated_by' 	  => 1
+        ],
+        [
+           'urutan_menu' 	  => 1,
+           'menu_pilihan_id' => $olahanAyam->id,
+           'jenis_paket_id'  => $paketNasiBoxSpecial->id,
+           'created_by' 	  => 1,
+           'updated_by' 	  => 1
+       ],
+       [
+           'urutan_menu' 	  => 2,
+           'menu_pilihan_id' => $mixVegetable->id,
+           'jenis_paket_id'  => $paketNasiBoxSpecial->id,
+           'created_by' 	  => 1,
+           'updated_by' 	  => 1
+       ],
+       [
+           'urutan_menu' 	  => 2,
+           'menu_pilihan_id' => $mixVegetable->id,
+           'jenis_paket_id'  => $paketEkonomisMewah->id,
+           'created_by' 	  => 1,
+           'updated_by' 	  => 1
+       ],
+       [
+           'urutan_menu' 	  => 1,
+           'menu_pilihan_id' => $olahanAyam->id,
+           'jenis_paket_id'  => $paketEkonomisManis->id,
+           'created_by' 	  => 1,
+           'updated_by' 	  => 1
+       ],
+       [
+           'urutan_menu' 	  => 1,
+           'menu_pilihan_id' => $olahanTelur->id,
+           'jenis_paket_id'  => $paketAqiqahTumpeng->id,
+           'created_by' 	  => 1,
+           'updated_by' 	  => 1
+       ]
+   ]);
 
-    	$nasiKebuli = Nasi::create([
-    		'nama' 			   => 'Nasi Kebuli',
-    		'created_by' 	   => 1,
-    		'updated_by' 	   => 1
-    	]);
+        $nasiPutih = Nasi::create([
+          'nama' 			   => 'Nasi Putih',
+          'created_by' 	   => 1,
+          'updated_by' 	   => 1
+      ]);
 
-    	$nasiBiryani = Nasi::create([
-    		'nama' 			   => 'Nasi Biryani',
-    		'created_by' 	   => 1,
-    		'updated_by' 	   => 1
-    	]);
+        $nasiMandhi = Nasi::create([
+          'nama' 			   => 'Nasi Mandhi',
+          'created_by' 	   => 1,
+          'updated_by' 	   => 1
+      ]);
 
-    	$nasiKabsah = Nasi::create([
-    		'nama' 			   => 'Nasi Kabsah',
-    		'created_by' 	   => 1,
-    		'updated_by' 	   => 1
-    	]);
+        $nasiKebuli = Nasi::create([
+          'nama' 			   => 'Nasi Kebuli',
+          'created_by' 	   => 1,
+          'updated_by' 	   => 1
+      ]);
 
-    	$nasiKuning = Nasi::create([
-    		'nama' 			   => 'Nasi Kuning',
-    		'created_by' 	   => 1,
-    		'updated_by' 	   => 1
-    	]);
+        $nasiBiryani = Nasi::create([
+          'nama' 			   => 'Nasi Biryani',
+          'created_by' 	   => 1,
+          'updated_by' 	   => 1
+      ]);
 
-    	$nasiUduk = Nasi::create([
-    		'nama' 			   => 'Nasi Uduk',
-    		'created_by' 	   => 1,
-    		'updated_by' 	   => 1
-    	]);
+        $nasiKabsah = Nasi::create([
+          'nama' 			   => 'Nasi Kabsah',
+          'created_by' 	   => 1,
+          'updated_by' 	   => 1
+      ]);
 
-    	PaketNasi::insert([
-    		[
-    			'nasi_id'    	 => $nasiPutih->id,
-    			'jenis_paket_id' => $paketNasiBoxHemat->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiPutih->id,
-    			'jenis_paket_id' => $paketNasiBoxPraktis->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiPutih->id,
-    			'jenis_paket_id' => $paketNasiBoxSpecial->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiPutih->id,
-    			'jenis_paket_id' => $paketEkonomisMewah->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiPutih->id,
-    			'jenis_paket_id' => $paketEkonomisManis->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiPutih->id,
-    			'jenis_paket_id' => $paketAqiqahTumpeng->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiMandhi->id,
-    			'jenis_paket_id' => $paketNasiBoxArab->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiMandhi->id,
-    			'jenis_paket_id' => $paketAqiqahTumpeng->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiKebuli->id,
-    			'jenis_paket_id' => $paketNasiBoxArab->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiKebuli->id,
-    			'jenis_paket_id' => $paketAqiqahTumpeng->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiBiryani->id,
-    			'jenis_paket_id' => $paketNasiBoxArab->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiBiryani->id,
-    			'jenis_paket_id' => $paketAqiqahTumpeng->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiKabsah->id,
-    			'jenis_paket_id' => $paketNasiBoxArab->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		],
-    		[
-    			'nasi_id'    	 => $nasiUduk->id,
-    			'jenis_paket_id' => $paketAqiqahTumpeng->id,
-    			'created_by' 	 => 1,
-    			'updated_by' 	 => 1
-    		]
-    	]);
+        $nasiKuning = Nasi::create([
+          'nama' 			   => 'Nasi Kuning',
+          'created_by' 	   => 1,
+          'updated_by' 	   => 1
+      ]);
+
+        $nasiUduk = Nasi::create([
+          'nama' 			   => 'Nasi Uduk',
+          'created_by' 	   => 1,
+          'updated_by' 	   => 1
+      ]);
+
+        PaketNasi::insert([
+          [
+           'nasi_id'    	 => $nasiPutih->id,
+           'jenis_paket_id' => $paketNasiBoxHemat->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiPutih->id,
+           'jenis_paket_id' => $paketNasiBoxPraktis->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiPutih->id,
+           'jenis_paket_id' => $paketNasiBoxSpecial->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiPutih->id,
+           'jenis_paket_id' => $paketEkonomisMewah->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiPutih->id,
+           'jenis_paket_id' => $paketEkonomisManis->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiPutih->id,
+           'jenis_paket_id' => $paketAqiqahTumpeng->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiMandhi->id,
+           'jenis_paket_id' => $paketNasiBoxArab->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiMandhi->id,
+           'jenis_paket_id' => $paketAqiqahTumpeng->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiKebuli->id,
+           'jenis_paket_id' => $paketNasiBoxArab->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiKebuli->id,
+           'jenis_paket_id' => $paketAqiqahTumpeng->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiBiryani->id,
+           'jenis_paket_id' => $paketNasiBoxArab->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiBiryani->id,
+           'jenis_paket_id' => $paketAqiqahTumpeng->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiKabsah->id,
+           'jenis_paket_id' => $paketNasiBoxArab->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ],
+       [
+           'nasi_id'    	 => $nasiUduk->id,
+           'jenis_paket_id' => $paketAqiqahTumpeng->id,
+           'created_by' 	 => 1,
+           'updated_by' 	 => 1
+       ]
+   ]);
     }
 }

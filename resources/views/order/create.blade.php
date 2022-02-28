@@ -386,7 +386,7 @@
 				$('#div-olahan_jeroan').hide(500)
 			}
 			getMenuPilihan(1, $(this).find(":selected").val())
-			getMenuPilihan(2, $(this).find(":selected").val())
+			// getMenuPilihan(2, $(this).find(":selected").val())
 		})
 
 		function getOlahanDaging(){
@@ -443,7 +443,8 @@
 				success: function(data) {
 					if (data.length > 0) {
 						opt = ''
-						$.each(data, function(k, v){
+						arrData = (data[0].menu_pilihan.olahan_ayam.length > 0 ? data[0].menu_pilihan.olahan_ayam : data[0].menu_pilihan.olahan_telur)
+						$.each(arrData, function(k, v){
 							opt += `<option value=${v.id}>${v.nama}</option>`
 						})
 						if (urutan_menu == 1) {
