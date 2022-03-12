@@ -5,18 +5,21 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Paket\{
-	OlahanDaging,
-	OlahanJeroan,
-	PaketMenuPilihan,
-    MenuPilihan,
-    Nasi
+    Nasi,
+    Olahan,
+    JenisPaket,
+    JenisPaketNasi
 };
 
 class OlahanController extends Controller
 {
-    public function getOlahanDaging()
+    public function getOlahan(Request $request)
     {
-        return OlahanDaging::where('is_utama', true)->latest()->get();
+        return Olahan::where([
+            ['is_utama', true],
+            ['olahan_kategori_id', $request->olahan_kategori_id]
+        ])
+        ->latest()->get();
     }
 
     public function getOlahanJeroan()
@@ -26,18 +29,11 @@ class OlahanController extends Controller
 
     public function getMenuPilihan(Request $request)
     {
-        return PaketMenuPilihan::when($request->urutan_menu, function($q)use($request){
-            $q->where('urutan_menu', $request->urutan_menu);
-        })
-        ->when($request->jenis_paket_id, function($qq)use($request){
-            $qq->where('jenis_paket_id', $request->jenis_paket_id);
-        })
-        ->with(['menuPilihan.olahanAyam', 'menuPilihan.olahanTelur'])
-        ->latest()->get();
+        return JenisPaket::where('id', $request->jenis_paket_id)->latest()->first();
     }
 
-    public function getNasi()
+    public function getNasi(Request $request)
     {
-        return Nasi::latest()->get();
+        return JenisPaketNasi::where('jenis_paket_id', $request->jenis_paket_id)->with('nasi')->latest()->get();
     }
 }

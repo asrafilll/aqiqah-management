@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOlahanJeroansTable extends Migration
+class CreateOlahansTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class CreateOlahanJeroansTable extends Migration
      */
     public function up()
     {
-        Schema::create('olahan_jeroans', function (Blueprint $table) {
+        Schema::create('olahans', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('olahan_kategori_id')->unsigned();
             $table->string('nama');
             $table->boolean('is_utama')->default(false);
             $table->bigInteger('created_by')->unsigned();
@@ -23,6 +24,7 @@ class CreateOlahanJeroansTable extends Migration
 
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');
+            $table->foreign('olahan_kategori_id')->references('id')->on('olahan_kategoris');
         });
     }
 
@@ -33,6 +35,6 @@ class CreateOlahanJeroansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('olahan_jeroans');
+        Schema::dropIfExists('olahans');
     }
 }

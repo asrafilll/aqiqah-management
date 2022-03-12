@@ -10,7 +10,6 @@ class PaketController extends Controller
 {
     public function getDynamicPaket()
     {
-        $jenis_paket = JenisPaket::all();
-        return view('ajax_page.dynamic_paket', compact('jenis_paket'));
+        return view('ajax_page.dynamic_paket');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOlahanAyamsTable extends Migration
+class CreateJenisPaketNasisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,16 @@ class CreateOlahanAyamsTable extends Migration
      */
     public function up()
     {
-        Schema::create('olahan_ayams', function (Blueprint $table) {
+        Schema::create('jenis_paket_nasis', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->bigInteger('menu_pilihan_id')->unsigned();
+            $table->bigInteger('nasi_id')->unsigned();
+            $table->bigInteger('jenis_paket_id')->unsigned();
             $table->bigInteger('created_by')->unsigned();
             $table->bigInteger('updated_by')->unsigned()->nullable();
-            $table->boolean('is_utama')->default(false);
             $table->timestamps();
 
-            $table->foreign('menu_pilihan_id')->references('id')->on('menu_pilihans');
+            $table->foreign('nasi_id')->references('id')->on('nasis');
+            $table->foreign('jenis_paket_id')->references('id')->on('jenis_pakets');
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('updated_by')->references('id')->on('users');
         });
@@ -35,6 +35,6 @@ class CreateOlahanAyamsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('olahan_ayams');
+        Schema::dropIfExists('jenis_paket_nasis');
     }
 }
