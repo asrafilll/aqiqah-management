@@ -80,17 +80,50 @@ class OrderController extends Controller
         return view('order.create-backup')->with($data);
     }
 
+    public function validateQuota($param) {
+        $branchId = $param['branch_id'];
+        $qty = $param['qty'];
+        $time = $param['send_time'];
+        $dates = $param['send_date'];
+        $splitTime = explode(':', $time);
+        $start = $dates . " $splitTime[0]:00";
+        $end = $dates . " $splitTime[0]:59";
+        $where = "send_date >= '$start' AND send_date <= '$end' and branch_id = $branchId";
+        $data = Orders::select('id', 'qty')
+            ->whereRaw($where)->get();
+        $return = [];
+        if (count($data) == 0) {
+            $return['status'] = true;
+            $return['quota'] = 300;
+        } else {
+            $sum = [];
+            foreach($data as $d) {
+                $sum[] = $d->qty;
+            }
+            $quota = 300 - array_sum($sum);
+            $check = $quota - $qty;
+            if ($check < 0) {
+                $return['status'] = false;
+                $return['quota'] = $quota;
+            } else {
+                $return['status'] = true;
+                $return['quota'] = $quota;
+            }
+        }
+
+        return $return;
+    }
+
     public function checkQuota(Request $request) {
         $branchId = $request->branch;
         $time = $request->times;
         $splitTime = explode(':', $time);
         $plus = $splitTime[0] + 1 . ':00';
         $start = $request->dates . " $splitTime[0]:00";
-        $end = $request->dtes . " $plus";
+        $end = $request->dates . " $splitTime[0]:59";
+        $where = "send_date >= '$start' AND send_date <= '$end' and branch_id = $branchId";
         $data = Orders::select('id', 'qty')
-            ->whereRaw(
-                "send_date > '$start' AND send_date < '$end' and branch_id = $branchId"
-            )->get();
+            ->whereRaw($where)->get();
 
         if (count($data) == 0) {
             $quota = 300;
@@ -104,7 +137,13 @@ class OrderController extends Controller
 
         return json_encode([
             'message' => 'Data retrieve',
-            'data' => $quota
+            'data' => $quota,
+            'request' => $request->all(),
+            'condition' => [
+                'start' => $start,
+                'end' => $end,
+                'where' => $where
+            ]
         ]);
     }
 
@@ -246,7 +285,7 @@ class OrderController extends Controller
         return view('order.show')->with($data);
     }
 
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         $dataCustomer = [
             'name' => $request->name,
@@ -266,7 +305,7 @@ class OrderController extends Controller
         $dataOrder = [
             'payment_id' => $request->payment,
             'branch_id' => $request->branchId,
-            'send_date' => $request->send_date,
+            'send_date' => $request->send_date . ' ' . $request->send_time,
             'send_time' => $request->send_time,
             'consumsion_time' => $request->consumsion_time,
             'branch_group_id' => $request->branch_group,
@@ -284,6 +323,21 @@ class OrderController extends Controller
             'created_by' => Auth::user()->id,
             'created_at' => Carbon::now()
         ];
+
+        // validate quota
+        $validate = $this->validateQuota([
+            'branch_id' => $request->branchId,
+            'send_date' => $request->send_date,
+            'send_time' => $request->send_time,
+            'qty' => $request->qty_order
+        ]);
+        if (!$validate['status']) {
+            return json_encode([
+                'status' => 400,
+                'message' => 'Jumlah order tidak boleh melebihi ' . $validate['quota']
+            ]);
+        }
+
         DB::beginTransaction();
         try {
             $customer = Customers::insertGetId($dataCustomer);
