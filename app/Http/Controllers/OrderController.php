@@ -284,7 +284,6 @@ class OrderController extends Controller
             'created_by' => Auth::user()->id,
             'created_at' => Carbon::now()
         ];
-        // return json_encode($request->all());
         DB::beginTransaction();
         try {
             $customer = Customers::insertGetId($dataCustomer);
@@ -294,26 +293,20 @@ class OrderController extends Controller
             if ($request->has('proof_of_payment')) {
                 $ext = $request->file('proof_of_payment')->getClientOriginalExtension();
                 $name = 'customer_pay_branch_' . $request->branchId . '.' . $ext;
-                $path = Storage::putFileAs(
-                    'public/customers', $request->file('proof_of_payment'), $name, 'public'
-                );
-                $dataOrder['proof_of_payment_img'] = 'storage/customers/' . $name;
+                $path = $this->storeFile("customers", $request->file('proof_of_payment'), $name);
+                $dataOrder['proof_of_payment_img'] = 'uploaded_files/customers/' . $name;
             }
             if ($request->has('kk')) {
                 $ext = $request->file('kk')->getClientOriginalExtension();
                 $name = 'customer_kk_branch_' . $request->branchId . '.' . $ext;
-                $path = Storage::putFileAs(
-                    'public/customers', $request->file('kk'), $name, 'public'
-                );
-                $dataOrder['kk_img'] = 'storage/customers/' . $name;
+                $path = $this->storeFile("customers", $request->file('kk'), $name);
+                $dataOrder['kk_img'] = 'uploaded_files/customers/' . $name;
             }
             if ($request->has('ktp')) {
                 $ext = $request->file('ktp')->getClientOriginalExtension();
                 $name = 'customer_ktp_branch_' . $request->branchId . '.' . $ext;
-                $path = Storage::putFileAs(
-                    'public/customers', $request->file('ktp'), $name, 'public'
-                );
-                $dataOrder['ktp_img'] = 'storage/customers/' . $name;
+                $path = $this->storeFile("customers", $request->file('ktp'), $name);
+                $dataOrder['ktp_img'] = 'uploaded_files/customers/' . $name;
             }
             $order = Orders::insertGetId($dataOrder);
 
@@ -460,68 +453,68 @@ class OrderController extends Controller
         }
     }
     
-    public function storeOrderInformation(Request $request)
-    {        
-        $request['created_by'] = Auth::user()->id;
-        $validator = Validator::make($request->all(), 
-            [ 
-                'cara_pembayaran'      => ['required'],
-                // 'dokumen_ktp'      => ['required'],
-                // 'dokumen_kk'      => ['required'],
-                // 'dokumen_bukti_tf'      => ['required'],
-                'jumlah_kambing'=> ['required', 'string', 'max:255'],
-                'jenis_kelamin_kambing'      => ['required'],
-                'jenis_pesanan'      => ['required'],
-                'is_maklon'      => ['required'],
-                'jenis_paket'      => ['required'],
-                'pilihan_nasi'      => ['required'],
-                'alamat'      => ['required'],
-                'jenis_beras_arab'      => ['required'],
-                'jumlah_order'      => ['required'],
-                'tanggal_kirim'      => ['required'],
-                'jam_tiba_lokasi'      => ['required'],
-                'jam_konsumsi'      => ['required'],
-                'pengiriman'      => ['required'],
-                'total_harga'      => ['required'],
-                'keterangan'      => ['required'],
-            ]);
-        if($validator->fails()) {
-            return response()->json([
-                'status'    => "fail",
-                'messages'  => $validator->errors()->first(),
-            ],422);
-        }     
+    // public function storeOrderInformation(Request $request)
+    // {        
+    //     $request['created_by'] = Auth::user()->id;
+    //     $validator = Validator::make($request->all(), 
+    //         [ 
+    //             'cara_pembayaran'      => ['required'],
+    //             // 'dokumen_ktp'      => ['required'],
+    //             // 'dokumen_kk'      => ['required'],
+    //             // 'dokumen_bukti_tf'      => ['required'],
+    //             'jumlah_kambing'=> ['required', 'string', 'max:255'],
+    //             'jenis_kelamin_kambing'      => ['required'],
+    //             'jenis_pesanan'      => ['required'],
+    //             'is_maklon'      => ['required'],
+    //             'jenis_paket'      => ['required'],
+    //             'pilihan_nasi'      => ['required'],
+    //             'alamat'      => ['required'],
+    //             'jenis_beras_arab'      => ['required'],
+    //             'jumlah_order'      => ['required'],
+    //             'tanggal_kirim'      => ['required'],
+    //             'jam_tiba_lokasi'      => ['required'],
+    //             'jam_konsumsi'      => ['required'],
+    //             'pengiriman'      => ['required'],
+    //             'total_harga'      => ['required'],
+    //             'keterangan'      => ['required'],
+    //         ]);
+    //     if($validator->fails()) {
+    //         return response()->json([
+    //             'status'    => "fail",
+    //             'messages'  => $validator->errors()->first(),
+    //         ],422);
+    //     }     
 
-        DB::beginTransaction();
-        try {
-            if ($request->hasFile('dokumen_ktp')) {
-                $request['ktp'] = $this->storeFile("users/ktp", $request->dokumen_ktp);
-            }
-            if ($request->hasFile('dokumen_kk')) {
-                $request['kk'] = $this->storeFile("users/kk", $request->dokumen_kk);
-            }
-            if ($request->hasFile('dokumen_bukti_tf')) {
-                $request['bukti_tf'] = $this->storeFile("users/bukti_tf", $request->dokumen_bukti_tf);
-            }
-            $request['total_harga_setelah_adjusment'] = $request->total_harga + $request->biaya_tambahan - $request->diskon;
+    //     DB::beginTransaction();
+    //     try {
+    //         if ($request->hasFile('dokumen_ktp')) {
+    //             $request['ktp'] = $this->storeFile("users/ktp", $request->dokumen_ktp);
+    //         }
+    //         if ($request->hasFile('dokumen_kk')) {
+    //             $request['kk'] = $this->storeFile("users/kk", $request->dokumen_kk);
+    //         }
+    //         if ($request->hasFile('dokumen_bukti_tf')) {
+    //             $request['bukti_tf'] = $this->storeFile("users/bukti_tf", $request->dokumen_bukti_tf);
+    //         }
+    //         $request['total_harga_setelah_adjusment'] = $request->total_harga + $request->biaya_tambahan - $request->diskon;
 
-            $order = OrderInformation::updateOrCreate(
-                ['id' => $request->order_id],
-                $request->except(['dokumen_ktp', 'dokumen_kk', 'dokumen_bukti_tf'])
-            );
-            DB::commit();
+    //         $order = OrderInformation::updateOrCreate(
+    //             ['id' => $request->order_id],
+    //             $request->except(['dokumen_ktp', 'dokumen_kk', 'dokumen_bukti_tf'])
+    //         );
+    //         DB::commit();
 
-            return response()->json([
-                'status'       => "ok",
-                'messages'     => "Berhasil menambahkan data",
-                'data'         =>  $order
-            ], 200);
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'status'    => "fail",
-                'messages'  => "Ada kesalahan dalam input data",
-            ],422);
-        }
-    }
+    //         return response()->json([
+    //             'status'       => "ok",
+    //             'messages'     => "Berhasil menambahkan data",
+    //             'data'         =>  $order
+    //         ], 200);
+    //     } catch (Exception $e) {
+    //         DB::rollback();
+    //         return response()->json([
+    //             'status'    => "fail",
+    //             'messages'  => "Ada kesalahan dalam input data",
+    //         ],422);
+    //     }
+    // }
 }

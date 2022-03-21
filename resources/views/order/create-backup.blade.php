@@ -453,14 +453,14 @@
             // validation quota
             let quota = $('#quota').val();
             let qtyOrder = $('#qty_order').val();
-            if (qtyOrder > quota) {
-                swal({
-                    title: "Failed",
-                    text: 'Jumlah melebihi kuota',
-                    icon: "warning",
-                    button: "Ok",
-                })
-            } else {
+            // if (qtyOrder > quota) {
+            //     swal({
+            //         title: "Failed",
+            //         text: 'Jumlah melebihi kuota',
+            //         icon: "warning",
+            //         button: "Ok",
+            //     })
+            // } else {
                 let data = new FormData(this);
                 $.ajax({
                     type: "POST",
@@ -504,7 +504,7 @@
                         })
                     }
                 });
-            }
+            // }
         }))
     })
     
