@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
 	Route::post('order/showFileUploader', 'OrderController@showFileUploader')->name('order.showFileUploader');
 	Route::post('order_detail/store-customer-information' , 'OrderController@storeCustomerInformation')->name('order.store-customer-information');
 	Route::post('order_detail/store-order-information' , 'OrderController@storeOrderInformation')->name('order.store-order-information');
+	Route::post('order/getVillage', 'OrderController@getVillages')->name('order.getVillages');
 	Route::resource('order', OrderController::class);
 });
 

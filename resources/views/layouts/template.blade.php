@@ -21,8 +21,6 @@
   <link rel="stylesheet" href="{{asset('template/dist/css/adminlte.min.css')}}">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{asset('template/plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="{{asset('template/plugins/daterangepicker/daterangepicker.css')}}">
   <!-- summernote -->
   <link rel="stylesheet" href="{{asset('template/plugins/summernote/summernote-bs4.min.css')}}">
   {{-- yield styling --}}
@@ -36,6 +34,10 @@
   <script src="{{asset('template/plugins/sweetalert/sweetalert.js')}}"></script>
   {{-- fontawesome --}}
   <script src="https://use.fontawesome.com/e1d44ecead.js"></script>
+  {{-- select 2 --}}
+  <link href="{{ asset('vendors/select2-bootstrap/dist/select2.css') }}" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ asset('vendors/select2-bootstrap/dist/select2-bootstrap.css') }}">
+  <script src="{{ asset('vendors/select2-bootstrap/dist/select2.js') }}"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">

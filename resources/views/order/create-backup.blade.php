@@ -206,15 +206,20 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-4">
-                                        <label for="">Kelurahan</label>
-                                        <select name="village" class="form-control" id="">
-                                            <option value="1">Kelurahan 1</option>
+                                        <label for="">Kecamatan</label>
+                                        <select name="district" class="form-control" id="district_select"
+                                            onchange="getVilages(this.value)">
+                                            <option value="" selected disabled>-- Pilih Kecamatan --</option>
+                                            @foreach ($districts as $district)
+                                                <option value="{{ $district->id }}">
+                                                    {{$district->name}}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-4">
-                                        <label for="">Kecamatan</label>
-                                        <select name="district" class="form-control" id="">
-                                            <option value="1">Kecamatan 1</option>
+                                        <label for="">Kelurahan</label>
+                                        <select name="village" class="form-control" id="village_select">
                                         </select>
                                     </div>
                                     <div class="col-4">
@@ -441,6 +446,14 @@
         // $('#collapseOrderInformation').collapse('show');
         $('#collapseCheckQuota').collapse('show');
 
+        // select2
+        $("#district_select").select2({
+            theme: "bootstrap"
+        });
+        $("#village_select").select2({
+            theme: "bootstrap"
+        });
+
         // currency format
         $('.currency').inputmask({
             alias: 'currency', prefix: 'Rp ', digits: '0', numericInput: true,
@@ -471,6 +484,8 @@
                             icon: "success",
                             button: "Ok",
                         });
+                        // clear dropify
+                        clearDropify();
                         // reset form
                         document.getElementById('form-order').reset();
                     } else {
@@ -481,8 +496,6 @@
                             button: "Ok",
                         });
                     }
-                    // clear dropify
-                    clearDropify();
                 },
                 error: function(error) {
                     let err = error.responseJSON;
@@ -503,6 +516,29 @@
         drEvent = drEvent.data('dropify');
         drEvent.resetPreview();
         drEvent.clearElement();
+    }
+
+    function getVilages(value) {
+        $.ajax({
+            type: "POST",
+            url: "{{ route('order.getVillages') }}",
+            data: {
+                id: value
+            },
+            dataType: 'json',
+            success: function(res) {
+                console.log(res);
+                let option = '<option value="" selected disabled>-- Pilih Kelurahan --</option>';
+                if (res.data.length) {
+                    for (let a = 0; a < res.data.length; a++) {
+                        option += '<option value="'+ res.data[a].id +'">'+
+                        res.data[a].name +
+                        '</option>';
+                    }
+                }
+                $('#village_select').html(option)
+            }
+        })
     }
 
     function calculate(value, param = "") {

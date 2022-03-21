@@ -219,15 +219,31 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-4">
-                                        <label for="">Kelurahan</label>
-                                        <select name="village" class="form-control" id="">
-                                            <option value="1">Kelurahan 1</option>
+                                        <label for="">Kecamatan</label>
+                                        <select name="district" class="form-control" id="district_select"
+                                            onchange="getVilages(this.value)"
+                                            value="{{ $order->customer->district_id }}">
+                                            <option value="" selected disabled>-- Pilih Kecamatan --</option>
+                                            @foreach ($districts as $district)
+                                                <option value="{{ $district->id }}"
+                                                    {{ $order->customer->district_id == $district->id ? 'selected' : '' }}>
+                                                    {{$district->name}}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-4">
-                                        <label for="">Kecamatan</label>
-                                        <select name="district" class="form-control" id="">
-                                            <option value="1">Kecamatan 1</option>
+                                        <label for="">Kelurahan</label>
+                                        <select name="district" class="form-control" id="village_select"
+                                            onchange="getVilages(this.value)"
+                                            value="{{ $order->customer->village_id }}">
+                                            <option value="" selected disabled>-- Pilih Kelurahan --</option>
+                                            @foreach ($villages as $village)
+                                                <option value="{{ $village->id }}"
+                                                    {{ $order->customer->village_id == $village->id ? 'selected' : '' }}>
+                                                    {{$village->name}}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-4">
@@ -457,6 +473,13 @@
     $(document).ready(function() {
         // $('#collapseOrderInformation').collapse('show');
         $('.collapse').collapse('show');
+        // select2
+        $('#district_select').select2({
+            theme: "bootstrap"
+        });
+        $('#village_select').select2({
+            theme: "bootstrap"
+        });
         // get quota
         checkQuota();
         // show uploaded file

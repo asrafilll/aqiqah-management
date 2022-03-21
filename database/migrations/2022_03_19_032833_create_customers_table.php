@@ -22,8 +22,8 @@ class CreateCustomersTable extends Migration
             $table->string('father_name');
             $table->string('mother_name');
             $table->text('address');
-            $table->integer('district_id')->nullable();
-            $table->integer('village_id')->nullable();
+            $table->string('district_id')->nullable();
+            $table->string('village_id')->nullable();
             $table->integer('postalcode')->nullable();
             $table->string('phone_1')->nullable();
             $table->string('phone_2')->nullable();
