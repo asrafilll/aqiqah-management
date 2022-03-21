@@ -232,7 +232,7 @@
                                     </div>
                                     <div class="col-4">
                                         <label for="">Kode pos</label>
-                                        <input type="number" class="form-control" name="postalcode">
+                                        <input type="number" class="form-control" name="postalcode" value="{{ $order->customer->postalcode }}">
                                     </div>
                                 </div>
                                 <div class="form-row">

@@ -38,7 +38,7 @@
             <td>
                 <div class="order_details">
                     <p class="order_details_text">
-                        Dikirim
+                        {{ $d->shipping->name }}
                     </p>
                 </div>
             </td>
