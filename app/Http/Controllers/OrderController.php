@@ -51,7 +51,7 @@ class OrderController extends Controller
         } else {
             $where = 'branch_id = ' . $userBranch->branch_id;
         }
-        $order = Orders::with(['orderPackage.package'])
+        $order = Orders::with(['orderPackage.package', 'shipping'])
             ->whereRaw($where)
             ->get();
         $view = view('order.partials.table-list', ['data' => $order])->render();

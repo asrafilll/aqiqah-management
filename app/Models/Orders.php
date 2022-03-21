@@ -81,4 +81,11 @@ class Orders extends Model
     public function branch() {
         return $this->hasOne(Branch::class, 'id', 'branch_id');
     }
+
+    /**
+     * Define relation
+     */
+    public function shipping() {
+        return $this->hasOne(Shipping::class, 'id', 'shipping_id');
+    }
 }
