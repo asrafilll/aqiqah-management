@@ -6,6 +6,7 @@ use App\Http\Requests\OrderRequest;
 use App\Models\Branch;
 use App\Models\ChickenMenu;
 use App\Models\Customers;
+use App\Models\District;
 use App\Models\EggMenu;
 use App\Models\MeatMenu;
 use App\Models\OffalMenu;
@@ -28,6 +29,7 @@ use App\Models\Shipping;
 use App\Models\TypeOrder;
 use App\Models\UsersBranch;
 use App\Models\VegetableMenu;
+use App\Models\Village;
 use App\User;
 use Carbon\Carbon;
 use Exception;
@@ -77,6 +79,7 @@ class OrderController extends Controller
         $data['typeOrder'] = TypeOrder::all();
         $data['package'] = Package::all();
         $data['shippings'] = Shipping::all();
+        $data['districts'] = District::all();
         return view('order.create-backup')->with($data);
     }
 
@@ -274,18 +277,22 @@ class OrderController extends Controller
         // get branch from user
         $user = Auth::user();
         $branch = UsersBranch::where('branch_id', $user->id)->with('branch')->first();
+        $orders = Orders::where('id', $id)->with(['orderPackage.package', 'customer', 'branch'])->first();
+        $villages = Village::where('district_id', $orders->customer->district_id)->get();
         $data['branch'] = $branch;
         $data['allBranch'] = Branch::all();
         $data['payment'] = Payment::all();
         $data['typeOrder'] = TypeOrder::all();
         $data['package'] = Package::all();
         $data['shippings'] = Shipping::all();
-        $data['order'] = Orders::where('id', $id)->with(['orderPackage.package', 'customer', 'branch'])->first();
+        $data['order'] = $orders;
         $data['id'] = $id;
+        $data['districts'] = District::all();
+        $data['villages'] = $villages;
         return view('order.show')->with($data);
     }
 
-    public function store(OrderRequest $request)
+    public function store(Request $request)
     {
         $dataCustomer = [
             'name' => $request->name,
@@ -295,8 +302,8 @@ class OrderController extends Controller
             'father_name' => $request->father_name,
             'mother_name' => $request->mother_name,
             'address' => $request->address,
-            'district_id' => $request->district_id,
-            'village_id' => $request->village_id,
+            'district_id' => $request->district,
+            'village_id' => $request->village,
             'postalcode' => $request->postalcode,
             'phone_1' => $request->phone_1,
             'phone_2' => $request->number_2,
@@ -459,116 +466,13 @@ class OrderController extends Controller
         ]);
     }
 
-    public function storeCustomerInformation(Request $request)
-    {
-        $request['created_by'] = Auth::user()->id;
-        $validator = Validator::make($request->all(), 
-            [ 
-                'nama_sohilbul_aqiqah'=> ['required', 'string', 'max:255'],
-                'gender_sohilbul_aqiqah'      => ['required'],
-                'tanggal_lahir' => ['required', 'string', 'max:255'],
-                'tanggal_kirim' => ['required', 'string', 'max:255'],
-                'nama_ayah' => ['required', 'string', 'max:255'],
-                'nama_ibu' => ['required', 'string', 'max:255'],
-                'alamat' => ['required', 'string', 'max:255'],
-                'grup_area' => ['required', 'string'],
-                'kecamatan' => ['required', 'string', 'max:255'],
-                'kelurahan' => ['required', 'string', 'max:255'],
-                'kode_pos' => ['required', 'string', 'max:255'],
-                'no_telp2' => ['required', 'string', 'max:255'],
-                'masak_di_cabang' => ['required', 'string', 'max:255'],
-            ]);
-        if($validator->fails()) {
-            return response()->json([
-                'status'    => "fail",
-                'messages'  => $validator->errors()->first(),
-            ],422);
-        }     
+    public function getVillages(Request $request) {
+        $id = $request->id;
+        $villages = Village::where('district_id', $id)->get();
 
-        DB::beginTransaction();
-        try {
-            $order = CustInformation::updateOrCreate(
-                ['id' => $request->order_id],
-                $request->all()
-            );
-            DB::commit();
-
-            return response()->json([
-                'status'       => "ok",
-                'messages'     => "Berhasil menambahkan data",
-                'data'         =>  $order
-            ], 200);
-        } catch (Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'status'    => "fail",
-                'messages'  => "Ada kesalahan dalam input data",
-            ],422);
-        }
+        return json_encode([
+            'message' => 'Data retrieve',
+            'data' => $villages
+        ]);
     }
-    
-    // public function storeOrderInformation(Request $request)
-    // {        
-    //     $request['created_by'] = Auth::user()->id;
-    //     $validator = Validator::make($request->all(), 
-    //         [ 
-    //             'cara_pembayaran'      => ['required'],
-    //             // 'dokumen_ktp'      => ['required'],
-    //             // 'dokumen_kk'      => ['required'],
-    //             // 'dokumen_bukti_tf'      => ['required'],
-    //             'jumlah_kambing'=> ['required', 'string', 'max:255'],
-    //             'jenis_kelamin_kambing'      => ['required'],
-    //             'jenis_pesanan'      => ['required'],
-    //             'is_maklon'      => ['required'],
-    //             'jenis_paket'      => ['required'],
-    //             'pilihan_nasi'      => ['required'],
-    //             'alamat'      => ['required'],
-    //             'jenis_beras_arab'      => ['required'],
-    //             'jumlah_order'      => ['required'],
-    //             'tanggal_kirim'      => ['required'],
-    //             'jam_tiba_lokasi'      => ['required'],
-    //             'jam_konsumsi'      => ['required'],
-    //             'pengiriman'      => ['required'],
-    //             'total_harga'      => ['required'],
-    //             'keterangan'      => ['required'],
-    //         ]);
-    //     if($validator->fails()) {
-    //         return response()->json([
-    //             'status'    => "fail",
-    //             'messages'  => $validator->errors()->first(),
-    //         ],422);
-    //     }     
-
-    //     DB::beginTransaction();
-    //     try {
-    //         if ($request->hasFile('dokumen_ktp')) {
-    //             $request['ktp'] = $this->storeFile("users/ktp", $request->dokumen_ktp);
-    //         }
-    //         if ($request->hasFile('dokumen_kk')) {
-    //             $request['kk'] = $this->storeFile("users/kk", $request->dokumen_kk);
-    //         }
-    //         if ($request->hasFile('dokumen_bukti_tf')) {
-    //             $request['bukti_tf'] = $this->storeFile("users/bukti_tf", $request->dokumen_bukti_tf);
-    //         }
-    //         $request['total_harga_setelah_adjusment'] = $request->total_harga + $request->biaya_tambahan - $request->diskon;
-
-    //         $order = OrderInformation::updateOrCreate(
-    //             ['id' => $request->order_id],
-    //             $request->except(['dokumen_ktp', 'dokumen_kk', 'dokumen_bukti_tf'])
-    //         );
-    //         DB::commit();
-
-    //         return response()->json([
-    //             'status'       => "ok",
-    //             'messages'     => "Berhasil menambahkan data",
-    //             'data'         =>  $order
-    //         ], 200);
-    //     } catch (Exception $e) {
-    //         DB::rollback();
-    //         return response()->json([
-    //             'status'    => "fail",
-    //             'messages'  => "Ada kesalahan dalam input data",
-    //         ],422);
-    //     }
-    // }
 }
