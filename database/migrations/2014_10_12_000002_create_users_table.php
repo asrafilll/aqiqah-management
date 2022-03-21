@@ -15,19 +15,14 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('roles_id')->constrained('roles');
             $table->string('name');
             $table->string('username');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->bigInteger('role_id')->unsigned();
-            //ini untuk kolom kota cabang nya, jadi kan bisa > 1 kota cabang nya
-            $table->bigInteger('kota_cabang_id')->unsigned()->nullable();            
+            $table->string('password');       
             $table->rememberToken();
             $table->timestamps();
-
-            $table->foreign('role_id')->references('id')->on('roles');
-            $table->foreign('kota_cabang_id')->references('id')->on('kotas');
         });
     }
 

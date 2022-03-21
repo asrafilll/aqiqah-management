@@ -3,14 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
   <title>Aqiqah</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{asset('template/plugins/fontawesome-free/css/all.min.css')}}">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Tempusdominus Bootstrap 4 -->
   <link rel="stylesheet" href="{{asset('template/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
   <!-- iCheck -->
@@ -26,6 +25,17 @@
   <link rel="stylesheet" href="{{asset('template/plugins/daterangepicker/daterangepicker.css')}}">
   <!-- summernote -->
   <link rel="stylesheet" href="{{asset('template/plugins/summernote/summernote-bs4.min.css')}}">
+  {{-- yield styling --}}
+  @yield('style')
+  <!-- jQuery -->
+  <script src="{{asset('template/plugins/jquery/jquery.min.js')}}"></script>
+  <!-- DROPZONE -->
+  <link rel="stylesheet" type="text/css" href="{{asset('vendors/dropify/css/dropify.min.css')}}">
+  <script src="{{asset('vendors/dropify/js/dropify.min.js')}}"></script>
+  {{-- sweet alert --}}
+  <script src="{{asset('template/plugins/sweetalert/sweetalert.js')}}"></script>
+  {{-- fontawesome --}}
+  <script src="https://use.fontawesome.com/e1d44ecead.js"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">
@@ -87,8 +97,6 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery -->
-<script src="{{asset('template/plugins/jquery/jquery.min.js')}}"></script>
 <!-- jQuery UI 1.11.4 -->
 <script src="{{asset('template/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->

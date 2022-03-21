@@ -6,6 +6,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Role;
+use App\Models\UserCabang;
+use App\Models\UsersBranch;
 
 class User extends Authenticatable
 {
@@ -38,7 +40,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Define relation
+     */
     public function roles(){
-        return $this->belongsTo(Role::class, 'role_id', 'id');
+        return $this->belongsTo(Role::class, 'roles_id', 'id');
+    }
+
+    /**
+     * Define relation to user cabang
+     */
+    public function userBranch() {
+        return $this->belongsTo(UsersBranch::class, 'id', 'branch_id');
     }
 }
