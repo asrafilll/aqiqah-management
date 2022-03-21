@@ -472,9 +472,6 @@
                     dataType: 'json',
                     success: (res) => {
                         console.log(res);
-                        // return false;
-                        // clear dropify
-                        clearDropify();
                         if (res.status == 200) {
                             swal({
                                 title: "Success",
@@ -492,9 +489,10 @@
                                 button: "Ok",
                             });
                         }
+                        // clear dropify
+                        clearDropify();
                     },
                     error: function(error) {
-                        clearDropify();
                         let err = error.responseJSON;
                         swal({
                             title: "Failed",
@@ -502,6 +500,7 @@
                             icon: "warning",
                             button: "Ok"
                         })
+                        clearDropify();
                     }
                 });
             // }
@@ -552,7 +551,6 @@
         let branch = $('#branchId').val();
         let dates = $('#date').val();
         let times = $('#time').val();
-        console.log(branch);
         $.ajax({
             type: "POST",
             url: "{{ route('order.check-quota') }}",
