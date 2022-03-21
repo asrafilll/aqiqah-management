@@ -128,6 +128,15 @@
                 type: "GET",
                 url: "{{ route('order.json') }}",
                 dataType: "JSON",
+                beforeSend: function() {
+                    // set loading
+                    let loading = `<tr>
+                        <td colspan="5" class="text-center">
+                            Processing data ...
+                        </td>
+                        </tr>`
+                    $('#target-body-order').html(loading);
+                },
                 success: function(res) {
                     console.log(res);
                     $('#target-body-order').html(res.data.view);
