@@ -71,11 +71,22 @@
                                 <div class="form-row">
                                     <div class="col-4">
                                         <label for="">Cabang</label>
-                                        <input type="text" class="form-control"
-                                            name="branch" disabled 
-                                            value="{{ $branch->userBranch->branch->name }}">
-                                        <input type="text" class="form-control" id="branchId" hidden
-                                            value="{{ $branch->userBranch->branch->id }}" name="branchId">
+                                        @if ($branch != null)
+                                            <input type="text" class="form-control"
+                                                name="branch" disabled 
+                                                value="{{ $branch->branch->name }}">
+                                            <input type="text" class="form-control" id="branchId" hidden
+                                                value="{{ $branch->branch->id }}" name="branchId">
+                                        @else
+                                            <select name="branchId" class="form-control" id="branchId">
+                                                <option value="" selected disabled>-- Pilih cabang --</option>
+                                                @foreach ($allBranch as $ab)
+                                                    <option value="{{ $ab->id }}">
+                                                        {{ $ab->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        @endif
                                     </div>
                                     <div class="col-4">
                                         <label for="">Tanggal Kirim</label>
@@ -222,7 +233,18 @@
                                     </div>
                                     <div class="col-6">
                                         <label for="">Cabang</label>
-                                        <input type="text" class="form-control" value="{{ $branch->userBranch->branch->name }}" disabled>
+                                        @if ($branch != null)
+                                            <input type="text" class="form-control" value="{{ $branch->branch->name }}" disabled>
+                                        @else 
+                                            <select name="branchId" class="form-control" id="branch_2">
+                                                <option value="" selected disabled>-- Pilih cabang --</option>
+                                                @foreach ($allBranch as $ab)
+                                                    <option value="{{ $ab->id }}">
+                                                        {{ $ab->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -530,6 +552,7 @@
         let branch = $('#branchId').val();
         let dates = $('#date').val();
         let times = $('#time').val();
+        console.log(branch);
         $.ajax({
             type: "POST",
             url: "{{ route('order.check-quota') }}",
@@ -544,6 +567,7 @@
                 // manipulat same value
                 $('#send_date').val(dates);
                 $('#send_time').val(times);
+                $('#branch_2').val(branch);
             }
         });
     }

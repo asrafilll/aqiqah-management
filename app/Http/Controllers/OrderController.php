@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
+use App\Models\Branch;
 use App\Models\ChickenMenu;
 use App\Models\Customers;
 use App\Models\EggMenu;
@@ -45,8 +46,13 @@ class OrderController extends Controller
     public function json() {
         $user = Auth::user();
         $userBranch = UsersBranch::where('users_id', $user->id)->with('branch')->first();
+        if ($userBranch == null) {
+            $where = 'id > 0';
+        } else {
+            $where = 'branch_id = ' . $userBranch->branch_id;
+        }
         $order = Orders::with(['orderPackage.package'])
-            ->where('branch_id', $userBranch->branch_id)
+            ->whereRaw($where)
             ->get();
         $view = view('order.partials.table-list', ['data' => $order])->render();
         return json_encode([
@@ -63,8 +69,10 @@ class OrderController extends Controller
     {
         // get branch from user
         $user = Auth::user();
-        $branch = User::where('id', $user->id)->with('userBranch.branch')->first();
-        $data['branch'] = $branch;
+        $userBranch = UsersBranch::where('users_id', $user->id)->with('branch')->first();
+        $allBranch = Branch::all();
+        $data['branch'] = $userBranch;
+        $data['allBranch'] = $allBranch;
         $data['payment'] = Payment::all();
         $data['typeOrder'] = TypeOrder::all();
         $data['package'] = Package::all();
@@ -226,13 +234,14 @@ class OrderController extends Controller
     {
         // get branch from user
         $user = Auth::user();
-        $branch = User::where('id', $user->id)->with('userBranch.branch')->first();
+        $branch = UsersBranch::where('branch_id', $user->id)->with('branch')->first();
         $data['branch'] = $branch;
+        $data['allBranch'] = Branch::all();
         $data['payment'] = Payment::all();
         $data['typeOrder'] = TypeOrder::all();
         $data['package'] = Package::all();
         $data['shippings'] = Shipping::all();
-        $data['order'] = Orders::where('id', $id)->with(['orderPackage.package', 'customer'])->first();
+        $data['order'] = Orders::where('id', $id)->with(['orderPackage.package', 'customer', 'branch'])->first();
         $data['id'] = $id;
         return view('order.show')->with($data);
     }

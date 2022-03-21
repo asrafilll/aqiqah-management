@@ -74,4 +74,11 @@ class Orders extends Model
     public function customer() {
         return $this->hasOne(Customers::class, 'id', 'customer_id');
     }
+
+    /**
+     * Define relation
+     */
+    public function branch() {
+        return $this->hasOne(Branch::class, 'id', 'branch_id');
+    }
 }

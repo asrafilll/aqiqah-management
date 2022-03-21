@@ -74,11 +74,24 @@
                                 <div class="form-row">
                                     <div class="col-4">
                                         <label for="">Cabang</label>
-                                        <input type="text" class="form-control"
-                                            name="branch" disabled 
-                                            value="{{ $branch->userBranch->branch->name }}">
-                                        <input type="text" class="form-control" id="branchId" hidden
-                                            value="{{ $branch->userBranch->branch->id }}" name="branchId">
+                                        @if ($branch != null)
+                                            <input type="text" class="form-control"
+                                                name="branch" disabled 
+                                                value="{{ $order->branch->name }}">
+                                            <input type="text" class="form-control" id="branchId" hidden
+                                                value="{{ $order->branch->id }}" name="branchId">
+                                        @else
+                                            <select name="branchId" class="form-control" id="branchId"
+                                                value="{{ $order->branch->id }}">
+                                                <option value="" selected disabled>-- Pilih cabang --</option>
+                                                @foreach ($allBranch as $ab)
+                                                    <option value="{{ $ab->id }}"
+                                                        {{ $order->branch->id == $ab->id ? 'selected' : '' }}>
+                                                        {{ $ab->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        @endif
                                     </div>
                                     <div class="col-4">
                                         <label for="">Tanggal Kirim</label>
@@ -234,7 +247,7 @@
                                     </div>
                                     <div class="col-6">
                                         <label for="">Cabang</label>
-                                        <input type="text" class="form-control" value="{{ $branch->userBranch->branch->name }}" disabled>
+                                        <input type="text" class="form-control" value="{{ $order->branch->name }}" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -348,7 +361,7 @@
                                     <div class="col-4">
                                         <label for="">Jam Konsumsi</label>
                                         <input type="time" class="form-control"
-                                            name="consumsion_time">
+                                            name="consumsion_time" value="{{ $order->consumsion_time }}">
                                     </div>
                                 </div>
                                 <div class="form-row">
