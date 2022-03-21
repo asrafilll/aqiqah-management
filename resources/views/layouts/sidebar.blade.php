@@ -23,7 +23,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link" style="width: 100%">
+                    <a href="{{ route('order.index') }}" class="nav-link" style="width: 100%">
                         <p>Order List</p>
                     </a>
                 </li>
@@ -36,6 +36,14 @@
                     Roles
                 </p>
             </a>
-        </li>        
+        </li>   
+        {{-- <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-users-cog"></i>
+                <a href="{{route('admin.create')}}" class="nav-link @yield('order')" style="width: 100%">
+                    <p>User</p>
+                </a>
+            </a>
+        </li>    --}}
     </ul>
 </nav>
