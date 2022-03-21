@@ -453,57 +453,48 @@
             // validation quota
             let quota = $('#quota').val();
             let qtyOrder = $('#qty_order').val();
-            // if (qtyOrder > quota) {
-            //     swal({
-            //         title: "Failed",
-            //         text: 'Jumlah melebihi kuota',
-            //         icon: "warning",
-            //         button: "Ok",
-            //     })
-            // } else {
-                let data = new FormData(this);
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('order.store') }}",
-                    data: data,
-                    cache:false,
-                    contentType: false,
-                    processData: false,
-                    dataType: 'json',
-                    success: (res) => {
-                        console.log(res);
-                        if (res.status == 200) {
-                            swal({
-                                title: "Success",
-                                text: res.message,
-                                icon: "success",
-                                button: "Ok",
-                            });
-                            // reset form
-                            document.getElementById('form-order').reset();
-                        } else {
-                            swal({
-                                title: "Failed",
-                                text: res.message,
-                                icon: "warning",
-                                button: "Ok",
-                            });
-                        }
-                        // clear dropify
-                        clearDropify();
-                    },
-                    error: function(error) {
-                        let err = error.responseJSON;
+            let data = new FormData(this);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('order.store') }}",
+                data: data,
+                cache:false,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: (res) => {
+                    console.log(res);
+                    if (res.status == 200) {
+                        swal({
+                            title: "Success",
+                            text: res.message,
+                            icon: "success",
+                            button: "Ok",
+                        });
+                        // reset form
+                        document.getElementById('form-order').reset();
+                    } else {
                         swal({
                             title: "Failed",
-                            text: err.message,
+                            text: res.message,
                             icon: "warning",
-                            button: "Ok"
-                        })
-                        clearDropify();
+                            button: "Ok",
+                        });
                     }
-                });
-            // }
+                    // clear dropify
+                    clearDropify();
+                },
+                error: function(error) {
+                    let err = error.responseJSON;
+                    swal({
+                        title: "Failed",
+                        text: err.message,
+                        icon: "warning",
+                        button: "Ok"
+                    })
+                    clearDropify();
+                }
+            });
         }))
     })
     

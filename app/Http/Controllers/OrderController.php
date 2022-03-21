@@ -285,7 +285,7 @@ class OrderController extends Controller
         return view('order.show')->with($data);
     }
 
-    public function store(Request $request)
+    public function store(OrderRequest $request)
     {
         $dataCustomer = [
             'name' => $request->name,
