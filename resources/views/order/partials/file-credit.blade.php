@@ -8,13 +8,25 @@
 @endphp
 <div class="col-4">
     <label for="">Foto KTP</label>
-    <input type="file"  name="ktp" id="input-file-max-fs" class="dropify" data-max-file-size="2M"
+    @if ($isEdit)
+        <input type="file"  name="ktp" id="input-file-max-fs" class="dropify" data-max-file-size="2M"
         data-allowed-file-extensions="png gif jpg jpeg" data-default-file="{{ asset($ktp) }}"
+        data-show-remove="false" onchange="manipulateStaticFileId()" />
+    @else
+        <input type="file"  name="ktp" id="input-file-max-fs" class="dropify" data-max-file-size="2M"
+        data-allowed-file-extensions="png gif jpg jpeg" data-default-file=""
         data-show-remove="false"/>
+    @endif
 </div>
 <div class="col-4">
     <label for="">Foto KK</label>
-    <input type="file"  name="kk" id="input-file-max-fs" class="dropify" data-max-file-size="2M"
+    @if ($isEdit)
+        <input type="file"  name="kk" id="input-file-max-fs" class="dropify" data-max-file-size="2M"
         data-allowed-file-extensions="png gif jpg jpeg" data-default-file="{{ asset($kk) }}"
-        data-show-remove="false"/>
+        data-show-remove="false" onchange="manipulateStaticFileId()"/>
+    @else
+        <input type="file"  name="kk" id="input-file-max-fs" class="dropify" data-max-file-size="2M"
+            data-allowed-file-extensions="png gif jpg jpeg" data-default-file=""
+            data-show-remove="false"/>
+    @endif
 </div>

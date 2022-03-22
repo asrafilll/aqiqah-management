@@ -57,7 +57,7 @@
     $orderPackage = $order->orderPackage->toArray();
 @endphp
 {{-- collapse item --}}
-<form action="{{ route('order.store') }}" id="form-order">
+<form action="{{ route('order.update-data', [$id]) }}" id="form-order-update">
     <div class="row">
         <div class="col">
             <div class="card">
@@ -149,7 +149,7 @@
                                             value="{{ $order->source_order_id }}">
                                             <option value="1" {{ $order->source_order_id == 1 ? 'selected' : '' }}>IG</option>
                                             <option value="2" {{ $order->source_order_id == 2 ? 'selected' : '' }}>FB</option>
-                                            <option value="3" {{ $order->source_order_id == 3 ? 'selected' : '' }}>Google Adds</option>
+                                            <option value="3" {{ $order->source_order_id == 3 ? 'selected' : '' }}>Google Ads</option>
                                             <option value="4" {{ $order->source_order_id == 4 ? 'selected' : '' }}>Offline</option>
                                         </select>
                                     </div>
@@ -234,7 +234,7 @@
                                     </div>
                                     <div class="col-4">
                                         <label for="">Kelurahan</label>
-                                        <select name="district" class="form-control" id="village_select"
+                                        <select name="village" class="form-control" id="village_select"
                                             onchange="getVilages(this.value)"
                                             value="{{ $order->customer->village_id }}">
                                             <option value="" selected disabled>-- Pilih Kelurahan --</option>
@@ -296,6 +296,8 @@
                                         </select>
                                     </div>
                                 </div>
+                                {{-- set hidden file image id --}}
+                                <input type="text" hidden value="1" id="static_file_id" name="static_file_id">
                                 <div class="form-row target-file"></div>
 
                                 <div class="form-row">
@@ -304,7 +306,7 @@
                                         <select name="number_of_goats" class="form-control"
                                             id="" onchange="qtyGoats(this.value)"
                                             value="{{ $order->number_of_goats }}">
-                                            <option value="" selected disabled>-- Pilih Jumlah Kambiing --</option>
+                                            <option value="" selected disabled>-- Pilih Jumlah Kambing --</option>
                                             <option value="1" {{ $order->number_of_goats == 1 ? 'selected' : '' }}>1</option>
                                             <option value="2" {{ $order->number_of_goats == 2 ? 'selected' : '' }}>2</option>
                                         </select>
@@ -418,7 +420,7 @@
                                 </div>
                             </div>
                             @for ($i = 0; $i < count($orderPackage); $i++)
-                                <div class="card card-body card_package">
+                                <div class="card card-body card_package" id="card_package_{{ $i + 1 }}">
                                     <div class="floating_button d-none">
                                         <button class="btn btn-primary btn_add_package"
                                             type="button" id="btn_add_package_0"
@@ -446,7 +448,7 @@
                                     <div class="form-row" id="target-package-detail-{{ $i }}"></div>
                                 </div>
                             @endfor
-                            {{-- <div id="target_package"></div> --}}
+                            <div id="target_package"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -497,63 +499,52 @@
             removeMaskOnSubmit: true
         });
 
-        $('#form-order').on('submit', (function(e) {
+        $('#form-order-update').on('submit', (function(e) {
             e.preventDefault();
             // validation quota
             let quota = $('#quota').val();
             let qtyOrder = $('#qty_order').val();
-            // if (qtyOrder > quota) {
-            //     swal({
-            //         title: "Failed",
-            //         text: 'Jumlah melebihi kuota',
-            //         icon: "warning",
-            //         button: "Ok",
-            //     })
-            // } else {
-                let data = new FormData(this);
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('order.store') }}",
-                    data: data,
-                    cache:false,
-                    contentType: false,
-                    processData: false,
-                    dataType: 'json',
-                    success: (res) => {
-                        console.log(res);
-                        return false;
-                        // clear dropify
-                        clearDropify();
-                        if (res.status == 200) {
-                            swal({
-                                title: "Success",
-                                text: res.message,
-                                icon: "success",
-                                button: "Ok",
-                            });
-                            // reset form
-                            document.getElementById('form-order').reset();
-                        } else {
-                            swal({
-                                title: "Failed",
-                                text: res.message,
-                                icon: "warning",
-                                button: "Ok",
-                            });
-                        }
-                    },
-                    error: function(error) {
-                        clearDropify();
-                        let err = error.responseJSON;
+            let data = new FormData(this);
+            $.ajax({
+                type: "POST",
+                url: $(this).attr('action'),
+                data: data,
+                cache:false,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: (res) => {
+                    console.log(res);
+                    if (res.status == 200) {
+                        swal({
+                            title: "Success",
+                            text: res.message,
+                            icon: "success",
+                            button: "Ok",
+                        });
+                        setTimeout(() => {
+                            window.location.href = "{{ route('order.index') }}";
+                        }, 500);
+                    } else {
                         swal({
                             title: "Failed",
-                            text: err.message,
+                            text: res.message,
                             icon: "warning",
-                            button: "Ok"
-                        })
+                            button: "Ok",
+                        });
                     }
-                });
-            // }
+                },
+                error: function(error) {
+                    clearDropify();
+                    let err = error.responseJSON;
+                    swal({
+                        title: "Failed",
+                        text: err.message,
+                        icon: "warning",
+                        button: "Ok"
+                    })
+                }
+            });
         }))
     })
     
@@ -562,6 +553,10 @@
         drEvent = drEvent.data('dropify');
         drEvent.resetPreview();
         drEvent.clearElement();
+    }
+
+    function manipulateStaticFileId() {
+        $('#static_file_id').val(0);
     }
 
     function calculate(value, param = "") {
