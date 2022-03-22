@@ -139,7 +139,7 @@
                                         <select name="source_order" class="form-control" id="">
                                             <option value="1">IG</option>
                                             <option value="2">FB</option>
-                                            <option value="3">Google Adds</option>
+                                            <option value="3">Google Ads</option>
                                             <option value="4">Offline</option>
                                         </select>
                                     </div>
@@ -288,7 +288,7 @@
                                         <label for="">Jumlah kambing</label>
                                         <select name="number_of_goats" class="form-control"
                                             id="" onchange="qtyGoats(this.value)">
-                                            <option value="" selected disabled>-- Pilih Jumlah Kambiing --</option>
+                                            <option value="" selected disabled>-- Pilih Jumlah Kambing --</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                         </select>

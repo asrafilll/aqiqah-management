@@ -6,11 +6,11 @@
     $vegieId = "";
     if ($order != "") {
         $packages = $order->orderPackage[$index];
-        $meatId = $order->orderPackage[$index]->package->meat_menu[0]->id;
-        $offalId = $order->orderPackage[$index]->package->offal_menu[0]->id;
-        $riceId = $order->orderPackage[$index]->package->rice_menu[0]->id;
-        $chickenId = $order->orderPackage[$index]->package->chicken_menu[0]->id;
-        $vegieId = $order->orderPackage[$index]->package->vegetable_menu[0]->id;
+        $meatId = $order->orderPackage[$index]->meat->meat->id;
+        $offalId = $order->orderPackage[$index]->offal->offal->id;
+        $riceId = $order->orderPackage[$index]->rice->rice->id;
+        $chickenId = $order->orderPackage[$index]->chicken->chicken->id;
+        $vegieId = $order->orderPackage[$index]->vegetable->vegetable->id;
     }
 @endphp
 <div class="col-6">

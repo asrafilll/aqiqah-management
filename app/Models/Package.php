@@ -47,7 +47,8 @@ class Package extends Model
         'egg_menu',
         'chicken_menu',
         'vegetable_menu',
-        'rice_menu'
+        'rice_menu',
+        'selectedRice'
     ];
 
     /**
@@ -57,6 +58,16 @@ class Package extends Model
         if ($this->is_meat) {
             $meats = $this->meats()->get();
             return $meats;
+        }
+    }
+
+    /**
+     * Set value of new field
+     */
+    public function getSelectedRiceAttribute() {
+        if ($this->is_meat) {
+            $rices = $this->rices()->get();
+            return $rices;
         }
     }
 

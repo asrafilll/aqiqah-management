@@ -21,4 +21,11 @@ class PackageEgg extends Model
         'egg_menu_id',
         'order_id'
     ];
+    
+    /**
+     * Define relation
+     */
+    public function egg() {
+        return $this->hasOne(EggMenu::class, 'id', 'egg_menu_id');
+    }
 }

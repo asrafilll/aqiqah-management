@@ -4,9 +4,9 @@
     $chickenId = "";
     if ($order != "") {
         $packages = $order->orderPackage[$index];
-        $meatId = $order->orderPackage[$index]->package->meat_menu[0]->id;
-        $riceId = $order->orderPackage[$index]->package->rice_menu[0]->id;
-        $chickenId = $order->orderPackage[$index]->package->chicken_menu[0]->id;
+        $meatId = $order->orderPackage[$index]->meat->meat->id;
+        $riceId = $order->orderPackage[$index]->rice->rice->id;
+        $chickenId = $order->orderPackage[$index]->chicken->chicken->id;
     }
 @endphp
 <div class="col-4">

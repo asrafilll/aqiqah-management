@@ -39,41 +39,41 @@ class OrderPackage extends Model
      * Define relation
      */
     public function meat() {
-        return $this->hasOne(PackageMeat::class, 'id', 'order_id');
+        return $this->hasOne(PackageMeat::class, 'order_id', 'id');
     }
 
     /**
      * Define relation
      */
     public function egg() {
-        return $this->hasOne(PackageEgg::class, 'id', 'order_id');
+        return $this->hasOne(PackageEgg::class, 'order_id', 'id');
     }
 
     /**
      * Define relation
      */
     public function chicken() {
-        return $this->hasOne(PackageChicken::class, 'id', 'order_id');
+        return $this->hasOne(PackageChicken::class, 'order_id', 'id');
     }
 
     /**
      * Define relation
      */
     public function offal() {
-        return $this->hasOne(PackageOffal::class, 'id', 'order_id');
+        return $this->hasOne(PackageOffal::class, 'order_id', 'id', 'id');
     }
 
     /**
      * Define relation
      */
     public function vegie() {
-        return $this->hasOne(PackageVegetable::class, 'id', 'order_id');
+        return $this->hasOne(PackageVegetable::class, 'order_id', 'id');
     }
 
     /**
      * Define relation
      */
     public function rice() {
-        return $this->hasOne(PackageRice::class, 'id', 'order_id');
+        return $this->hasOne(PackageRice::class, 'order_id', 'id');
     }
 }

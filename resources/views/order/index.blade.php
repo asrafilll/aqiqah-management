@@ -84,6 +84,40 @@
     .table_action {
         margin-left: 15px;
     }
+
+    th[role=columnheader]:not(.no-sort) {
+        cursor: pointer;
+    }
+
+    th[role=columnheader]:not(.no-sort):after {
+        content: '';
+        float: right;
+        margin-top: 7px;
+        border-width: 0 4px 4px;
+        border-style: solid;
+        border-color: #404040 transparent;
+        visibility: hidden;
+        opacity: 0;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    th[aria-sort=ascending]:not(.no-sort):after {
+        border-bottom: none;
+        border-width: 4px 4px 0;
+    }
+
+    th[aria-sort]:not(.no-sort):after {
+        visibility: visible;
+        opacity: 0.4;
+    }
+
+    th[role=columnheader]:not(.no-sort):hover:after {
+        visibility: visible;
+        opacity: 1;
+    }
 </style>
 @endsection
 @section('content')
@@ -99,7 +133,7 @@
                     <p class="search_text">Search</p>
                 </div>
                 <div class="sort">
-                    <p class="sort_text">Sort</p>
+                    <p class="sort_text" id="sort-filter">Sort</p>
                 </div>
                 <div class="filter">
                     <p class="filter_text">filter</p>
@@ -107,7 +141,7 @@
             </div>
         </div>
 
-        <table class="table table_list_order">
+        <table class="table table_list_order" id="table_list_order">
             <thead>
                 <tr>
                     <th>Order Details</th>
@@ -119,18 +153,44 @@
             </thead>
             <tbody id="target-body-order"></tbody>
         </table>
+        {{-- pagination --}}
+        {{-- <div style="display: flex; justify-content: end; margin-right: 30px;">
+            <nav aria-label="...">
+                <ul class="pagination">
+                  <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                  </li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item" aria-current="page">
+                    <span class="page-link">2</span>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                  </li>
+                </ul>
+            </nav>
+        </div> --}}
     </div>
 </div>
 @endsection
 @section('scripts')
     <script>
         $(document).ready(function() {
-            getData();
+            getData(0,100);
+
+            // init table sort
+            let table = $('#table_list_order');
+            new Tablesort(document.getElementById('table_list_order'), {
+                descending: true
+            });
         })
-        function getData(page = 0, limit = 10) {
+        function getData(page = 0, limit = 1) {
+            let uri = {!! json_encode(url('order/json')) !!}
+            let url = uri + '/' + page + '/' + limit;
             $.ajax({
                 type: "GET",
-                url: "{{ route('order.json') }}",
+                url: url,
                 dataType: "JSON",
                 beforeSend: function() {
                     // set loading
