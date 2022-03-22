@@ -28,7 +28,8 @@ class OrderRequest extends FormRequest
             'name_of_aqiqah' => 'required',
             'gender_of_aqiqah' => 'required',
             'branchId' => 'required',
-            'send_date' => 'required'
+            'send_date' => 'required',
+            'send_time' => 'required'
         ];
     }
 }

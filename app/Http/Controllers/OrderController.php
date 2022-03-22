@@ -272,7 +272,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function edit($id)
     {
         // get branch from user
         $user = Auth::user();
@@ -320,16 +320,33 @@ class OrderController extends Controller
             'gender_of_goats' => $request->gender_of_goats,
             'type_order_id' => $request->type_order,
             'maklon' => $request->maklon,
-            'notes' => $request->notes,
             'qty' => $request->qty_order,
             'shipping_id' => $request->shipping,
             'source_order_id' => $request->source_order,
-            'additional_price' => $request->additional_price ?? 0,
-            'discount_price' => $request->discount_price ?? 0,
             'total' => $request->total,
             'created_by' => Auth::user()->id,
             'created_at' => Carbon::now()
         ];
+
+        // validation input field
+        $customerValue = array_values($dataCustomer);
+        $orderValue = array_values($dataOrder);
+        for ($aa = 0; $aa < count($customerValue); $aa++) {
+            if ($customerValue[$aa] == null || $customerValue[$aa] == '') {
+                return json_encode([
+                    'status' => 400,
+                    'message' => 'Pastikan semua field terisi'
+                ]);
+            }
+        }
+        for ($bb = 0; $bb < count($orderValue); $bb++) {
+            if ($orderValue[$bb] == null || $orderValue[$bb] == '') {
+                return json_encode([
+                    'status' => 400,
+                    'message' => 'Pastikan semua field terisi'
+                ]);
+            }
+        }
 
         // validate quota
         $validate = $this->validateQuota([
@@ -344,6 +361,29 @@ class OrderController extends Controller
                 'message' => 'Jumlah order tidak boleh melebihi ' . $validate['quota']
             ]);
         }
+
+        // validation image
+        if (!$request->has('proof_of_payment') && !$request->has('kk') && !$request->has('ktp')) {
+            return json_encode([
+                'message' => 'Gambar harus di upload',
+                'status' => 400
+            ]);
+        }
+
+        // validation package
+        $reqPackage = $request->package;
+        $validatePackage = $this->validatePackage($reqPackage);
+        if (!$validatePackage) {
+            return json_encode([
+                'message' => 'Pastikan detail menu tiap paket telah terisi',
+                'status' => 400
+            ]);
+        }        
+
+        // append new value to dataOrder
+        $dataOrder['notes'] = $request->notes;
+        $dataOrder['additional_price'] = $request->additional_price ?? 0;
+        $dataOrder['discount_price'] = $request->discount_price ?? 0;
 
         DB::beginTransaction();
         try {
@@ -446,17 +486,253 @@ class OrderController extends Controller
         }
     }
 
+    public function update(Request $request, $id)
+    {
+        $dataCustomer = [
+            'name' => $request->name,
+            'name_of_aqiqah' => $request->name_of_aqiqah,
+            'gender_of_aqiqah' => $request->gender_of_aqiqah,
+            'birth_of_date' => $request->birth_of_date,
+            'father_name' => $request->father_name,
+            'mother_name' => $request->mother_name,
+            'address' => $request->address,
+            'district_id' => $request->district,
+            'village_id' => $request->village,
+            'postalcode' => $request->postalcode,
+            'phone_1' => $request->phone_1,
+            'phone_2' => $request->number_2,
+            'created_at' => Carbon::now()
+        ];
+        $dataOrder = [
+            'payment_id' => $request->payment,
+            'branch_id' => $request->branchId,
+            'send_date' => $request->send_date . ' ' . $request->send_time,
+            'send_time' => $request->send_time,
+            'consumsion_time' => $request->consumsion_time,
+            'branch_group_id' => $request->branch_group,
+            'number_of_goats' => $request->number_of_goats,
+            'gender_of_goats' => $request->gender_of_goats,
+            'type_order_id' => $request->type_order,
+            'maklon' => $request->maklon,
+            'qty' => $request->qty_order,
+            'shipping_id' => $request->shipping,
+            'source_order_id' => $request->source_order,
+            'total' => $request->total,
+            'created_by' => Auth::user()->id,
+            'created_at' => Carbon::now()
+        ];
+
+        // validation input field
+        $customerValue = array_values($dataCustomer);
+        $orderValue = array_values($dataOrder);
+        for ($aa = 0; $aa < count($customerValue); $aa++) {
+            if ($customerValue[$aa] == null || $customerValue[$aa] == '') {
+                return json_encode([
+                    'status' => 400,
+                    'message' => 'Pastikan semua field terisi'
+                ]);
+            }
+        }
+        for ($bb = 0; $bb < count($orderValue); $bb++) {
+            if ($orderValue[$bb] == null || $orderValue[$bb] == '') {
+                return json_encode([
+                    'status' => 400,
+                    'message' => 'Pastikan semua field terisi'
+                ]);
+            }
+        }
+
+        // validate quota
+        $validate = $this->validateQuota([
+            'branch_id' => $request->branchId,
+            'send_date' => $request->send_date,
+            'send_time' => $request->send_time,
+            'qty' => $request->qty_order
+        ]);
+        if (!$validate['status']) {
+            return json_encode([
+                'status' => 400,
+                'message' => 'Jumlah order tidak boleh melebihi ' . $validate['quota']
+            ]);
+        }
+
+        // validation image
+        if ($request->static_file_id == 0) {
+            if (!$request->has('proof_of_payment') && !$request->has('kk') && !$request->has('ktp')) {
+                return json_encode([
+                    'message' => 'Gambar harus di upload',
+                    'status' => 400
+                ]);
+            }
+        }
+
+        // validation package
+        $reqPackage = $request->package;
+        $validatePackage = $this->validatePackage($reqPackage);
+        if (!$validatePackage) {
+            return json_encode([
+                'message' => 'Pastikan detail menu tiap paket telah terisi',
+                'status' => 400
+            ]);
+        }  
+
+        // append new value to dataOrder
+        $dataOrder['notes'] = $request->notes;
+        $dataOrder['additional_price'] = $request->additional_price ?? 0;
+        $dataOrder['discount_price'] = $request->discount_price ?? 0;
+
+        $currentData = Orders::with(['customer', 'orderPackage.package'])->findOrFail($id);
+
+        // return json_encode([
+        //     'currnt' => $currentData,
+        //     'order' => $dataOrder,
+        //     'customer' => $dataCustomer,
+        //     'package' => $request->package,
+        //     'file' => $request->file('proof_of_payment')
+        // ]);
+
+        DB::beginTransaction();
+        try {
+            $customer = Customers::where('id', $currentData->customer->id)
+                ->update($dataCustomer);
+            $dataOrder['customer_id'] = $currentData->customer->id;
+
+            // save images
+            if ($request->has('proof_of_payment')) {
+                $ext = $request->file('proof_of_payment')->getClientOriginalExtension();
+                $name = 'customer_pay_branch_' . $request->branchId . '.' . $ext;
+                $path = $this->storeFile("customers", $request->file('proof_of_payment'), $name);
+                $dataOrder['proof_of_payment_img'] = 'uploaded_files/customers/' . $name;
+            }
+            if ($request->has('kk')) {
+                $ext = $request->file('kk')->getClientOriginalExtension();
+                $name = 'customer_kk_branch_' . $request->branchId . '.' . $ext;
+                $path = $this->storeFile("customers", $request->file('kk'), $name);
+                $dataOrder['kk_img'] = 'uploaded_files/customers/' . $name;
+            }
+            if ($request->has('ktp')) {
+                $ext = $request->file('ktp')->getClientOriginalExtension();
+                $name = 'customer_ktp_branch_' . $request->branchId . '.' . $ext;
+                $path = $this->storeFile("customers", $request->file('ktp'), $name);
+                $dataOrder['ktp_img'] = 'uploaded_files/customers/' . $name;
+            }
+            $order = Orders::where('id', $id)
+                ->update($dataOrder);
+
+            // delete current reletion
+            for ($x = 0; $x < count($currentData->orderPackage); $x++) {
+                // delete current realtion
+                PackageMeat::where('order_id', $currentData->orderPackage[$x]['id'])
+                    ->delete();
+                 // delete current realtion
+                 PackageOffal::where('order_id', $currentData->orderPackage[$x]['id'])
+                    ->delete();
+                // delete current realtion
+                PackageRice::where('order_id', $currentData->orderPackage[$x]['id'])
+                    ->delete();
+                 // delete current realtion
+                PackageVegetable::where('order_id', $currentData->orderPackage[$x]['id'])
+                    ->delete();
+                // delete current realtion
+                PackageEgg::where('order_id', $currentData->orderPackage[$x]['id'])
+                    ->delete();
+                // delete current realtion
+                PackageChicken::where('order_id', $currentData->orderPackage[$x]['id'])
+                    ->delete();
+                
+                // delete current orderPackage
+                OrderPackage::where('id', $currentData->orderPackage[$x]['id'])
+                    ->delete();
+            }
+
+            // insert many to many relation
+            for ($a = 0; $a < count($request->package); $a++) {
+                // insert to order package table
+                $orderPackge = OrderPackage::insertGetId([
+                    'package_id' => $request->package[$a]['package_id'],
+                    'order_id' => $id,
+                    'created_at' => Carbon::now()
+                ]);
+
+                // insert to relation
+                if (isset($request->package[$a]['meat_menu'])) {
+                    PackageMeat::insert([
+                        'order_id' => $orderPackge,
+                        'package_id' => $request->package[$a]['package_id'],
+                        'meat_menu_id' => $request->package[$a]['meat_menu'],    
+                        'created_at' => Carbon::now()
+                    ]);
+                }
+                if (isset($request->package[$a]['offal_menu'])) {
+                    PackageOffal::insert([
+                        'order_id' => $orderPackge,
+                        'package_id' => $request->package[$a]['package_id'],
+                        'offal_menu_id' => $request->package[$a]['offal_menu'],
+                        'created_at' => Carbon::now()
+                    ]);
+                }
+                if (isset($request->package[$a]['rice_menu'])) {
+                    PackageRice::insert([
+                        'order_id' => $orderPackge,
+                        'package_id' => $request->package[$a]['package_id'],
+                        'rice_menu_id' => $request->package[$a]['rice_menu'],
+                        'created_at' => Carbon::now()
+                    ]);
+                }
+                if (isset($request->package[$a]['vegetable_menu'])) {
+                    PackageVegetable::insert([
+                        'order_id' => $orderPackge,
+                        'package_id' => $request->package[$a]['package_id'],
+                        'vegetable_menu_id' => $request->package[$a]['vegetable_menu'],
+                        'created_at' => Carbon::now()
+                    ]);
+                }
+                if (isset($request->package[$a]['egg_menu'])) {
+                    PackageEgg::insert([
+                        'order_id' => $orderPackge,
+                        'package_id' => $request->package[$a]['package_id'],
+                        'egg_menu_id' => $request->package[$a]['egg_menu'],
+                        'created_at' => Carbon::now()
+                    ]);
+                }
+                if (isset($request->package[$a]['chicken_menu'])) {
+                    PackageChicken::insert([
+                        'order_id' => $orderPackge,
+                        'package_id' => $request->package[$a]['package_id'],
+                        'chicken_menu_id' => $request->package[$a]['chicken_menu'],
+                        'created_at' => Carbon::now()
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return json_encode([
+                'message' => 'Success',
+                'status' => 200,
+                'data' => []
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return json_encode([
+                'status' => 422,
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
     public function showFileUploader(Request $request) {
         $id = $request->id;
         $order = "";
+        $isEdit = false;
         if ($request->has('isEdit')){
             $order = Orders::where('id', $request->orderId)->first();
+            $isEdit = true;
         }
         $view = "";
         if ($id == 1) {
-            $view = view('order.partials.file-cash', ['order' => $order])->render(); 
+            $view = view('order.partials.file-cash', ['order' => $order, 'isEdit' => $isEdit])->render(); 
         } else {
-            $view = view('order.partials.file-credit', ['order' => $order])->render(); 
+            $view = view('order.partials.file-credit', ['order' => $order, 'isEdit' => $isEdit])->render(); 
         }
         return json_encode([
             'message' => 'Data retrieve',
@@ -474,5 +750,87 @@ class OrderController extends Controller
             'message' => 'Data retrieve',
             'data' => $villages
         ]);
+    }
+
+    public function validatePackage($reqPackage) {
+        $isValid = true;
+        for ($cc = 0; $cc < count($reqPackage); $cc++) {
+            switch ($reqPackage[$cc]['package_id']) {
+                case '1':
+                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                        !isset($reqPackage[$cc]['offal_menu'])) {
+                        $isValid = false;
+                    }
+                    break;
+
+                case '2':
+                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                        !isset($reqPackage[$cc]['offal_menu']) ||
+                        !isset($reqPackage[$cc]['rice_menu'])) {
+                        $isValid = false;
+                    }
+                    break;
+
+                case '3':
+                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                        !isset($reqPackage[$cc]['offal_menu']) ||
+                        !isset($reqPackage[$cc]['rice_menu']) ||
+                        !isset($reqPackage[$cc]['egg_menu']) ||
+                        !isset($reqPackage[$cc]['vegetable_menu'])) {
+                        $isValid = false;
+                    }
+                    break;
+
+                case '4':
+                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                        !isset($reqPackage[$cc]['offal_menu']) ||
+                        !isset($reqPackage[$cc]['rice_menu']) ||
+                        !isset($reqPackage[$cc]['chicken_menu']) ||
+                        !isset($reqPackage[$cc]['vegetable_menu'])) {
+                        $isValid = false;
+                    }
+                    break;
+
+                case '5':
+                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                        !isset($reqPackage[$cc]['offal_menu']) ||
+                        !isset($reqPackage[$cc]['rice_menu'])) {
+                        $isValid = false;
+                    }
+                    break;
+
+                case '6':
+                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                        !isset($reqPackage[$cc]['vegetable_menu']) ||
+                        !isset($reqPackage[$cc]['rice_menu'])) {
+                        $isValid = false;
+                    }
+                    break;
+
+                case '7':
+                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                        !isset($reqPackage[$cc]['chicken_menu']) ||
+                        !isset($reqPackage[$cc]['rice_menu'])) {
+                        $isValid = false;
+                    }
+                    break;
+
+                case '8':
+                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                        !isset($reqPackage[$cc]['offal_menu']) ||
+                        !isset($reqPackage[$cc]['rice_menu']) ||
+                        !isset($reqPackage[$cc]['egg_menu']) ||
+                        !isset($reqPackage[$cc]['vegetable_menu'])) {
+                        $isValid = false;
+                    }
+                    break;
+                
+                default:
+                    $isValid = true;
+                    break;
+            }
+        }
+
+        return $isValid;
     }
 }

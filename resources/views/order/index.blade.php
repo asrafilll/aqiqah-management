@@ -80,6 +80,10 @@
         letter-spacing: 0.1px;
         color: #C5C7CD;
     }
+
+    .table_action {
+        margin-left: 15px;
+    }
 </style>
 @endsection
 @section('content')

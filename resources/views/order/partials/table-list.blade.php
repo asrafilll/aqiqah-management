@@ -44,8 +44,11 @@
             </td>
             <td>
                 <div id="detail_icon text-success">
-                    <a href="{{ route('order.show', [$d->id]) }}">
+                    <a href="{{ route('order.show', [$d->id]) }}" class="table_action">
                         <i class="fa fa-eye text-success fa-1x"></i> 
+                    </a>
+                    <a href="{{ route('order.edit', [$d->id]) }}" class="table_action">
+                        <i class="fa fa-pencil-square-o text-primary"></i> 
                     </a>
                 </div>
             </td>
