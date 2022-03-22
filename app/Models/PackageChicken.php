@@ -21,4 +21,11 @@ class PackageChicken extends Model
         'chicken_menu_id',
         'order_id'
     ];
+    
+    /**
+     * Define relation
+     */
+    public function chicken() {
+        return $this->hasOne(ChickenMenu::class, 'id', 'chicken_menu_id');
+    }
 }

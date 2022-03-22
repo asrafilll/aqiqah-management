@@ -33,8 +33,10 @@ use App\Models\Village;
 use App\User;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route as FacadesRoute;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -46,6 +48,9 @@ class OrderController extends Controller
     }
 
     public function json() {
+        $params = FacadesRoute::current()->parameters();
+        $page = $params['page'];
+        $limit = $params['limit'];
         $user = Auth::user();
         $userBranch = UsersBranch::where('users_id', $user->id)->with('branch')->first();
         if ($userBranch == null) {
@@ -55,6 +60,8 @@ class OrderController extends Controller
         }
         $order = Orders::with(['orderPackage.package', 'shipping'])
             ->whereRaw($where)
+            // ->skip($page)
+            // ->take($limit)
             ->get();
         $view = view('order.partials.table-list', ['data' => $order])->render();
         return json_encode([
@@ -278,6 +285,18 @@ class OrderController extends Controller
         $user = Auth::user();
         $branch = UsersBranch::where('branch_id', $user->id)->with('branch')->first();
         $orders = Orders::where('id', $id)->with(['orderPackage.package', 'customer', 'branch'])->first();
+        $orders = Orders::with([
+                'orderPackage.package', 'customer.village',
+                'branch',
+                'orderPackage.offal.offal',
+                'orderPackage.meat.meat',
+                'orderPackage.chicken.chicken',
+                'orderPackage.vegie.vegie',
+                'orderPackage.rice.rice',
+                'orderPackage.egg.egg',
+                'customer.district', 'payment'    
+            ])
+            ->findOrFail($id);
         $villages = Village::where('district_id', $orders->customer->district_id)->get();
         $data['branch'] = $branch;
         $data['allBranch'] = Branch::all();
@@ -290,6 +309,63 @@ class OrderController extends Controller
         $data['districts'] = District::all();
         $data['villages'] = $villages;
         return view('order.show')->with($data);
+    }
+
+    public function show($id) {
+        $orders = Orders::with([
+                'orderPackage.package', 'customer.village',
+                'orderPackage.offal.offal',
+                'orderPackage.meat.meat',
+                'orderPackage.chicken.chicken',
+                'orderPackage.vegie.vegie',
+                'orderPackage.rice.rice',
+                'orderPackage.egg.egg',
+                'customer.district', 'payment'    
+            ])
+            ->findOrFail($id);
+        $orderPackage = $this->getAllMenu($orders->orderPackage);
+        return view('order.detail', [
+            'data' => $orders,
+            'allMenu' => $orderPackage['allMenus'],
+            'rices' => $orderPackage['rices'],
+            'isArabic' => $orderPackage['isArabic']
+        ]);
+    }
+
+    public function getAllMenu($orderPackage) {
+        $allMenus = [];
+        $rices = [];
+        $isArabic = [];
+        for ($a = 0; $a < count($orderPackage); $a++) {
+            if ($orderPackage[$a]['meat'] != null) {
+                $allMenus[] = 'Daging ' . $orderPackage[$a]['meat']['meat']['name'];
+            }
+            if ($orderPackage[$a]['offal'] != null) {
+                $allMenus[] = 'Jeroan ' . $orderPackage[$a]['offal']['offal']['name'];
+            }
+            if ($orderPackage[$a]['chicken'] != null) {
+                $allMenus[] = 'Ayam ' . $orderPackage[$a]['chicken']['chicken']['name'];
+            }
+            if ($orderPackage[$a]['egg'] != null) {
+                $allMenus[] = 'Telur ' . $orderPackage[$a]['egg']['egg']['name'];
+            }
+            if ($orderPackage[$a]['vegie'] != null) {
+                $allMenus[] = 'Mix vegetable ' . $orderPackage[$a]['vegie']['vegie']['name'];
+            }
+            if ($orderPackage[$a]['rice'] != null) {
+                $allMenus[] = 'Beras ' . $orderPackage[$a]['rice']['rice']['name'];
+                $rices[] = $orderPackage[$a]['rice']['rice']['name'];
+                if ($orderPackage[$a]['rice']['rice']['is_arabic_rice']) {
+                    $isArabic[] =  $orderPackage[$a]['rice']['rice']['name'];
+                }
+            }
+        }
+
+        return [
+            'allMenus' => $allMenus,
+            'rices' => $rices,
+            'isArabic' => $isArabic
+        ];
     }
 
     public function store(Request $request)

@@ -522,8 +522,11 @@
                             icon: "success",
                             button: "Ok",
                         });
+                        let url = "{{ route('order.json',':page/:limit') }}";
+                        url = url.replace(':page', 0);
+                        url = url.replace(':limit', 1);
                         setTimeout(() => {
-                            window.location.href = "{{ route('order.index') }}";
+                            window.location.href = url;
                         }, 500);
                     } else {
                         swal({

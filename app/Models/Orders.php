@@ -88,4 +88,11 @@ class Orders extends Model
     public function shipping() {
         return $this->hasOne(Shipping::class, 'id', 'shipping_id');
     }
+
+    /**
+     * Define relation
+     */
+    public function payment() {
+        return $this->hasOne(Payment::class, 'id', 'payment_id');
+    }
 }

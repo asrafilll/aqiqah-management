@@ -21,4 +21,11 @@ class PackageOffal extends Model
         'offal_menu_id',
         'order_id'
     ];
+
+    /**
+     * Define relation
+     */
+    public function offal() {
+        return $this->hasOne(OffalMenu::class, 'id', 'offal_menu_id');
+    }
 }

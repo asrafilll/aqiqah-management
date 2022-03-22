@@ -33,7 +33,7 @@ Route::get('init', function(){
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::middleware(['auth'])->group(function () {
-	Route::get('order/json', 'OrderController@json')->name('order.json');
+	Route::get('order/json/{page}/{limit}', 'OrderController@json')->name('order.json');
 	Route::post('order/checkQuota', 'OrderController@checkQuota')->name('order.check-quota');
 	Route::post('order/getDetailPackage', 'OrderController@getDetailPackage')->name('order.getDetailPackage');
 	Route::post('order/showCardPackage', 'OrderController@showCardPackage')->name('order.showCardPackage');
@@ -42,6 +42,8 @@ Route::middleware(['auth'])->group(function () {
 	Route::post('order_detail/store-order-information' , 'OrderController@storeOrderInformation')->name('order.store-order-information');
 	Route::post('order/getVillage', 'OrderController@getVillages')->name('order.getVillages');
 	Route::post('order/update/data/{id}', 'OrderController@update')->name('order.update-data');
+	Route::post('order/helper', 'OrderController@helpers')->name('order.helper');
+	Route::post('order/invoice', 'OrderController@invoice')->name('order.invoice');
 	Route::resource('order', OrderController::class);
 });
 

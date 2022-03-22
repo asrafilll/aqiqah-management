@@ -21,4 +21,11 @@ class PackageVegetable extends Model
         'vegetable_menu_id',
         'order_id'
     ];
+    
+    /**
+     * Define relation
+     */
+    public function vegie() {
+        return $this->hasOne(VegetableMenu::class, 'id', 'vegetable_menu_id');
+    }
 }

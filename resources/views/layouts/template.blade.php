@@ -38,6 +38,9 @@
   <link href="{{ asset('vendors/select2-bootstrap/dist/select2.css') }}" rel="stylesheet" />
   <link rel="stylesheet" href="{{ asset('vendors/select2-bootstrap/dist/select2-bootstrap.css') }}">
   <script src="{{ asset('vendors/select2-bootstrap/dist/select2.js') }}"></script>
+  {{-- table sort --}}
+  <script src="{{ asset('vendors/table-sort/tablesort.min.js') }}"></script>
+  <script src="{{ asset('vendors/table-sort/tablesort.number.min.js') }}"></script>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">

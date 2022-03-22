@@ -39,4 +39,18 @@ class Customers extends Model
         'phone_1',
         'phone_2'
     ];
+
+    /**
+     * Define relation
+     */
+    public function village() {
+        return $this->hasOne(Village::class, 'id', 'village_id');
+    }
+
+    /**
+     * Define relation
+     */
+    public function district() {
+        return $this->hasOne(District::class, 'id', 'district_id');
+    }
 }
