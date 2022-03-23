@@ -13,12 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-	if (Auth::check()) {
-		return back();
-	}
-	return redirect('login');
+Route::get('/', function() {
+	return view('auth.login');
 });
+Route::get('/dashboard', 'DashboardController@index')->middleware('auth')->name('dashboard');
 
 Auth::routes();
 
@@ -34,6 +32,7 @@ Route::get('init', function(){
 Route::get('/home', 'HomeController@index')->name('home');
 Route::middleware(['auth'])->group(function () {
 	Route::get('order/json/{page}/{limit}', 'OrderController@json')->name('order.json');
+	Route::post('order/dataByBranch', 'OrderController@dataByBranch')->name('order.dataByBranch');
 	Route::post('order/checkQuota', 'OrderController@checkQuota')->name('order.check-quota');
 	Route::post('order/getDetailPackage', 'OrderController@getDetailPackage')->name('order.getDetailPackage');
 	Route::post('order/showCardPackage', 'OrderController@showCardPackage')->name('order.showCardPackage');
@@ -44,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
 	Route::post('order/update/data/{id}', 'OrderController@update')->name('order.update-data');
 	Route::post('order/helper', 'OrderController@helpers')->name('order.helper');
 	Route::get('order/invoice/{id}', 'OrderController@invoice')->name('order.invoice');
+	Route::get('order/kitchen/{id}', 'OrderController@kitchenInvoice')->name('order.kitchen-invoice');
 	Route::resource('order', OrderController::class);
 });
 
