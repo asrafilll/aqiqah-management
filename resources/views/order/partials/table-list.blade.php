@@ -5,6 +5,7 @@
 @else
     @foreach ($data as $d)
         <tr>
+            <td></td>
             <td>
                 <div class="order_details">
                     <p class="order_details_text">
@@ -15,7 +16,7 @@
                     </p>
                 </div>
             </td>
-            <td>
+            <td class="table-customer-name">
                 <div class="order_details">
                     <p class="order_details_text">
                         {{ $d->customer->name }}

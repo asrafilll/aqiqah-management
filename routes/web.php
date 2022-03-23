@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
 	Route::post('order/getVillage', 'OrderController@getVillages')->name('order.getVillages');
 	Route::post('order/update/data/{id}', 'OrderController@update')->name('order.update-data');
 	Route::post('order/helper', 'OrderController@helpers')->name('order.helper');
-	Route::post('order/invoice', 'OrderController@invoice')->name('order.invoice');
+	Route::get('order/invoice/{id}', 'OrderController@invoice')->name('order.invoice');
 	Route::resource('order', OrderController::class);
 });
 
