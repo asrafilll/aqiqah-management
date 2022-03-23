@@ -33,25 +33,26 @@ class LoginController extends Controller
     }
 
     protected function redirectTo(){
-        if (\Auth::user()->roles->nama == 'Admin') {
-            return 'admin';
-        }elseif (\Auth::user()->roles->nama == 'Kepala Cabang') {
-            return 'kepala_cabang';
-        }elseif (\Auth::user()->roles->nama == 'Kaptain Dapur') {
-            return 'kaptain_dapur';
-        }elseif (\Auth::user()->roles->nama == 'CS') {
-            return 'cs';
-        }elseif (\Auth::user()->roles->nama == 'Crew') {
-            return 'crew';
-        }elseif (\Auth::user()->roles->nama == 'Direktur') {
-            return 'direktur';
-        }elseif (\Auth::user()->roles->nama == 'Manager') {
-            return 'manager';
-        }elseif (\Auth::user()->roles->nama == 'PPIC') {
-            return 'ppic';
-        }else{
-            abort(404);
-        }
+        // if (\Auth::user()->roles->nama == 'Admin') {
+        //     return 'admin';
+        // }elseif (\Auth::user()->roles->nama == 'Kepala Cabang') {
+        //     return 'kepala_cabang';
+        // }elseif (\Auth::user()->roles->nama == 'Kaptain Dapur') {
+        //     return 'kaptain_dapur';
+        // }elseif (\Auth::user()->roles->nama == 'CS') {
+        //     return 'cs';
+        // }elseif (\Auth::user()->roles->nama == 'Crew') {
+        //     return 'crew';
+        // }elseif (\Auth::user()->roles->nama == 'Direktur') {
+        //     return 'direktur';
+        // }elseif (\Auth::user()->roles->nama == 'Manager') {
+        //     return 'manager';
+        // }elseif (\Auth::user()->roles->nama == 'PPIC') {
+        //     return 'ppic';
+        // }else{
+        //     abort(404);
+        // }
+        return 'dashboard';
     }
 
     /**

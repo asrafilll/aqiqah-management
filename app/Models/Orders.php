@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Orders extends Model
@@ -52,6 +53,13 @@ class Orders extends Model
             $newName[] = $orderPackage[$a]['package']['name'];
         }
         return implode(',', $newName);
+    }
+
+    /**
+     * Define relation
+     */
+    public function createdBy() {
+        return $this->hasOne(User::class, 'id', 'created_by');
     }
 
     /**

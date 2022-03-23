@@ -52,7 +52,10 @@
                         <i class="fa fa-pencil-square-o text-primary"></i> 
                     </a>
                     <a href="{{ route('order.invoice', [$d->id]) }}" class="table_action">
-                        <i class="fa fa-print text-success"></i> 
+                        <i class="fa fa-print text-success"></i>
+                    </a>
+                    <a href="{{ route('order.kitchen-invoice', [$d->id]) }}" class="table_action">
+                        <i class="fa fa-cutlery text-primary"></i>
                     </a>
                 </div>
             </td>

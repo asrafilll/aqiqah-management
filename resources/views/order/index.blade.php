@@ -15,6 +15,7 @@
         line-height: 24px;
         letter-spacing: 0.4px;
         color: #252733;
+        margin-bottom: 0 !important;
     }
 
     .filter_group {
@@ -24,7 +25,8 @@
 
     .search,
     .sort,
-    .filter {
+    .filter,
+    .branch_search {
         display: flex;
         align-items: center;
         margin-left: 20px;
@@ -164,6 +166,17 @@
                 <div class="filter">
                     <p class="filter_text">filter</p>
                 </div>
+                @if ($user == null)
+                    <div class="branch_search">
+                        <select name="branch_search" class="form-control"
+                            id="" onchange="filterBranch(this.value)">
+                            <option value="" selected disabled>-- Search Branch --</option>
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endif
             </div>
         </div>
         <table class="table table_list_order list" id="table_list_order">
@@ -202,6 +215,13 @@
 @endsection
 @section('scripts')
     <script>
+        // set ajax header
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         $(document).ready(function() {
             getData(0,100);
 
@@ -211,6 +231,29 @@
                 descending: true
             });
         })
+        function filterBranch(value) {
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('order.dataByBranch') }}",
+                data: {
+                    branch: value
+                },
+                dataType: 'json',
+                beforeSend: function() {
+                    // set loading
+                    let loading = `<tr>
+                        <td colspan="5" class="text-center">
+                            Processing data ...
+                        </td>
+                        </tr>`
+                    $('#target-body-order').html(loading);
+                },
+                success: function(res) {
+                    console.log(res);
+                    $('#target-body-order').html(res.data.view);
+                }
+            })
+        }
         function search() {
             // Declare variables 
             var input, filter, table, tr, i, j, column_length, count_td;

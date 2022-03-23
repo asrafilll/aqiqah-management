@@ -44,7 +44,12 @@ class OrderController extends Controller
 {
     public function index()
     {
-        return view('order.index');
+        $user = Auth::user();
+        $userBranch = UsersBranch::where('users_id', $user->id)->first();
+        $branch = Branch::all();
+        $data['user'] = $userBranch;
+        $data['branches'] = $branch;
+        return view('order.index')->with($data);
     }
 
     public function json() {
@@ -74,6 +79,20 @@ class OrderController extends Controller
         ]);
     }
 
+    public function dataByBranch(Request $request) {
+        $branch = $request->branch;
+        $order = Orders::with(['orderPackage.package', 'shipping'])
+            ->whereRaw('branch_id = ' . $branch)
+            ->get();
+        $view = view('order.partials.table-list', ['data' => $order])->render();
+        return json_encode([
+            'message' => 'Data retrieve',
+            'data' => [
+                'view' => $view
+            ]
+        ]);
+    }
+
     public function invoice($id) {
         $orders = Orders::with([
                 'orderPackage.package', 'customer.village',
@@ -92,6 +111,47 @@ class OrderController extends Controller
             'allMenu' => $orderPackage['allMenus'],
             'rices' => $orderPackage['rices'],
             'isArabic' => $orderPackage['isArabic']
+        ]);
+    }
+
+    public function kitchenInvoice($id) {
+        $orders = Orders::with([
+                'orderPackage.package', 'customer.village',
+                'orderPackage.offal.offal',
+                'orderPackage.meat.meat',
+                'orderPackage.chicken.chicken',
+                'orderPackage.vegie.vegie',
+                'orderPackage.rice.rice',
+                'orderPackage.egg.egg',
+                'customer.district', 'payment',
+                'createdBy'  
+            ])
+            ->findOrFail($id)->makeVisible(['created_at']);
+        $orderPackage = $this->getAllMenu($orders->orderPackage);
+        return view('order.print-kitchen', [
+            'data' => $orderPackage,
+            'orders' => $orders
+        ]);
+    }
+
+    public function helpers(Request $request) {
+        $id = $request->id;
+        $orders = Orders::with([
+            'orderPackage.package', 'customer.village',
+            'orderPackage.offal.offal',
+            'orderPackage.meat.meat',
+            'orderPackage.chicken.chicken',
+            'orderPackage.vegie.vegie',
+            'orderPackage.rice.rice',
+            'orderPackage.egg.egg',
+            'customer.district', 'payment',
+            'createdBy'  
+        ])
+        ->findOrFail($id)->makeVisible(['created_at']);
+        $orderPackage = $this->getAllMenu($orders->orderPackage);
+        return json_encode([
+            'data' => $orders,
+            'all' => $orderPackage
         ]);
     }
 
@@ -357,21 +417,31 @@ class OrderController extends Controller
         $allMenus = [];
         $rices = [];
         $isArabic = [];
+        $menu1 = [];
+        $menu2 = [];
+        $menu3 = [];
+        $menu4 = [];
+        $menu5 = [];
         for ($a = 0; $a < count($orderPackage); $a++) {
             if ($orderPackage[$a]['meat'] != null) {
                 $allMenus[] = 'Daging ' . $orderPackage[$a]['meat']['meat']['name'];
+                $menu1[] = 'Daging ' . $orderPackage[$a]['meat']['meat']['name'];
             }
             if ($orderPackage[$a]['offal'] != null) {
                 $allMenus[] = 'Jeroan ' . $orderPackage[$a]['offal']['offal']['name'];
+                $menu2[] = 'Jeroan ' . $orderPackage[$a]['offal']['offal']['name'];
             }
             if ($orderPackage[$a]['chicken'] != null) {
                 $allMenus[] = 'Ayam ' . $orderPackage[$a]['chicken']['chicken']['name'];
+                $menu3[] = 'Ayam ' . $orderPackage[$a]['chicken']['chicken']['name'];
             }
             if ($orderPackage[$a]['egg'] != null) {
                 $allMenus[] = 'Telur ' . $orderPackage[$a]['egg']['egg']['name'];
+                $menu4[] = 'Telur ' . $orderPackage[$a]['egg']['egg']['name'];
             }
             if ($orderPackage[$a]['vegie'] != null) {
                 $allMenus[] = 'Mix vegetable ' . $orderPackage[$a]['vegie']['vegie']['name'];
+                $menu5[] = 'Mix vegetable ' . $orderPackage[$a]['vegie']['vegie']['name'];
             }
             if ($orderPackage[$a]['rice'] != null) {
                 $allMenus[] = 'Beras ' . $orderPackage[$a]['rice']['rice']['name'];
@@ -385,7 +455,12 @@ class OrderController extends Controller
         return [
             'allMenus' => $allMenus,
             'rices' => $rices,
-            'isArabic' => $isArabic
+            'isArabic' => $isArabic,
+            'menu1' => $menu1,
+            'menu2' => $menu2,
+            'menu3' => $menu3,
+            'menu4' => $menu4,
+            'menu5' => $menu5
         ];
     }
 

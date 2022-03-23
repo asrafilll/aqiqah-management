@@ -62,7 +62,7 @@
         <div class="col">
             <div class="card">
                 <div class="card-body">
-                    <div class="">
+                    {{-- <div class="">
                         <button class="btn btn-check-availability btn-collapse w-100 text-left"
                             type="button" data-toggle="collapse" data-target="#collapseCheckQuota"
                             aria-expanded="false" aria-controls="collapseCheckQuota">
@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     {{-- data leads --}}
                     <div class="">
@@ -522,9 +522,8 @@
                             icon: "success",
                             button: "Ok",
                         });
-                        let url = "{{ route('order.json',':page/:limit') }}";
-                        url = url.replace(':page', 0);
-                        url = url.replace(':limit', 1);
+                        let uri = {!! json_encode(url('order/json')) !!}
+                        let url = uri + '/0/100';
                         setTimeout(() => {
                             window.location.href = url;
                         }, 500);
