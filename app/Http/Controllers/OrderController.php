@@ -74,6 +74,27 @@ class OrderController extends Controller
         ]);
     }
 
+    public function invoice($id) {
+        $orders = Orders::with([
+                'orderPackage.package', 'customer.village',
+                'orderPackage.offal.offal',
+                'orderPackage.meat.meat',
+                'orderPackage.chicken.chicken',
+                'orderPackage.vegie.vegie',
+                'orderPackage.rice.rice',
+                'orderPackage.egg.egg',
+                'customer.district', 'payment'    
+            ])
+            ->findOrFail($id);
+        $orderPackage = $this->getAllMenu($orders->orderPackage);
+        return view('order.print-invoice', [
+            'data' => $orders,
+            'allMenu' => $orderPackage['allMenus'],
+            'rices' => $orderPackage['rices'],
+            'isArabic' => $orderPackage['isArabic']
+        ]);
+    }
+
     public function create()
     {
         // get branch from user

@@ -81,6 +81,27 @@
         color: #C5C7CD;
     }
 
+    .search_input_group {
+        position: relative;
+    }
+
+    .search_input_group_text {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        display: flex;
+        align-items: center;
+        z-index: 100;
+    }
+
+    #search_input {
+        padding-right: 100px;
+        border: 1px solid transparent;
+        transition: all .3s;
+        width: 0;
+        z-index: 90;
+    }
+
     .table_action {
         margin-left: 15px;
     }
@@ -129,8 +150,13 @@
             </div>
             <div class="filter_group">
                 <div class="search">
-                    <i class="fa fa-search"></i>
-                    <p class="search_text">Search</p>
+                    <div class="search_input_group">
+                        <input type="text" class="form-control" id="search_input" onkeyup="search()">
+                        <div class="search_input_group_text" onclick="showSearch()">
+                            <i class="fa fa-search"></i>
+                            <p class="search_text">Search</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="sort">
                     <p class="sort_text" id="sort-filter">Sort</p>
@@ -140,10 +166,10 @@
                 </div>
             </div>
         </div>
-
-        <table class="table table_list_order" id="table_list_order">
+        <table class="table table_list_order list" id="table_list_order">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Order Details</th>
                     <th>Customer Name</th>
                     <th>Date</th>
@@ -185,6 +211,38 @@
                 descending: true
             });
         })
+        function search() {
+            // Declare variables 
+            var input, filter, table, tr, i, j, column_length, count_td;
+            column_length = document.getElementById('table_list_order').rows[0].cells.length;
+            input = document.getElementById("search_input");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("table_list_order");
+            tr = table.getElementsByTagName("tr");
+            for (i = 1; i < tr.length; i++) { // except first(heading) row
+                count_td = 0;
+                for(j = 1; j < column_length-1; j++){ // except first column
+                    td = tr[i].getElementsByTagName("td")[j];
+                    /* ADD columns here that you want you to filter to be used on */
+                    if (td) {
+                    if ( td.innerHTML.toUpperCase().indexOf(filter) > -1)  {            
+                        count_td++;
+                    }
+                    }
+                }
+                if(count_td > 0){
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+        function showSearch() {
+            $('#search_input').css({
+                'border': '1px solid #000',
+                'width': '100%'
+            })
+        }
         function getData(page = 0, limit = 1) {
             let uri = {!! json_encode(url('order/json')) !!}
             let url = uri + '/' + page + '/' + limit;
