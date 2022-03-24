@@ -99,12 +99,22 @@ class OrderController extends Controller
             ])
             ->findOrFail($id);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
-        return view('order.print-invoice', [
+        $data = [
             'data' => $orders,
             'allMenu' => $orderPackage['allMenus'],
             'rices' => $orderPackage['rices'],
             'isArabic' => $orderPackage['isArabic']
-        ]);
+        ];
+        $view = view('order.print-invoice')->with($data)
+            ->render();
+        $pdf = PDF::loadHTML($view)->setPaper('a4', 'landscape');
+        return $pdf->download($orders->id . '_' . $orders->customer->name . '.pdf');
+        // return view('order.print-invoice', [
+            // 'data' => $orders,
+            // 'allMenu' => $orderPackage['allMenus'],
+            // 'rices' => $orderPackage['rices'],
+            // 'isArabic' => $orderPackage['isArabic']
+        // ]);
     }
 
     public function kitchenInvoice($id) {

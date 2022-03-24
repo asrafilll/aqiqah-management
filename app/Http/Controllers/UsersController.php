@@ -82,6 +82,7 @@ class UsersController extends Controller
      * @var JsonResponse
      */
     public function update(Request $request) {
+        $id = $request->id;
         // validation
         $validate = Validator::make($request->all(), [
             'name' => 'required|string',
@@ -100,17 +101,22 @@ class UsersController extends Controller
                 'status' => 422
             ]);
         }
-        $check = User::whereRaw("LOWER(username) = '$request->username'")
-            ->first();
-        if ($check) {
-            return json_encode([
-                'message' => 'Nama sudah ada di dalam database',
-                'status' => 422
-            ]);
+        $currentUser = User::withTrashed()
+                ->with('branches')
+                ->findOrFail($id);
+            
+        if ($currentUser->username != $request->username) {
+            $check = User::whereRaw("LOWER(username) = '$request->username'")
+                ->first();
+            if ($check) {
+                return json_encode([
+                    'message' => 'Nama sudah ada di dalam database',
+                    'status' => 422
+                ]);
+            }
         }
         
         // update
-        $id = $request->id;
         $payload = [
             'name' => $request->name,
             'username' => $request->username,
@@ -124,9 +130,6 @@ class UsersController extends Controller
         
         try {
             DB::beginTransaction();
-            $currentUser = User::withTrashed()
-                ->with('branches')
-                ->findOrFail($id);
 
             if ($request->has('branch') || $request->branch != '') {
                 if ($currentUser->branches != null) {

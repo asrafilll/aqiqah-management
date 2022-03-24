@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
      <!-- jQuery -->
-    <script src="{{asset('template/plugins/jquery/jquery.min.js')}}"></script>
+    {{-- <script src="{{asset('template/plugins/jquery/jquery.min.js')}}"></script> --}}
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> --}}
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{asset('template/plugins/fontawesome-free/css/all.min.css')}}">
+    {{-- <link rel="stylesheet" href="{{asset('template/plugins/fontawesome-free/css/all.min.css')}}"> --}}
     <!-- Tempusdominus Bootstrap 4 -->
-    <link rel="stylesheet" href="{{asset('template/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
+    {{-- <link rel="stylesheet" href="{{asset('template/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}"> --}}
 
     <style>
         .logo-group {
@@ -67,9 +67,9 @@
         <div class="col">
             <div class="logo-group">
                 <!-- Brand Logo -->
-                <div>
+                {{-- <div>
                     <img src="{{asset('img/logo.png')}}" alt="Syamil Aqiqah" class="brand-image img-circle" style="width: 60px;max-height: 60px;">
-                </div>
+                </div> --}}
                 <div class="logo-group-text">
                     <p class="brand-text logo-group-text-1">Syamil</p>
                     <p class="brand-text logo-group-text-1">Aqiqah & Catering</p>
