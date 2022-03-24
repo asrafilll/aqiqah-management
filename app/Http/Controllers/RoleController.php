@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Branch;
 use App\Models\Role;
-use App\Models\UsersBranch;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

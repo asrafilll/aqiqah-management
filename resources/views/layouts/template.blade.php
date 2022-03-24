@@ -113,9 +113,27 @@
 
 <!-- jQuery UI 1.11.4 -->
 <script src="{{asset('template/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
-<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
+  <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
   $.widget.bridge('uibutton', $.ui.button)
+
+  // init user roles
+  $(document).ready(function() {
+    $.ajax({
+      type: "GET",
+      url: "{{ route('users.init') }}",
+      dataType: 'json',
+      success: function(res) {
+        // save to localstorage
+        if (res.data.branches != null) {
+          $('.custom-auth-sidebar').addClass('d-none');
+        } else {
+          $('.custom-auth-sidebar').removeClass('d-none');
+        }
+        localStorage.setItem('user', JSON.stringify(res.data));
+      }
+    })
+  })
 </script>
 
 <script src="{{asset('template/plugins/toastr/toastr.min.js')}}"></script>

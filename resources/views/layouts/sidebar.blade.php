@@ -29,7 +29,10 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-item {{\Request::is('users*') || \Request::is('branch*') || \Request::is('role*') ? 'menu-open' : ''}}" class="menu">
+        {{-- @if ()
+            
+        @endif --}}
+        <li class="nav-item custom-auth-sidebar {{\Request::is('users*') || \Request::is('branch*') || \Request::is('role*') ? 'menu-open' : ''}}" class="menu">
             <a href="#" class="nav-link">
                 <i class="nav-icon fa fa-users"></i>
                 <p>

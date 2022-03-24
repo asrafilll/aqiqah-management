@@ -53,6 +53,14 @@ Route::group([
 	'middleware' => ['auth']
 ], function() {
 	Route::get('/', 'UsersController@index')->name('users.index');
+	Route::get('/init', 'UsersController@init')->name('users.init');
+	Route::get('/generalData', 'UsersController@generalData')->name('users.generalData');
+	Route::get('/edit/{id}', 'UsersController@edit')->name("users.edit");
+	Route::get('/detail/{id}', 'UsersController@detail')->name("users.detail");
+	Route::get('/json/{page}/{limit}', 'UsersController@json')->name("users.json");
+	Route::post('/update', 'UsersController@update')->name('users.update');
+	Route::post('/store', 'UsersController@store')->name('users.store');
+	Route::post('/delete', 'UsersController@delete')->name('users.delete');
 });
 
 // branch
