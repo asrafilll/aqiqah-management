@@ -4,18 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>Document</title>
-     <!-- jQuery -->
-    <script src="{{asset('template/plugins/jquery/jquery.min.js')}}"></script>
-    <!-- Google Font: Source Sans Pro -->
-    {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> --}}
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{asset('template/plugins/fontawesome-free/css/all.min.css')}}">
-    <!-- Tempusdominus Bootstrap 4 -->
-    <link rel="stylesheet" href="{{asset('template/dist/css/adminlte.min.css')}}">
-    {{-- page css --}}
-    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.3.0/paper.css"> --}}
     <style>
 
         @page {
@@ -68,9 +57,23 @@
         .table-kitchen > tbody > tr > td:nth-child(2) {
             width: 20px;
         }
+
+        .row {
+            display: flex;
+            align-items: center;
+        }
+        
     </style>
 </head>
 <body class="A5">
+    {{-- <div class="row">
+        <div class="col">
+            <div class="logo-group">
+                <!-- Brand Logo -->
+                <img src="{{asset('img/logo.png')}}" alt="Syamil Aqiqah" class="brand-image img-circle">
+            </div>
+        </div>
+    </div> --}}
     <div class="row">
         <div class="col-5">
             <p class="main_title">Kartu Order Dapur</p>
@@ -108,12 +111,6 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-        <div class="col-5">
-            <div class="logo-group">
-                <!-- Brand Logo -->
-                <img src="{{asset('img/logo.png')}}" alt="Syamil Aqiqah" class="brand-image img-circle">
             </div>
         </div>
     </div>

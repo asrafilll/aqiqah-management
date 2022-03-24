@@ -141,6 +141,48 @@
         visibility: visible;
         opacity: 1;
     }
+
+    #tooltip {
+        background-color: #333;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+
+    #arrow,
+    #arrow::before {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: inherit;
+    }
+
+    #arrow {
+    visibility: hidden;
+    }
+
+    #arrow::before {
+    visibility: visible;
+    content: '';
+    transform: rotate(45deg);
+    }
+
+    #tooltip[data-popper-placement^='top'] > #arrow {
+    bottom: -4px;
+    }
+
+    #tooltip[data-popper-placement^='bottom'] > #arrow {
+    top: -4px;
+    }
+
+    #tooltip[data-popper-placement^='left'] > #arrow {
+    right: -4px;
+    }
+
+    #tooltip[data-popper-placement^='right'] > #arrow {
+    left: -4px;
+    }
 </style>
 @endsection
 @section('content')
@@ -229,6 +271,11 @@
             let table = $('#table_list_order');
             new Tablesort(document.getElementById('table_list_order'), {
                 descending: true
+            });
+
+            // init popover
+            $("#myPopover").popover({
+                title : "Default popover title"
             });
         })
         function filterBranch(value) {

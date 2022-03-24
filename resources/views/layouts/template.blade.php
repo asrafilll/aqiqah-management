@@ -9,7 +9,7 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{asset('template/plugins/fontawesome-free/css/all.min.css')}}">
+  {{-- <link rel="stylesheet" href="{{asset('template/plugins/fontawesome-free/css/all.min.css')}}"> --}}
   <!-- Tempusdominus Bootstrap 4 -->
   <link rel="stylesheet" href="{{asset('template/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
   <!-- iCheck -->
@@ -41,6 +41,15 @@
   {{-- table sort --}}
   <script src="{{ asset('vendors/table-sort/tablesort.min.js') }}"></script>
   <script src="{{ asset('vendors/table-sort/tablesort.number.min.js') }}"></script>
+  <!-- Bootstrap 4 -->
+  <script src="{{asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
+  {{-- styling --}}
+  <style>
+    .nav-item.active a {
+      background: #9FA2B4;
+    }
+  </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">
@@ -108,8 +117,7 @@
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
-<!-- Bootstrap 4 -->
-<script src="{{asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
 <script src="{{asset('template/plugins/toastr/toastr.min.js')}}"></script>
 <!-- ChartJS -->
 <script src="{{asset('template/plugins/chart.js/Chart.min.js')}}"></script>

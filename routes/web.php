@@ -47,6 +47,28 @@ Route::middleware(['auth'])->group(function () {
 	Route::resource('order', OrderController::class);
 });
 
+// user
+Route::group([
+	'prefix' => 'users',
+	'middleware' => ['auth']
+], function() {
+	Route::get('/', 'UsersController@index')->name('users.index');
+});
+
+// branch
+Route::group([
+	'prefix' => 'branch',
+	'middleware' => ['auth']
+], function() {
+	Route::get('/', 'BranchController@index')->name('branch.index');
+	Route::get('/edit/{id}', 'BranchController@edit')->name("branch.edit");
+	Route::get('/detail/{id}', 'BranchController@detail')->name("branch.detail");
+	Route::get('/json/{page}/{limit}', 'BranchController@json')->name("branch.json");
+	Route::post('/update', 'BranchController@update')->name('branch.update');
+	Route::post('/store', 'BranchController@store')->name('branch.store');
+	Route::post('/delete', 'BranchController@delete')->name('branch.delete');
+});
+
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], function () {
 	Route::get('/', 'Admin\HomeController@index')->name('home');
 	Route::get('/create', 'Admin\HomeController@create')->name('create');

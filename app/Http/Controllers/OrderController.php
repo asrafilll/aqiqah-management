@@ -10,9 +10,6 @@ use App\Models\District;
 use App\Models\EggMenu;
 use App\Models\MeatMenu;
 use App\Models\OffalMenu;
-use App\Models\Order\CustInformation;
-use App\Models\Order\Order;
-use App\Models\Order\OrderInformation;
 use App\Models\OrderPackage;
 use App\Models\Orders;
 use App\Models\Package;
@@ -30,15 +27,11 @@ use App\Models\TypeOrder;
 use App\Models\UsersBranch;
 use App\Models\VegetableMenu;
 use App\Models\Village;
-use App\User;
 use Carbon\Carbon;
-use Exception;
-use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route as FacadesRoute;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -128,10 +121,15 @@ class OrderController extends Controller
             ])
             ->findOrFail($id)->makeVisible(['created_at']);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
-        return view('order.print-kitchen', [
+        $data = [
             'data' => $orderPackage,
             'orders' => $orders
-        ]);
+        ];
+        $view = view('order.testing')->with($data)->render();
+        $pdf = PDF::loadHTML($view)->setPaper('a4','landscape');
+
+        return $pdf->download('laporan.pdf');
+        // return view('order.testing')->with($data);
     }
 
     public function helpers(Request $request) {
