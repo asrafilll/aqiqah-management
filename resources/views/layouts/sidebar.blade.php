@@ -2,7 +2,7 @@
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
             <a href="{{ url('/dashboard') }}" class="nav-link">
-                <i class="nav-icon fas fa-chart-pie"></i>
+                <i class="nav-icon fa fa-pie-chart"></i>
                 <p>
                     Dashboard
                 </p>
@@ -10,15 +10,15 @@
         </li>
         <li class="nav-item {{\Request::is('order*') ? 'menu-open' : ''}}" class="menu @yield('order')">
             <a href="#" class="nav-link @yield('order')">
-                <i class="nav-icon fas fa-book"></i>
+                <i class="nav-icon fa fa-book"></i>
                 <p>
                     Order Management
-                    <i class="right fas fa-angle-left"></i>
+                    <i class="right fa fa-angle-left"></i>
                 </p>
             </a>
             <ul class="nav nav-treeview" style="padding-left: 25px;">
-                <li class="nav-item">
-                    <a href="{{route('order.create')}}" class="nav-link @yield('order')" style="width: 100%">
+                <li class="nav-item {{\Request::routeIs('order.create') ? 'active' : ''}}">
+                    <a href="{{route('order.create')}}" class="nav-link" style="width: 100%">
                         <p>New Order</p>
                     </a>
                 </li>
@@ -29,17 +29,30 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {{\Request::is('users*') || \Request::is('branch*') ? 'menu-open' : ''}}" class="menu">
             <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-users-cog"></i>
+                <i class="nav-icon fa fa-users"></i>
                 <p>
-                    Roles
+                    User Management
+                    <i class="right fa fa-angle-left"></i>
                 </p>
             </a>
-        </li>   
+            <ul class="nav nav-treeview" style="padding-left: 25px;">
+                <li class="nav-item {{\Request::routeIs('users.index') ? 'active' : ''}}">
+                    <a href="{{ route('users.index') }}" class="nav-link" style="width: 100%">
+                        <p>User</p>
+                    </a>
+                </li>
+                <li class="nav-item {{\Request::routeIs('branch.index') ? 'active' : ''}}">
+                    <a href="{{ route('branch.index') }}" class="nav-link" style="width: 100%">
+                        <p>Branch</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
         {{-- <li class="nav-item">
             <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-users-cog"></i>
+                <i class="nav-icon fa fa-users-cog"></i>
                 <a href="{{route('admin.create')}}" class="nav-link @yield('order')" style="width: 100%">
                     <p>User</p>
                 </a>
