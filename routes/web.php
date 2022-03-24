@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
 	Route::post('order/getVillage', 'OrderController@getVillages')->name('order.getVillages');
 	Route::post('order/update/data/{id}', 'OrderController@update')->name('order.update-data');
 	Route::post('order/helper', 'OrderController@helpers')->name('order.helper');
+	Route::post('order/export', 'OrderController@exportInvoice')->name('order.export');
 	Route::get('order/invoice/{id}', 'OrderController@invoice')->name('order.invoice');
 	Route::get('order/kitchen/{id}', 'OrderController@kitchenInvoice')->name('order.kitchen-invoice');
 	Route::resource('order', OrderController::class);
@@ -72,6 +73,7 @@ Route::group([
 	Route::get('/edit/{id}', 'BranchController@edit')->name("branch.edit");
 	Route::get('/detail/{id}', 'BranchController@detail')->name("branch.detail");
 	Route::get('/json/{page}/{limit}', 'BranchController@json')->name("branch.json");
+	Route::get('/list', 'BranchController@list')->name('branch.list');
 	Route::post('/update', 'BranchController@update')->name('branch.update');
 	Route::post('/store', 'BranchController@store')->name('branch.store');
 	Route::post('/delete', 'BranchController@delete')->name('branch.delete');

@@ -255,7 +255,7 @@
         $('.edit-body').removeClass('d-none');
         $('.detail-body').addClass('d-none');
 
-        let uri = {!! json_encode(url('branch/edit')) !!}
+        let uri = {!! response()->json(url('branch/edit')) !!}
         let url = uri + '/' + id
         $.ajax({
             type: "GET",
@@ -281,7 +281,7 @@
         $('.edit-body').addClass('d-none');
         $('.detail-body').removeClass('d-none');
 
-        let uri = {!! json_encode(url('branch/detail')) !!}
+        let uri = {!! response()->json(url('branch/detail')) !!}
         let url = uri + '/' + id
         $.ajax({
             type: "GET",
@@ -301,7 +301,7 @@
     }
 
     function getData(page = 0, limit = 10) {
-        let uri = {!! json_encode(url('branch/json')) !!};
+        let uri = {!! response()->json(url('branch/json')) !!};
         let url = uri + '/' + page + '/' + limit;
         $.ajax({
             type: "GET",

@@ -28,6 +28,6 @@ class HomeController extends Controller
 
     public function list() {
         $user = Auth::user();
-        return json_encode($user);
+        return response()->json($user);
     }
 }

@@ -32,6 +32,9 @@
 
     .btn-collapse {
         margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     .card_package {
@@ -63,7 +66,8 @@
                         <button class="btn btn-check-availability btn-collapse w-100 text-left"
                             type="button" data-toggle="collapse" data-target="#collapseCheckQuota"
                             aria-expanded="false" aria-controls="collapseCheckQuota">
-                            Cek Kuota Ketersediaan
+                            <span>Cek Kuota Ketersediaan</span>
+                            <i class="fa fa-plus"></i>
                         </button>
                 
                         <div class="collapse" id="collapseCheckQuota">
@@ -117,7 +121,8 @@
                         <button class="btn btn-collapse w-100 text-left"
                             type="button" data-toggle="collapse" data-target="#collapseDataLeads"
                             aria-expanded="false" aria-controls="collapseDataLeads">
-                            Data Leads
+                            <span>Data Leads</span>
+                            <i class="fa fa-plus"></i>
                         </button>
                 
                         {{-- collapse item --}}
@@ -153,7 +158,8 @@
                         <button class="btn btn-collapse w-100 text-left"
                             type="button" data-toggle="collapse" data-target="#collapseCustomerInformation"
                             aria-expanded="false" aria-controls="collapseCustomerInformation">
-                            Customer information
+                            <span>Customer information</span>
+                            <i class="fa fa-plus"></i>
                         </button>
                 
                         {{-- collapse item --}}
@@ -261,7 +267,8 @@
                         <button class="btn btn-collapse w-100 text-left"
                             type="button" data-toggle="collapse" data-target="#collapseOrderInformation"
                             aria-expanded="false" aria-controls="collapseOrderInformation">
-                            Order Informasi
+                            <span>Order Informasi</span>
+                            <i class="fa fa-plus"></i>
                         </button>
                 
                         {{-- collapse item --}}

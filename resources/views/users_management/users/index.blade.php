@@ -352,7 +352,7 @@
         $('.edit-body').removeClass('d-none');
         $('.detail-body').addClass('d-none');
 
-        let uri = {!! json_encode(url('users/edit')) !!}
+        let uri = {!! response()->json(url('users/edit')) !!}
         let url = uri + '/' + id
         $.ajax({
             type: "GET",
@@ -399,7 +399,7 @@
         $('.edit-body').addClass('d-none');
         $('.detail-body').removeClass('d-none');
 
-        let uri = {!! json_encode(url('users/detail')) !!}
+        let uri = {!! response()->json(url('users/detail')) !!}
         let url = uri + '/' + id
         $.ajax({
             type: "GET",
@@ -419,7 +419,7 @@
     }
 
     function getData(page = 0, limit = 10) {
-        let uri = {!! json_encode(url('users/json')) !!};
+        let uri = {!! response()->json(url('users/json')) !!};
         let url = uri + '/' + page + '/' + limit;
         $.ajax({
             type: "GET",
