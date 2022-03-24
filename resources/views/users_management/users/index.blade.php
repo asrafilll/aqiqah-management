@@ -48,79 +48,446 @@
     .table_action {
         margin-left: 10px;
     }
+
+    #table_list_user thead tr th:nth-child(2) {
+        width: 20%;
+        text-align: center;
+    }
+
+    /* #table_list_user thead tr th:first-child {
+        width: 80%;
+    } */
+
+    #table_list_user tbody tr td:nth-child(2) {
+        /* width: 20%; */
+        text-align: center;
+    }
+
+    .detail_icon {
+        display: flex;
+        align-items: center;
+    }
+
+    .header_group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+
+    .detail-body {
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .status_user {
+        width: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        padding: 5px;
+        background: #29CC97;
+    }
+
+    .status_user_text {
+        margin-bottom: 0 !important;
+        color: #fff;
+        font-size: 12px;
+    }
+
+    .status_green {
+        background: #29CC97;
+    }
+
+    .status_red {
+        background: #FEC400;
+    }
 </style>
 @endsection
 @section('content')
 <div class="row">
     <div class="col">
         <div class="card card-body">
-            <p class="card_title_text mb-0">Users List</p>
+            <div class="header_group">
+                <p class="card_title_text mb-0">User List</p>
+                <button class="btn btn-primary" onclick="add()">Add User</button>
+            </div>
 
             <table class="table" id="table_list_user">
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Username</th>
                         <th>Email</th>
                         <th>Branch</th>
-                        <th>Roles</th>
-                        <th></th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach ($users as $user)
-                    @php
-                        $branch = '';
-                        $role = '';
-                        if ($user->branches == null) {
-                            $branch = 'HO';
-                        } else {
-                            $branch = $user->branches->branch->name;
-                        }
-                        if ($user->roles == null) {
-                            $role = '-';
-                        } else {
-                            $role = $user->roles->nama;
-                        }
-                    @endphp
-                        <tr>
-                            <td>
-                                {{ $user->name }}
-                            </td>
-                            <td>
-                                {{ $user->email }}
-                            </td>
-                            <td>
-                                {{ $branch }}
-                            </td>
-                            <td>
-                                {{ $role }}
-                            </td>
-                            <td>
-                                <div id="detail_icon text-success">
-                                    <a href="{{ route('order.show', [$user->id]) }}" class="table_action">
-                                        <i class="fa fa-eye text-success fa-1x"></i> 
-                                    </a>
-                                    <a href="{{ route('order.edit', [$user->id]) }}" class="table_action">
-                                        <i class="fa fa-pencil-square-o text-primary"></i> 
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
+                <tbody class="target-user-body">
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+{{-- modal edit --}}
+<div class="modal fade" id="modalUser" tabindex="-1" aria-labelledby="modalUserLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalUserLabel"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="edit-body">
+            <form action="" class="form-user">
+                <div class="modal-body">
+                    {{-- hidden id for edit action --}}
+                    <input type="text" name="id" id="id_user_field" hidden>
+
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="">Name</label>
+                            <input type="text" class="form-control"
+                                name="name" id="edit_user_name_field">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-6">
+                            <label for="">Username</label>
+                            <input type="text" class="form-control"
+                                name="username" id="edit_user_username_field">
+                        </div>
+                        <div class="col-6">
+                            <label for="">Email</label>
+                            <input type="text" class="form-control"
+                                name="email" id="edit_user_email_field">
+                        </div>
+                    </div>
+                    <div class="form-row mt-2">
+                        <div class="col">
+                            <label for="">Password</label>
+                            <input type="password" class="form-control"
+                                name="password" id="edit_user_password_field"
+                                placeholder="Leave it blank if you dont wont to change">
+                        </div>
+                    </div>
+                    <div class="form-row mt-2">
+                        <div class="col-6">
+                            <label for="">Role</label>
+                            <select name="role" class="form-control"
+                                id="edit_user_role_field">
+                                <option value="" selected disabled>-- Pilih Role --</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="">Branch</label>
+                            <select name="branch" class="form-control"
+                                id="edit_user_branch_field">
+                                <option value="" selected disabled>-- Pilih Branch --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btn_save_user">Save</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="detail-body">
+
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 @section('scripts')
 <script>
+    // set ajax header
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     $(document).ready(function() {
+        getData(0,10);
         // init table sort
         let table = $('#table_list_order');
         new Tablesort(document.getElementById('table_list_user'), {
             descending: true
         });
+
+        // handle onchange event in modal
+        $('#modalUser').on('hidden.bs.modal', function (event) {
+            $('#edit_user_name_field').val('');
+            $('#edit_user_username_field').val('');
+            $('#edit_user_email_field').val('');
+            $('#edit_user_role_field').val('');
+            $('#edit_user_branch_field').val('');
+            $('#edit_user_password_field').val('');
+            $('#id_user_field').val('');
+        })
     })
+
+    function add() {
+        // hide detail body and show edit / add body
+        $('.edit-body').removeClass('d-none');
+        $('.detail-body').addClass('d-none');
+        // show modal
+        $('#modalUser').modal('show');
+        // add title
+        $('#modalUserLabel').text('Add User');
+        // add id to form
+        $('.form-user').attr('id', 'form_add_user');
+        // add action onclick
+        $('#btn_save_user').attr('onclick', 'store()');
+
+        // get data role and branch
+        $.ajax({
+            type: "GET",
+            url: "{{ route('users.generalData') }}",
+            dataType: 'json',
+            success: function(res) {
+                console.log(res);
+                // add select option in role field
+                let selectRole = '<option value="" selected disabled>-- Pilih Role</option>';
+                for (let a = 0; a < res.data.role.length; a++) {
+                    selectRole += '<option value="'+ res.data.role[a].id +'">'+
+                        res.data.role[a].nama +    
+                        '</option>';
+                }
+                let selectBranch = '<option value="" selected disabled>-- Pilih Branch</option>';
+                for (let a = 0; a < res.data.branch.length; a++) {
+                    selectBranch += '<option value="'+ res.data.branch[a].id +'">'+
+                        res.data.branch[a].name +    
+                        '</option>';
+                }
+                $('#edit_user_branch_field').html(selectBranch);
+                $('#edit_user_role_field').html(selectRole);
+            }
+        })
+    }
+
+    function store() {
+        let data = $('#form_add_user').serialize();
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('users.store') }}",
+            data: data,
+            dataType: 'json',
+            success: function(res) {
+                console.log(res);
+                if (res.status == 200) {
+                    swal({
+                        title: "Success",
+                        text: res.message,
+                        icon: "success",
+                        button: "Ok",      
+                    })
+                    // close modal
+                    $('#modalUser').modal('hide');
+                    // update data
+                    getData(0,10);
+                } else {
+                    let message = typeof res.message == 'object' ? res.message.join(',') : res.message;
+                    swal({
+                        title: "Failed",
+                        text: message,
+                        icon: "warning",
+                        button: "Ok",      
+                    })
+                }
+            },
+            error: function(err) {
+                console.log('err', err);
+            }
+        })
+    }
+
+    function update() {
+        let data = $('#form_edit_user').serialize();
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('users.update') }}",
+            data: data,
+            dataType: 'json',
+            success: function(res) {
+                console.log(res);
+                if (res.status == 200) {
+                    swal({
+                        title: "Success",
+                        text: res.message,
+                        icon: "success",
+                        button: "Ok",      
+                    })
+                    // close modal
+                    $('#modalUser').modal('hide');
+                    // update data
+                    getData(0,10);
+                } else {
+                    let message = typeof res.message == 'object' ? res.message.join(',') : res.message;
+                    swal({
+                        title: "Failed",
+                        text: message,
+                        icon: "warning",
+                        button: "Ok",      
+                    })
+                }
+            },
+            error: function(err) {
+                console.log('err', err);
+            }
+        })
+    }
+
+    function edit(id) {
+        // hide detail body and show edit / add body
+        $('.edit-body').removeClass('d-none');
+        $('.detail-body').addClass('d-none');
+
+        let uri = {!! json_encode(url('users/edit')) !!}
+        let url = uri + '/' + id
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: 'json',
+            success: function(res) {
+                console.log(res);
+                // add select option in role field
+                let selectRole = '<option value="" selected disabled>-- Pilih Role</option>';
+                for (let a = 0; a < res.data.role.length; a++) {
+                    selectRole += '<option value="'+ res.data.role[a].id +'">'+
+                        res.data.role[a].nama +    
+                        '</option>';
+                }
+                let selectBranch = '<option value="" selected disabled>-- Pilih Branch</option>';
+                for (let a = 0; a < res.data.branch.length; a++) {
+                    selectBranch += '<option value="'+ res.data.branch[a].id +'">'+
+                        res.data.branch[a].name +    
+                        '</option>';
+                }
+                let valueBranch = res.data.user.branches != null ? res.data.user.branches.branch_id : '';
+                $('#edit_user_branch_field').html(selectBranch);
+                $('#edit_user_branch_field').val(valueBranch);
+                $('#edit_user_role_field').html(selectRole);
+                $('#edit_user_role_field').val(res.data.user.roles_id);
+                $('#edit_user_name_field').val(res.data.user.name);
+                $('#edit_user_username_field').val(res.data.user.username);
+                $('#edit_user_email_field').val(res.data.user.email);
+                $('#id_user_field').val(res.data.user.id);
+                // show modal
+                $('#modalUser').modal('show');
+                // add title
+                $('#modalUserLabel').text('Edit Role');
+                // add id to form
+                $('.form-user').attr('id', 'form_edit_user');
+                // add action onclick
+                $('#btn_save_user').attr('onclick', 'update()');
+            }
+        })
+    }
+
+    function detail(id) {
+        // hide detail body and show edit / add body
+        $('.edit-body').addClass('d-none');
+        $('.detail-body').removeClass('d-none');
+
+        let uri = {!! json_encode(url('users/detail')) !!}
+        let url = uri + '/' + id
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: 'json',
+            success: function(res) {
+                console.log(res);
+                if (res.status == 200) {
+                    $('.detail-body').html(res.data.view);
+                    //show modal
+                    $('#modalUser').modal('show');
+                    // set title
+                    $('#modalUserLabel').text('Detail Branch');
+                }
+            }
+        })
+    }
+
+    function getData(page = 0, limit = 10) {
+        let uri = {!! json_encode(url('users/json')) !!};
+        let url = uri + '/' + page + '/' + limit;
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: 'json',
+            beforeSend: function() {
+                // set loading
+                let loading = `<tr>
+                    <td colspan="6" class="text-center">
+                        Processing data ...
+                    </td>
+                    </tr>`
+                $('.target-user-body').html(loading);
+            },
+            success: function(res) {
+                $('.target-user-body').html(res.data.view);
+            }
+        })
+    }
+
+    function deleteData(id) {
+        swal({
+            title: "Are you sure?",
+            text: "This user will be temporarily disabled",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('users.delete') }}",
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        console.log(res);
+                        if (res.status == 200) {
+                            swal({
+                                title: 'Success',
+                                text: res.message,
+                                icon: 'success',
+                                button: 'Ok'
+                            });
+
+                            getData(0,10);
+                        } else {
+                            swal({
+                                title: 'Failed',
+                                text: res.message,
+                                icon: 'warning',
+                                button: 'Ok'
+                            });
+                        }
+                    },
+                    error: function(err) {
+                        swal({
+                                title: 'Failed',
+                                text: err.responseJSON.message,
+                                icon: 'warning',
+                                button: 'Ok'
+                            });
+                    }
+                })
+            }
+        });
+    }
 </script>
 @endsection

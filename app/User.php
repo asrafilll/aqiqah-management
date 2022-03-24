@@ -8,10 +8,12 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Role;
 use App\Models\UserCabang;
 use App\Models\UsersBranch;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
