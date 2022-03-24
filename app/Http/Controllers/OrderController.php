@@ -34,6 +34,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route as FacadesRoute;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Excel;
+use Illuminate\Support\Facades\Redirect;
 
 class OrderController extends Controller
 {
@@ -163,11 +164,27 @@ class OrderController extends Controller
         $timeline = $request->timeline;
         // validation
         if ($timeline == '' || $timeline == null) {
-            return response()->json([
-                'message' => 'Pilih salah satu timeline',
-                'data' => []
-            ]);
+            return Redirect::back()
+                ->withErrors('Pilih salah satu timeline')
+                ->withInput();
         }
+        if ($timeline == 3) {
+            if ($request->start_date == '' || $request->end_date == '') {
+                return Redirect::back()
+                    ->withErrors('Pastikan tanggal mulai dan tanggal akhir sudah terisi')
+                    ->withInput();
+            }
+            $date1 = strtotime($request->start_date); 
+            $date2 = strtotime($request->end_date); 
+    
+            $diff = $date2 - $date1;
+            if ($diff < 0) {
+                return Redirect::back()
+                    ->withErrors('Tanggal akhir harus lebih dari tanggal mulai')
+                    ->withInput();
+            }
+        }
+
 
         $branch = $request->branch;
         if ($timeline == 1) {
