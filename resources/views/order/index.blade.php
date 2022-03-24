@@ -26,6 +26,7 @@
     .search,
     .sort,
     .filter,
+    .export,
     .branch_search {
         display: flex;
         align-items: center;
@@ -183,6 +184,38 @@
     #tooltip[data-popper-placement^='right'] > #arrow {
     left: -4px;
     }
+
+    .custom_button_timeline {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 25px;
+    }
+
+    .timeline_box {
+        width: 150px;
+        background: transparent;
+        border: 1px solid #ABA8A8;
+        border-radius: 20px;
+        margin: 0 8px;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .timeline_box.active {
+        background: #007bff;
+    }
+    
+    .timeline_box.active > .timeline_text {
+        color: #fff;
+    }
+
+    .timeline_text {
+        color: #000;
+        font-size: 13px;
+        text-align: center;
+        margin-bottom: 0 !important;
+    }
 </style>
 @endsection
 @section('content')
@@ -219,6 +252,9 @@
                         </select>
                     </div>
                 @endif
+                <div class="export">
+                    <button class="btn btn-primary" onclick="optionExport()">Export</button>
+                </div>
             </div>
         </div>
         <table class="table table_list_order list" id="table_list_order">
@@ -254,6 +290,79 @@
         </div> --}}
     </div>
 </div>
+
+{{-- modal export --}}
+<div class="modal fade" id="modalExport" tabindex="-1" aria-labelledby="modalExportLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalExportLabel">Export</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('order.export') }}" method="POST" id="form-export">
+                @csrf
+                <div class="modal-body">
+                    {{-- custom button choice --}}
+                    <label for="">Pilih Timeline</label>
+                    <div class="custom_button_timeline">
+                        <div class="timeline_box"
+                            id="timeline_week"
+                            onclick="chooseTimeline('week')">
+                            <p class="timeline_text">Week</p>
+                        </div>
+                        <div class="timeline_box"
+                            id="timeline_month"
+                            onclick="chooseTimeline('month')">
+                            <p class="timeline_text">Month</p>
+                        </div>
+                        <div class="timeline_box"
+                            id="timeline_custom"
+                            onclick="chooseTimeline('custom')">
+                            <p class="timeline_text">Custom</p>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group d-none" id="form-group-export">
+                        {{-- hidden input field timeline --}}
+                        <input type="text" hidden name="timeline" id="timeline_field">
+                        <div class="form-row">
+                            <div class="col-6">
+                                <label for="">Start date</label>
+                                <input type="date" class="form-control"
+                                    name="start_date">
+                            </div>
+                            <div class="col-6">
+                                <label for="">End date</label>
+                                <input type="date" class="form-control"
+                                    name="end_date">
+                            </div>
+                        </div>
+                        <div class="form-row mt-3">
+                            <div class="col">
+                                <label for="">Branch</label>
+                                @if ($user == null)
+                                    <select name="branch" class="form-control"
+                                    id="branch_export"></select>
+                                @else
+                                    <input type="text" readonly class="form-control"
+                                        value="{{ $user->branch->name }}">
+                                    <input type="text" name="branch" hidden
+                                        value="{{ $user->branch_id }}">
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Export</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @section('scripts')
     <script>
@@ -278,6 +387,61 @@
                 title : "Default popover title"
             });
         })
+        // function exportData() {
+        //     let data = $('#form-export').serialize();
+
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "{{ route('order.export') }}",
+        //         data: data,
+        //         success: function(res) {
+        //             console.log(res);
+        //         }
+        //     })
+        // }
+        function optionExport() {
+            // get branch list
+            $.ajax({
+                type: "GET",
+                url: "{{ route('branch.list') }}",
+                dataType: 'json',
+                success: function(res) {
+                    console.log(res);
+                    let option = '<option value="" selected disabled>-- Pilih Cabang --</option>';
+                    if (res.data.length) {
+                        for (let a = 0; a < res.data.length; a++) {
+                            option += '<option value="'+ res.data[a].id +'">'+
+                            res.data[a].name +
+                            '</option>'   
+                        }
+
+                        $('#branch_export').html(option);
+                    }
+                }
+            });
+            $('#modalExport').modal('show');
+        }
+        function chooseTimeline(param) {
+            let elem = $('.timeline_box');
+            for (let a = 0; a < elem.length; a++) {
+                elem[a].classList.remove('active')
+            }
+            $('#timeline_' + param).addClass('active');
+            if (param == 'custom') {
+                $('#form-group-export').removeClass('d-none');
+            } else {
+                $('#form-group-export').addClass('d-none');
+            }
+
+            // manipulate input field
+            if (param == 'week') {
+                $("#timeline_field").val(1);
+            } else if (param == 'month') {
+                $("#timeline_field").val(2);
+            } else {
+                $("#timeline_field").val(3);
+            }
+        }
         function filterBranch(value) {
             $.ajax({
                 type: 'POST',

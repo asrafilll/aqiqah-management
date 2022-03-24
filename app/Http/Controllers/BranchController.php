@@ -49,11 +49,23 @@ class BranchController extends Controller
         $view = view($this->viewPath . '.table-list')
             ->with($data)->render();
 
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => [
                 'view' => $view
             ]
+        ]);
+    }
+
+    /**
+     * @var JsonResponse
+     */
+    public function list() {
+        $branch = Branch::all();
+
+        return response()->json([
+            'message' => 'Data retrieve',
+            'data' => $branch
         ]);
     }
 
@@ -73,7 +85,7 @@ class BranchController extends Controller
             for ($a = 0; $a < count($error); $a++) {
                 $err[] = implode(',', $error[$a]);
             }
-            return json_encode([
+            return response()->json([
                 'message' => $err,
                 'status' => 422
             ]);
@@ -84,7 +96,7 @@ class BranchController extends Controller
             $check = Branch::whereRaw("LOWER(name) = '$name'")
                 ->first();
             if ($check) {
-                return json_encode([
+                return response()->json([
                     'message' => 'Nama sudah ada di dalam database',
                     'status' => 422
                 ]);
@@ -99,13 +111,13 @@ class BranchController extends Controller
             Branch::where('id', $request->id)
                 ->update($payload);
 
-            return json_encode([
+            return response()->json([
                 'message' => 'Update success',
                 'status' => 200,
                 'data' => []
             ]);
         } catch (\Throwable $th) {
-            return json_encode([
+            return response()->json([
                 'message' => $th->getMessage(),
                 'status' => 422
             ]);
@@ -124,7 +136,7 @@ class BranchController extends Controller
             for ($a = 0; $a < count($error); $a++) {
                 $err[] = implode(',', $error[$a]);
             }
-            return json_encode([
+            return response()->json([
                 'message' => $err,
                 'status' => 422
             ]);
@@ -132,7 +144,7 @@ class BranchController extends Controller
         $check = Branch::whereRaw("LOWER(name) = '$request->name'")
             ->first();
         if ($check) {
-            return json_encode([
+            return response()->json([
                 'message' => 'Nama sudah ada di dalam database',
                 'status' => 422
             ]);
@@ -145,13 +157,13 @@ class BranchController extends Controller
         try {
             Branch::insert($payload);
 
-            return json_encode([
+            return response()->json([
                 'message' => 'Save success',
                 'status' => 200,
                 'data' => [] 
             ]);
         } catch (\Throwable $th) {
-            return json_encode([
+            return response()->json([
                 'message' => $th->getMessage(),
                 'status' => 422
             ]);
@@ -165,7 +177,7 @@ class BranchController extends Controller
     public function edit($id) {
         $branch = Branch::findOrFail($id);
 
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => $branch
         ]);
@@ -176,7 +188,7 @@ class BranchController extends Controller
      * @var JsonResponse
      */
     public function detail($id) {
-        $branch = Branch::with(['userBranch', 'orders'])
+        $branch = Branch::with(['pBranch', 'orders'])
             ->where('id', $id)
             ->first();
         $data = [
@@ -185,7 +197,7 @@ class BranchController extends Controller
         $view = view($this->viewPath . '.detail')
             ->with($data)
             ->render();
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'status' => 200,
             'data' => [
@@ -217,12 +229,12 @@ class BranchController extends Controller
                     ->delete();
             }
     
-            return json_encode([
+            return response()->json([
                 'message' => !$isDelete ? 'Hapus gagal, cabang ini masih mempunyai relasi dengan user' : 'Success',
                 'status' => !$isDelete ? 422 : 200
             ]);
         } catch (\Throwable $th) {
-            return json_encode([
+            return response()->json([
                 'message' => $th->getMessage(),
                 'data' => []
             ]);

@@ -28,7 +28,7 @@ class UsersController extends Controller
             'users' => $user
         ];
 
-        // return json_encode($data);
+        // return response()->json($data);
         return view($this->viewPath . '.index')
             ->with($data);
     }
@@ -51,7 +51,7 @@ class UsersController extends Controller
         $view = view($this->viewPath . '.table-list')
             ->with($data)->render();
 
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => [
                 'view' => $view
@@ -71,7 +71,7 @@ class UsersController extends Controller
             'role' => $role,
             'branch' => $branch
         ];
-        return json_encode([
+        return response()->json([
             'message' => 'Data Retrieve',
             'data' => $data
         ]);
@@ -96,7 +96,7 @@ class UsersController extends Controller
             for ($a = 0; $a < count($error); $a++) {
                 $err[] = implode(',', $error[$a]);
             }
-            return json_encode([
+            return response()->json([
                 'message' => $err,
                 'status' => 422
             ]);
@@ -109,7 +109,7 @@ class UsersController extends Controller
             $check = User::whereRaw("LOWER(username) = '$request->username'")
                 ->first();
             if ($check) {
-                return json_encode([
+                return response()->json([
                     'message' => 'Nama sudah ada di dalam database',
                     'status' => 422
                 ]);
@@ -152,14 +152,14 @@ class UsersController extends Controller
             User::where('id', $id)
                 ->update($payload);
             DB::commit();
-            return json_encode([
+            return response()->json([
                 'message' => 'Update success',
                 'status' => 200,
                 'data' => []
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return json_encode([
+            return response()->json([
                 'message' => $th->getMessage(),
                 'status' => 422
             ]);
@@ -180,7 +180,7 @@ class UsersController extends Controller
             for ($a = 0; $a < count($error); $a++) {
                 $err[] = implode(',', $error[$a]);
             }
-            return json_encode([
+            return response()->json([
                 'message' => $err,
                 'status' => 422
             ]);
@@ -188,7 +188,7 @@ class UsersController extends Controller
         $check = User::whereRaw("LOWER(username) = '$request->username'")
             ->first();
         if ($check) {
-            return json_encode([
+            return response()->json([
                 'message' => 'Nama sudah ada di dalam database',
                 'status' => 422
             ]);
@@ -214,14 +214,14 @@ class UsersController extends Controller
             $payloadBranch['users_id'] = $userId;
             UsersBranch::inserT($payloadBranch);
             DB::commit();
-            return json_encode([
+            return response()->json([
                 'message' => 'Save success',
                 'status' => 200,
                 'data' => [] 
             ]);
         } catch (\Throwable $th) {
             DB::rollback();
-            return json_encode([
+            return response()->json([
                 'message' => $th->getMessage(),
                 'status' => 422
             ]);
@@ -238,7 +238,7 @@ class UsersController extends Controller
         $role = Role::all();
         $branch = Branch::all();
 
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => [
                 'user' => $user,
@@ -263,7 +263,7 @@ class UsersController extends Controller
         $view = view($this->viewPath . '.detail')
             ->with($data)
             ->render();
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'status' => 200,
             'data' => [
@@ -280,7 +280,7 @@ class UsersController extends Controller
         $id = $request->id;
         $delete = User::where('id', $id)->delete();
 
-        return json_encode([
+        return response()->json([
             'message' => 'Delete success',
             'data' => []
         ]);
@@ -295,7 +295,7 @@ class UsersController extends Controller
             ->where('id', $user->id)
             ->first();
 
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => $userBranch
         ]);

@@ -49,7 +49,7 @@ class RoleController extends Controller
         $view = view($this->viewPath . '.table-list')
             ->with($data)->render();
 
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => [
                 'view' => $view
@@ -73,7 +73,7 @@ class RoleController extends Controller
             for ($a = 0; $a < count($error); $a++) {
                 $err[] = implode(',', $error[$a]);
             }
-            return json_encode([
+            return response()->json([
                 'message' => $err,
                 'status' => 422
             ]);
@@ -84,7 +84,7 @@ class RoleController extends Controller
             $check = Role::whereRaw("LOWER(nama) = '$name'")
                 ->first();
             if ($check) {
-                return json_encode([
+                return response()->json([
                     'message' => 'Nama sudah ada di dalam database',
                     'status' => 422
                 ]);
@@ -99,13 +99,13 @@ class RoleController extends Controller
             Role::where('id', $request->id)
                 ->update($payload);
 
-            return json_encode([
+            return response()->json([
                 'message' => 'Update success',
                 'status' => 200,
                 'data' => []
             ]);
         } catch (\Throwable $th) {
-            return json_encode([
+            return response()->json([
                 'message' => $th->getMessage(),
                 'status' => 422
             ]);
@@ -124,7 +124,7 @@ class RoleController extends Controller
             for ($a = 0; $a < count($error); $a++) {
                 $err[] = implode(',', $error[$a]);
             }
-            return json_encode([
+            return response()->json([
                 'message' => $err,
                 'status' => 422
             ]);
@@ -132,7 +132,7 @@ class RoleController extends Controller
         $check = Role::whereRaw("LOWER(nama) = '$request->name'")
             ->first();
         if ($check) {
-            return json_encode([
+            return response()->json([
                 'message' => 'Nama sudah ada di dalam database',
                 'status' => 422
             ]);
@@ -145,13 +145,13 @@ class RoleController extends Controller
         try {
             Role::insert($payload);
 
-            return json_encode([
+            return response()->json([
                 'message' => 'Save success',
                 'status' => 200,
                 'data' => [] 
             ]);
         } catch (\Throwable $th) {
-            return json_encode([
+            return response()->json([
                 'message' => $th->getMessage(),
                 'status' => 422
             ]);
@@ -165,7 +165,7 @@ class RoleController extends Controller
     public function edit($id) {
         $role = Role::findOrFail($id);
 
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => $role
         ]);
@@ -185,7 +185,7 @@ class RoleController extends Controller
         $view = view($this->viewPath . '.detail')
             ->with($data)
             ->render();
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'status' => 200,
             'data' => [
@@ -217,12 +217,12 @@ class RoleController extends Controller
                     ->delete();
             }
     
-            return json_encode([
+            return response()->json([
                 'message' => !$isDelete ? 'Hapus gagal, role ini masih mempunyai relasi dengan user' : 'Success',
                 'status' => !$isDelete ? 422 : 200
             ]);
         } catch (\Throwable $th) {
-            return json_encode([
+            return response()->json([
                 'message' => $th->getMessage(),
                 'data' => []
             ]);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InvoiceExport;
 use App\Http\Requests\OrderRequest;
 use App\Models\Branch;
 use App\Models\ChickenMenu;
@@ -32,13 +33,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route as FacadesRoute;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Excel;
 
 class OrderController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $userBranch = UsersBranch::where('users_id', $user->id)->first();
+        $userBranch = UsersBranch::with('branch')->where('users_id', $user->id)->first();
         $branch = Branch::all();
         $data['user'] = $userBranch;
         $data['branches'] = $branch;
@@ -62,7 +64,7 @@ class OrderController extends Controller
             // ->take($limit)
             ->get();
         $view = view('order.partials.table-list', ['data' => $order])->render();
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => [
                 'view' => $view,
@@ -78,7 +80,7 @@ class OrderController extends Controller
             ->whereRaw('branch_id = ' . $branch)
             ->get();
         $view = view('order.partials.table-list', ['data' => $order])->render();
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => [
                 'view' => $view
@@ -109,12 +111,6 @@ class OrderController extends Controller
             ->render();
         $pdf = PDF::loadHTML($view)->setPaper('a4', 'landscape');
         return $pdf->download($orders->id . '_' . $orders->customer->name . '.pdf');
-        // return view('order.print-invoice', [
-            // 'data' => $orders,
-            // 'allMenu' => $orderPackage['allMenus'],
-            // 'rices' => $orderPackage['rices'],
-            // 'isArabic' => $orderPackage['isArabic']
-        // ]);
     }
 
     public function kitchenInvoice($id) {
@@ -157,10 +153,44 @@ class OrderController extends Controller
         ])
         ->findOrFail($id)->makeVisible(['created_at']);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
-        return json_encode([
+        return response()->json([
             'data' => $orders,
             'all' => $orderPackage
         ]);
+    }
+
+    public function exportInvoice(Request $request) {
+        $timeline = $request->timeline;
+        // validation
+        if ($timeline == '' || $timeline == null) {
+            return response()->json([
+                'message' => 'Pilih salah satu timeline',
+                'data' => []
+            ]);
+        }
+
+        $branch = $request->branch;
+        if ($timeline == 1) {
+            $start = date('Y-m-d', strtotime('-7days'));
+            $end = date('Y-m-d');
+            $title = 'Report Weekly ' . date('d F Y', strtotime($start)) . ' - ' . date('d F Y', strtotime($end));
+        } else if ($timeline == 2) {
+            $start = date('Y-m-d', strtotime('-1month'));
+            $end = date('Y-m-d');
+            $title = 'Report Monthly ' . date('d F Y', strtotime($start)) . ' - ' . date('d F Y', strtotime($end));
+        } else {
+            $start = $request->start_date;
+            $end = $request->end_date;
+            $title = 'Report Custom ' . date('d F Y', strtotime($start)) . ' - ' . date('d F Y', strtotime($end));
+        }
+        
+        $param = [
+            'start' => $start . ' 00:00:00',
+            'end' => $end . ' 23:59:59',
+            'branch' => $branch,
+            'title' => $title
+        ];
+        return Excel::download(new InvoiceExport($param), $title . '.xlsx');
     }
 
     public function create()
@@ -234,7 +264,7 @@ class OrderController extends Controller
             $quota = 300 - array_sum($sum);
         }
 
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => $quota,
             'request' => $request->all(),
@@ -263,7 +293,7 @@ class OrderController extends Controller
         } else {
             $order = "";
         }
-        // return json_encode([
+        // return response()->json([
         //     'req' => $request->isEdit,
         //     'order' => $order
         // ]);
@@ -342,7 +372,7 @@ class OrderController extends Controller
             ])->render();
         }
 
-        return json_encode([
+        return response()->json([
             'status' => $view != "" ? 200 : 401,
             'message' => 'Data retrieve',
             'data' => [
@@ -360,7 +390,7 @@ class OrderController extends Controller
             'package' => Package::all()
         ])->render();
 
-        return json_encode([
+        return response()->json([
             'message' => "Data retrieve",
             'data' => [
                 'view' => $view
@@ -513,7 +543,7 @@ class OrderController extends Controller
         $orderValue = array_values($dataOrder);
         for ($aa = 0; $aa < count($customerValue); $aa++) {
             if ($customerValue[$aa] == null || $customerValue[$aa] == '') {
-                return json_encode([
+                return response()->json([
                     'status' => 400,
                     'message' => 'Pastikan semua field terisi'
                 ]);
@@ -521,7 +551,7 @@ class OrderController extends Controller
         }
         for ($bb = 0; $bb < count($orderValue); $bb++) {
             if ($orderValue[$bb] == null || $orderValue[$bb] == '') {
-                return json_encode([
+                return response()->json([
                     'status' => 400,
                     'message' => 'Pastikan semua field terisi'
                 ]);
@@ -536,7 +566,7 @@ class OrderController extends Controller
             'qty' => $request->qty_order
         ]);
         if (!$validate['status']) {
-            return json_encode([
+            return response()->json([
                 'status' => 400,
                 'message' => 'Jumlah order tidak boleh melebihi ' . $validate['quota']
             ]);
@@ -544,7 +574,7 @@ class OrderController extends Controller
 
         // validation image
         if (!$request->has('proof_of_payment') && !$request->has('kk') && !$request->has('ktp')) {
-            return json_encode([
+            return response()->json([
                 'message' => 'Gambar harus di upload',
                 'status' => 400
             ]);
@@ -554,7 +584,7 @@ class OrderController extends Controller
         $reqPackage = $request->package;
         $validatePackage = $this->validatePackage($reqPackage);
         if (!$validatePackage) {
-            return json_encode([
+            return response()->json([
                 'message' => 'Pastikan detail menu tiap paket telah terisi',
                 'status' => 400
             ]);
@@ -652,14 +682,14 @@ class OrderController extends Controller
             }
 
             DB::commit();
-            return json_encode([
+            return response()->json([
                 'message' => 'Success',
                 'status' => 200,
                 'data' => []
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return json_encode([
+            return response()->json([
                 'status' => 422,
                 'message' => $th->getMessage()
             ]);
@@ -707,7 +737,7 @@ class OrderController extends Controller
         $orderValue = array_values($dataOrder);
         for ($aa = 0; $aa < count($customerValue); $aa++) {
             if ($customerValue[$aa] == null || $customerValue[$aa] == '') {
-                return json_encode([
+                return response()->json([
                     'status' => 400,
                     'message' => 'Pastikan semua field terisi'
                 ]);
@@ -715,7 +745,7 @@ class OrderController extends Controller
         }
         for ($bb = 0; $bb < count($orderValue); $bb++) {
             if ($orderValue[$bb] == null || $orderValue[$bb] == '') {
-                return json_encode([
+                return response()->json([
                     'status' => 400,
                     'message' => 'Pastikan semua field terisi'
                 ]);
@@ -730,7 +760,7 @@ class OrderController extends Controller
             'qty' => $request->qty_order
         ]);
         if (!$validate['status']) {
-            return json_encode([
+            return response()->json([
                 'status' => 400,
                 'message' => 'Jumlah order tidak boleh melebihi ' . $validate['quota']
             ]);
@@ -739,7 +769,7 @@ class OrderController extends Controller
         // validation image
         if ($request->static_file_id == 0) {
             if (!$request->has('proof_of_payment') && !$request->has('kk') && !$request->has('ktp')) {
-                return json_encode([
+                return response()->json([
                     'message' => 'Gambar harus di upload',
                     'status' => 400
                 ]);
@@ -750,7 +780,7 @@ class OrderController extends Controller
         $reqPackage = $request->package;
         $validatePackage = $this->validatePackage($reqPackage);
         if (!$validatePackage) {
-            return json_encode([
+            return response()->json([
                 'message' => 'Pastikan detail menu tiap paket telah terisi',
                 'status' => 400
             ]);
@@ -763,7 +793,7 @@ class OrderController extends Controller
 
         $currentData = Orders::with(['customer', 'orderPackage.package'])->findOrFail($id);
 
-        // return json_encode([
+        // return response()->json([
         //     'currnt' => $currentData,
         //     'order' => $dataOrder,
         //     'customer' => $dataCustomer,
@@ -886,14 +916,14 @@ class OrderController extends Controller
             }
 
             DB::commit();
-            return json_encode([
+            return response()->json([
                 'message' => 'Success',
                 'status' => 200,
                 'data' => []
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
-            return json_encode([
+            return response()->json([
                 'status' => 422,
                 'message' => $th->getMessage()
             ]);
@@ -914,7 +944,7 @@ class OrderController extends Controller
         } else {
             $view = view('order.partials.file-credit', ['order' => $order, 'isEdit' => $isEdit])->render(); 
         }
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => [
                 'view' => $view
@@ -926,7 +956,7 @@ class OrderController extends Controller
         $id = $request->id;
         $villages = Village::where('district_id', $id)->get();
 
-        return json_encode([
+        return response()->json([
             'message' => 'Data retrieve',
             'data' => $villages
         ]);

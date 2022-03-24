@@ -522,7 +522,7 @@
                             icon: "success",
                             button: "Ok",
                         });
-                        let uri = {!! json_encode(url('order/json')) !!}
+                        let uri = {!! response()->json(url('order/json')) !!}
                         let url = uri + '/0/100';
                         setTimeout(() => {
                             window.location.href = url;
