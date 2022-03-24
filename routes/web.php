@@ -69,6 +69,20 @@ Route::group([
 	Route::post('/delete', 'BranchController@delete')->name('branch.delete');
 });
 
+// role
+Route::group([
+	'prefix' => 'role',
+	'middleware' => ['auth']
+], function() {
+	Route::get('/', 'RoleController@index')->name('role.index');
+	Route::get('/edit/{id}', 'RoleController@edit')->name("role.edit");
+	Route::get('/detail/{id}', 'RoleController@detail')->name("role.detail");
+	Route::get('/json/{page}/{limit}', 'RoleController@json')->name("role.json");
+	Route::post('/update', 'RoleController@update')->name('role.update');
+	Route::post('/store', 'RoleController@store')->name('role.store');
+	Route::post('/delete', 'RoleController@delete')->name('role.delete');
+});
+
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], function () {
 	Route::get('/', 'Admin\HomeController@index')->name('home');
 	Route::get('/create', 'Admin\HomeController@create')->name('create');
