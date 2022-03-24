@@ -29,7 +29,7 @@
                 </li>
             </ul>
         </li>
-        <li class="nav-item {{\Request::is('users*') || \Request::is('branch*') ? 'menu-open' : ''}}" class="menu">
+        <li class="nav-item {{\Request::is('users*') || \Request::is('branch*') || \Request::is('role*') ? 'menu-open' : ''}}" class="menu">
             <a href="#" class="nav-link">
                 <i class="nav-icon fa fa-users"></i>
                 <p>
@@ -46,6 +46,11 @@
                 <li class="nav-item {{\Request::routeIs('branch.index') ? 'active' : ''}}">
                     <a href="{{ route('branch.index') }}" class="nav-link" style="width: 100%">
                         <p>Branch</p>
+                    </a>
+                </li>
+                <li class="nav-item {{\Request::routeIs('role.index') ? 'active' : ''}}">
+                    <a href="{{ route('role.index') }}" class="nav-link" style="width: 100%">
+                        <p>Role</p>
                     </a>
                 </li>
             </ul>

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\Role;
 use App\Models\UsersBranch;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class BranchController extends Controller
+class RoleController extends Controller
 {
     private $viewPath;
 
@@ -16,16 +18,16 @@ class BranchController extends Controller
      */
     public function __construct()
     {
-        $this->viewPath = 'users_management.branch';
+        $this->viewPath = 'users_management.role';
     }
 
     /**
      * for list branch ui
      */
     public function index() {
-        $branch = Branch::all();
+        $role = Role::all();
         $data = [
-            'branches' => $branch
+            'roles' => $role
         ];
 
         return view($this->viewPath . '.index')
@@ -38,13 +40,13 @@ class BranchController extends Controller
      * @var JsonResponse
      */
     public function json($page, $limit) {
-        $branch = Branch::select('id', 'name')
+        $role = Role::select('id', 'nama')
             ->skip($page)
             ->limit($limit)
             ->get();
 
         $data = [
-            'branches' => $branch
+            'roles' => $role
         ];
         $view = view($this->viewPath . '.table-list')
             ->with($data)->render();
@@ -78,10 +80,10 @@ class BranchController extends Controller
                 'status' => 422
             ]);
         }
-        $currentData = Branch::where('id', $request->id)->first();
-        if ($currentData->name != $request->name) {
+        $currentData = Role::where('id', $request->id)->first();
+        if ($currentData->nama != $request->name) {
             $name = strtolower($request->name);
-            $check = Branch::whereRaw("LOWER(name) = '$name'")
+            $check = Role::whereRaw("LOWER(nama) = '$name'")
                 ->first();
             if ($check) {
                 return json_encode([
@@ -93,10 +95,10 @@ class BranchController extends Controller
         
         // update
         $payload = [
-            'name' => $request->name
+            'nama' => $request->name
         ];
         try {
-            Branch::where('id', $request->id)
+            Role::where('id', $request->id)
                 ->update($payload);
 
             return json_encode([
@@ -129,7 +131,7 @@ class BranchController extends Controller
                 'status' => 422
             ]);
         }
-        $check = Branch::whereRaw("LOWER(name) = '$request->name'")
+        $check = Role::whereRaw("LOWER(nama) = '$request->name'")
             ->first();
         if ($check) {
             return json_encode([
@@ -140,10 +142,10 @@ class BranchController extends Controller
 
         // store
         $payload = [
-            'name' => $request->name
+            'nama' => $request->name
         ];
         try {
-            Branch::insert($payload);
+            Role::insert($payload);
 
             return json_encode([
                 'message' => 'Save success',
@@ -163,11 +165,11 @@ class BranchController extends Controller
      * @var JsonResponse
      */
     public function edit($id) {
-        $branch = Branch::findOrFail($id);
+        $role = Role::findOrFail($id);
 
         return json_encode([
             'message' => 'Data retrieve',
-            'data' => $branch
+            'data' => $role
         ]);
     }
 
@@ -176,11 +178,11 @@ class BranchController extends Controller
      * @var JsonResponse
      */
     public function detail($id) {
-        $branch = Branch::with(['userBranch', 'orders'])
+        $role = Role::with(['userRole'])
             ->where('id', $id)
             ->first();
         $data = [
-            'branch' => $branch
+            'role' => $role
         ];
         $view = view($this->viewPath . '.detail')
             ->with($data)
@@ -201,8 +203,8 @@ class BranchController extends Controller
     public function delete(Request $request) {
         $id = $request->id;
         // check relation to user
-        $relation = UsersBranch::select('id')
-            ->where('branch_id', $id)
+        $relation = User::select('id')
+            ->where('roles_id', $id)
             ->get();
 
         $isDelete = true;
@@ -213,12 +215,12 @@ class BranchController extends Controller
         try {
             $delete = 0;
             if ($isDelete) {
-                $delete = Branch::where('id', $id)
+                $delete = Role::where('id', $id)
                     ->delete();
             }
     
             return json_encode([
-                'message' => !$isDelete ? 'Hapus gagal, cabang ini masih mempunyai relasi dengan user' : 'Success',
+                'message' => !$isDelete ? 'Hapus gagal, role ini masih mempunyai relasi dengan user' : 'Success',
                 'status' => !$isDelete ? 422 : 200
             ]);
         } catch (\Throwable $th) {
