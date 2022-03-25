@@ -219,6 +219,12 @@
 </style>
 @endsection
 @section('content')
+{{-- errors --}}
+@if ($errors->any())
+    <div class="alert alert-danger" role="alert">
+        <h5>{{ $errors->first() }}</h5>
+    </div>
+@endif
 <div class="card card_list_order">
     <div class="card-body">
         <div class="card_title">
@@ -386,19 +392,18 @@
             $("#myPopover").popover({
                 title : "Default popover title"
             });
-        })
-        // function exportData() {
-        //     let data = $('#form-export').serialize();
 
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "{{ route('order.export') }}",
-        //         data: data,
-        //         success: function(res) {
-        //             console.log(res);
-        //         }
-        //     })
-        // }
+            // action onchange modal
+            $('#modalExport').on('hidden.bs.modal', function (event) {
+                let elem = $('.timeline_box');
+                for (let a = 0; a < elem.length; a++) {
+                    elem[a].classList.remove('active')
+                }
+                document.getElementById('form-export').reset();
+                // hide form
+                $('#form-group-export').addClass('d-none');
+            })
+        })
         function optionExport() {
             // get branch list
             $.ajax({
