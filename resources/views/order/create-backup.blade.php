@@ -202,7 +202,7 @@
                                         </select>
                                     </div>
                                     <div class="col-6">
-                                        <label for="">Nomor</label>
+                                        <label for="">Nomor HP</label>
                                         <input type="number" class="form-control"
                                             name="number_2">
                                     </div>
@@ -294,7 +294,7 @@
                                     <div class="col">
                                         <label for="">Jenis pembayaran</label>
                                         <select name="payment" class="form-control"
-                                            id="" onchange="showFileUploader(this.value)">
+                                            id="payment_type_field" onchange="showFileUploader(this.value)">
                                             <option value="" selected disabled>-- Pilih Pembayaran --</option>
                                             @foreach ($payment as $pay)
                                                 <option value="{{ $pay->id }}">
@@ -494,6 +494,7 @@
         $('#form-order').on('submit', (function(e) {
             e.preventDefault();
             // validation quota
+            let paymentType = $('#payment_type_field').val();
             let quota = $('#quota').val();
             let qtyOrder = $('#qty_order').val();
             let data = new FormData(this);
@@ -515,7 +516,9 @@
                             button: "Ok",
                         });
                         // clear dropify
-                        clearDropify();
+                        if (paymentType != null) {
+                            clearDropify();
+                        }
                         // reset form
                         document.getElementById('form-order').reset();
                     } else {
@@ -535,7 +538,9 @@
                         icon: "warning",
                         button: "Ok"
                     })
-                    clearDropify();
+                    if (paymentType != null) {
+                        clearDropify();
+                    }
                 }
             });
         }))

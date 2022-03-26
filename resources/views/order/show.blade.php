@@ -50,6 +50,10 @@
         color: #fff;
         font-size: 16px;
     }
+
+    label {
+        text-transform: capitalize !important;
+    }
 </style>
 @endsection
 @section('content')
@@ -214,7 +218,7 @@
                                         </select>
                                     </div>
                                     <div class="col-6">
-                                        <label for="">Nomor</label>
+                                        <label for="">Nomor HP</label>
                                         <input type="number" class="form-control"
                                             name="number_2" value="{{ $order->customer->phone_2 }}">
                                     </div>
@@ -307,7 +311,7 @@
                                     <div class="col">
                                         <label for="">Jenis pembayaran</label>
                                         <select name="payment" class="form-control"
-                                            id="" onchange="showFileUploader(this.value)"
+                                            id="payment_type_field_edit" onchange="showFileUploader(this.value)"
                                             value="{{ $order->payment_id }}">
                                             <option value="" selected disabled>-- Pilih Pembayaran --</option>
                                             @foreach ($payment as $pay)
@@ -552,7 +556,6 @@
 
         $('#form-order-update').on('submit', (function(e) {
             e.preventDefault();
-            // validation quota
             let quota = $('#quota').val();
             let qtyOrder = $('#qty_order').val();
             let data = new FormData(this);
