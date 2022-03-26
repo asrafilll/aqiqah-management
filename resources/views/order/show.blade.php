@@ -119,6 +119,10 @@
                         </div>
                     </div> --}}
 
+                    {{-- branch id --}}
+                    <input type="text" class="form-control" id="branchId" hidden
+                        value="{{ $order->branch->id }}" name="branchId">
+
                     {{-- data leads --}}
                     <div class="">
                         <button class="btn btn-collapse w-100 text-left"
@@ -154,6 +158,18 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-row">
+                                    <div class="col-12">
+                                        <label for="">Market Temperature</label>
+                                        <select name="market_temperature" class="form-control"
+                                            id="">
+                                            <option value="" selected disabled>-- Pilih Temperature --</option>
+                                            <option value="1" {{ $order->market_temperature == 1 ? 'selected' : '' }}>Cold</option>
+                                            <option value="2" {{ $order->market_temperature == 2 ? 'selected' : '' }}>Warm</option>
+                                            <option value="3" {{ $order->market_temperature == 3 ? 'selected' : '' }}>Hot</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -177,9 +193,15 @@
                                     </div>
                                     <div class="col-6">
                                         <label for="">Tanggal lahir</label>
-                                        <input type="date" class="form-control"
-                                            name="birth_of_date" 
-                                            value="{{ date('Y-m-d', strtotime($order->customer->birth_of_date)) }}">
+                                        @if ($order->customer->birth_of_date == null || $order->customer->birth_of_date == '')
+                                            <input type="date" class="form-control"
+                                                name="birth_of_date" 
+                                                value="">
+                                        @else
+                                            <input type="date" class="form-control"
+                                                name="birth_of_date" 
+                                                value="{{ date('Y-m-d', strtotime($order->customer->birth_of_date)) }}">
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="form-row">
@@ -419,8 +441,8 @@
                                     </div>
                                 </div>
                             </div>
-                            @for ($i = 0; $i < count($orderPackage); $i++)
-                                <div class="card card-body card_package" id="card_package_{{ $i + 1 }}">
+                            @if (count($orderPackage) == 0)
+                                <div class="card card-body card_package" id="card_package_1">
                                     <div class="floating_button d-none">
                                         <button class="btn btn-primary btn_add_package"
                                             type="button" id="btn_add_package_0"
@@ -432,22 +454,51 @@
                                     <div class="form-row">
                                         <div class="col">
                                             <label for="">Jenis Paket</label>
-                                            <select name="package[{{$i}}][package_id]" class="form-control"
-                                                onchange="selectDetailPackage(this.value, {{$i}}, 'new')" id="check-{{ $i }}"
-                                                value="{{ $orderPackage[$i]['package_id'] }}">
+                                            <select name="package[0][package_id]" class="form-control"
+                                                onchange="selectDetailPackage(this.value, 0, 'new')" id="check-0"
+                                                value="">
                                                 <option value="" selected disabled>-- Pilih Paket --</option>
                                                 @foreach ($package as $pack)
-                                                    <option value="{{ $pack->id }}"
-                                                        {{ $orderPackage[$i]['package_id'] == $pack->id ? 'selected' : '' }}>
+                                                    <option value="{{ $pack->id }}">
                                                         {{ $pack->name }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="form-row" id="target-package-detail-{{ $i }}"></div>
+                                    <div class="form-row" id="target-package-detail-0"></div>
                                 </div>
-                            @endfor
+                            @else
+                                @for ($i = 0; $i < count($orderPackage); $i++)
+                                    <div class="card card-body card_package" id="card_package_{{ $i + 1 }}">
+                                        <div class="floating_button d-none">
+                                            <button class="btn btn-primary btn_add_package"
+                                                type="button" id="btn_add_package_0"
+                                                onclick="addPackage()"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <label for="">Jenis Paket</label>
+                                                <select name="package[{{$i}}][package_id]" class="form-control"
+                                                    onchange="selectDetailPackage(this.value, {{$i}}, 'new')" id="check-{{ $i }}"
+                                                    value="{{ $orderPackage[$i]['package_id'] }}">
+                                                    <option value="" selected disabled>-- Pilih Paket --</option>
+                                                    @foreach ($package as $pack)
+                                                        <option value="{{ $pack->id }}"
+                                                            {{ $orderPackage[$i]['package_id'] == $pack->id ? 'selected' : '' }}>
+                                                            {{ $pack->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-row" id="target-package-detail-{{ $i }}"></div>
+                                    </div>
+                                @endfor
+                            @endif
                             <div id="target_package"></div>
                         </div>
                     </div>
@@ -483,7 +534,7 @@
             theme: "bootstrap"
         });
         // get quota
-        checkQuota();
+        // checkQuota();
         // show uploaded file
         showFileUploader("{{ $order->payment_id }}", true);
         // set package 
@@ -522,8 +573,7 @@
                             icon: "success",
                             button: "Ok",
                         });
-                        let uri = {!! response()->json(url('order/json')) !!}
-                        let url = uri + '/0/100';
+                        let url = "{{ route('order.index') }}";
                         setTimeout(() => {
                             window.location.href = url;
                         }, 500);
@@ -585,13 +635,15 @@
             },
             dataType: "json",
             success: function(res) {
-                $('.target-file').html(res.data.view);
-                // init dropify
-                $('.dropify').dropify({
-                    messages: {
-                        'default': 'Upload file'
-                    }
-                })
+                if (value != '') {
+                    $('.target-file').html(res.data.view);
+                    // init dropify
+                    $('.dropify').dropify({
+                        messages: {
+                            'default': 'Upload file'
+                        }
+                    })
+                }
             }
         })
     }

@@ -53,6 +53,10 @@
         color: #fff;
         font-size: 16px;
     }
+
+    label {
+        text-transform: capitalize !important;
+    }
 </style>
 @endsection
 @section('content')
@@ -149,6 +153,18 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-row">
+                                    <div class="col-12">
+                                        <label for="">Market Temperature</label>
+                                        <select name="market_temperature" class="form-control"
+                                            id="">
+                                            <option value="" selected disabled>-- Pilih Temperature --</option>
+                                            <option value="1">Cold</option>
+                                            <option value="2">Warm</option>
+                                            <option value="3">Hot</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -172,14 +188,14 @@
                                             name="name_of_aqiqah">
                                     </div>
                                     <div class="col-6">
-                                        <label for="">Tanggal lahir</label>
+                                        <label for="">Tanggal Lahir</label>
                                         <input type="date" class="form-control"
                                             name="birth_of_date">
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col-6">
-                                        <label for="">Jenis kelamin</label>
+                                        <label for="">Jenis Kelamin</label>
                                         <select name="gender_of_aqiqah" class="form-control" id="">
                                             <option value="1">Laki - laki</option>
                                             <option value="2">Perempuan</option>
@@ -459,6 +475,13 @@
         });
         $("#village_select").select2({
             theme: "bootstrap"
+        });
+
+        //  init daterangepicker
+        $('input[name="daterange"]').daterangepicker({
+            opens: 'left'
+        }, function(start, end, label) {
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
         });
 
         // currency format
