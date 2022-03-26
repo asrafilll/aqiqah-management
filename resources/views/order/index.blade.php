@@ -316,12 +316,12 @@
                         <div class="timeline_box"
                             id="timeline_week"
                             onclick="chooseTimeline('week')">
-                            <p class="timeline_text">Week</p>
+                            <p class="timeline_text">This Week</p>
                         </div>
                         <div class="timeline_box"
                             id="timeline_month"
                             onclick="chooseTimeline('month')">
-                            <p class="timeline_text">Month</p>
+                            <p class="timeline_text">This Month</p>
                         </div>
                         <div class="timeline_box"
                             id="timeline_custom"

@@ -202,7 +202,7 @@
                                         </select>
                                     </div>
                                     <div class="col-6">
-                                        <label for="">Nomor</label>
+                                        <label for="">Nomor HP</label>
                                         <input type="number" class="form-control"
                                             name="number_2">
                                     </div>

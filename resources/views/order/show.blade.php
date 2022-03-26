@@ -50,6 +50,10 @@
         color: #fff;
         font-size: 16px;
     }
+
+    label {
+        text-transform: capitalize !important;
+    }
 </style>
 @endsection
 @section('content')
@@ -214,7 +218,7 @@
                                         </select>
                                     </div>
                                     <div class="col-6">
-                                        <label for="">Nomor</label>
+                                        <label for="">Nomor HP</label>
                                         <input type="number" class="form-control"
                                             name="number_2" value="{{ $order->customer->phone_2 }}">
                                     </div>
