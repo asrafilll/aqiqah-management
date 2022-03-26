@@ -22,7 +22,7 @@
                         <p>New Order</p>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item {{\Request::routeIs('order.index') ? 'active' : ''}}">
                     <a href="{{ route('order.index') }}" class="nav-link" style="width: 100%">
                         <p>Order List</p>
                     </a>

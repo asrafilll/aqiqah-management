@@ -36,7 +36,8 @@ class InvoiceExport implements FromView,ShouldAutoSize
                 'orderPackage.rice.rice',
                 'orderPackage.egg.egg',
                 'customer.district', 'payment',
-                'createdBy'
+                'createdBy',
+                'branch'
             ])
             ->whereRaw("send_date >= '$this->start' AND send_date <= '$this->end' AND branch_id = $this->branch")
             ->get();

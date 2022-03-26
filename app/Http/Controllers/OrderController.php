@@ -522,7 +522,6 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $dataCustomer = [
-            'market_temperature' => $request->market_temperature,
             'name' => $request->name,
             'name_of_aqiqah' => $request->name_of_aqiqah,
             'gender_of_aqiqah' => $request->gender_of_aqiqah,
@@ -538,6 +537,7 @@ class OrderController extends Controller
             'created_at' => Carbon::now()
         ];
         $dataOrder = [
+            'market_temperature' => $request->market_temperature,
             'payment_id' => $request->payment,
             'branch_id' => $request->branchId,
             'send_date' => $request->send_date . ' ' . $request->send_time,
