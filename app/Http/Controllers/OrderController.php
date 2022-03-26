@@ -522,6 +522,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $dataCustomer = [
+            'market_temperature' => $request->market_temperature,
             'name' => $request->name,
             'name_of_aqiqah' => $request->name_of_aqiqah,
             'gender_of_aqiqah' => $request->gender_of_aqiqah,
@@ -546,66 +547,57 @@ class OrderController extends Controller
             'number_of_goats' => $request->number_of_goats,
             'gender_of_goats' => $request->gender_of_goats,
             'type_order_id' => $request->type_order,
-            'maklon' => $request->maklon,
-            'qty' => $request->qty_order,
+            'maklon' => $request->maklon ?? 0,
+            'qty' => $request->qty_order ?? 0,
             'shipping_id' => $request->shipping,
             'source_order_id' => $request->source_order,
-            'total' => $request->total,
+            'total' => $request->total ?? 0,
             'created_by' => Auth::user()->id,
             'created_at' => Carbon::now()
         ];
 
         // validation input field
-        $customerValue = array_values($dataCustomer);
-        $orderValue = array_values($dataOrder);
-        for ($aa = 0; $aa < count($customerValue); $aa++) {
-            if ($customerValue[$aa] == null || $customerValue[$aa] == '') {
-                return response()->json([
-                    'status' => 400,
-                    'message' => 'Pastikan semua field terisi'
-                ]);
-            }
-        }
-        for ($bb = 0; $bb < count($orderValue); $bb++) {
-            if ($orderValue[$bb] == null || $orderValue[$bb] == '') {
-                return response()->json([
-                    'status' => 400,
-                    'message' => 'Pastikan semua field terisi'
-                ]);
-            }
+        if ($request->name == "" || $request->phone_1 == ''||
+        $request->source_order == '' || $request->market_temperature == '') {
+            return response()->json([
+                'message' => 'Pastikan semua field data leads terisi',
+                'data' => []
+            ]);
         }
 
         // validate quota
-        $validate = $this->validateQuota([
-            'branch_id' => $request->branchId,
-            'send_date' => $request->send_date,
-            'send_time' => $request->send_time,
-            'qty' => $request->qty_order
-        ]);
-        if (!$validate['status']) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'Jumlah order tidak boleh melebihi ' . $validate['quota']
+        if ($request->qty_order != '') {
+            $validate = $this->validateQuota([
+                'branch_id' => $request->branchId,
+                'send_date' => $request->send_date,
+                'send_time' => $request->send_time,
+                'qty' => $request->qty_order
             ]);
+            if (!$validate['status']) {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Jumlah order tidak boleh melebihi ' . $validate['quota']
+                ]);
+            }
         }
 
         // validation image
-        if (!$request->has('proof_of_payment') && !$request->has('kk') && !$request->has('ktp')) {
-            return response()->json([
-                'message' => 'Gambar harus di upload',
-                'status' => 400
-            ]);
-        }
+        // if (!$request->has('proof_of_payment') && !$request->has('kk') && !$request->has('ktp')) {
+        //     return response()->json([
+        //         'message' => 'Gambar harus di upload',
+        //         'status' => 400
+        //     ]);
+        // }
 
         // validation package
-        $reqPackage = $request->package;
-        $validatePackage = $this->validatePackage($reqPackage);
-        if (!$validatePackage) {
-            return response()->json([
-                'message' => 'Pastikan detail menu tiap paket telah terisi',
-                'status' => 400
-            ]);
-        }        
+        // $reqPackage = $request->package;
+        // $validatePackage = $this->validatePackage($reqPackage);
+        // if (!$validatePackage) {
+        //     return response()->json([
+        //         'message' => 'Pastikan detail menu tiap paket telah terisi',
+        //         'status' => 400
+        //     ]);
+        // }
 
         // append new value to dataOrder
         $dataOrder['notes'] = $request->notes;
@@ -637,64 +629,65 @@ class OrderController extends Controller
                 $dataOrder['ktp_img'] = 'uploaded_files/customers/' . $name;
             }
             $order = Orders::insertGetId($dataOrder);
-
             // insert many to many relation
-            for ($a = 0; $a < count($request->package); $a++) {
-                // insert to order package table
-                $orderPackge = OrderPackage::insertGetId([
-                    'package_id' => $request->package[$a]['package_id'],
-                    'order_id' => $order,
-                    'created_at' => Carbon::now()
-                ]);
-
-                // insert to relation
-                if (isset($request->package[$a]['meat_menu'])) {
-                    PackageMeat::insert([
-                        'order_id' => $orderPackge,
+            if ($request->has('package')) {
+                for ($a = 0; $a < count($request->package); $a++) {
+                    // insert to order package table
+                    $orderPackge = OrderPackage::insertGetId([
                         'package_id' => $request->package[$a]['package_id'],
-                        'meat_menu_id' => $request->package[$a]['meat_menu'],    
+                        'order_id' => $order,
                         'created_at' => Carbon::now()
                     ]);
-                }
-                if (isset($request->package[$a]['offal_menu'])) {
-                    PackageOffal::insert([
-                        'order_id' => $orderPackge,
-                        'package_id' => $request->package[$a]['package_id'],
-                        'offal_menu_id' => $request->package[$a]['offal_menu'],
-                        'created_at' => Carbon::now()
-                    ]);
-                }
-                if (isset($request->package[$a]['rice_menu'])) {
-                    PackageRice::insert([
-                        'order_id' => $orderPackge,
-                        'package_id' => $request->package[$a]['package_id'],
-                        'rice_menu_id' => $request->package[$a]['rice_menu'],
-                        'created_at' => Carbon::now()
-                    ]);
-                }
-                if (isset($request->package[$a]['vegetable_menu'])) {
-                    PackageVegetable::insert([
-                        'order_id' => $orderPackge,
-                        'package_id' => $request->package[$a]['package_id'],
-                        'vegetable_menu_id' => $request->package[$a]['vegetable_menu'],
-                        'created_at' => Carbon::now()
-                    ]);
-                }
-                if (isset($request->package[$a]['egg_menu'])) {
-                    PackageEgg::insert([
-                        'order_id' => $orderPackge,
-                        'package_id' => $request->package[$a]['package_id'],
-                        'egg_menu_id' => $request->package[$a]['egg_menu'],
-                        'created_at' => Carbon::now()
-                    ]);
-                }
-                if (isset($request->package[$a]['chicken_menu'])) {
-                    PackageChicken::insert([
-                        'order_id' => $orderPackge,
-                        'package_id' => $request->package[$a]['package_id'],
-                        'chicken_menu_id' => $request->package[$a]['chicken_menu'],
-                        'created_at' => Carbon::now()
-                    ]);
+    
+                    // insert to relation
+                    if (isset($request->package[$a]['meat_menu'])) {
+                        PackageMeat::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'meat_menu_id' => $request->package[$a]['meat_menu'],    
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
+                    if (isset($request->package[$a]['offal_menu'])) {
+                        PackageOffal::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'offal_menu_id' => $request->package[$a]['offal_menu'],
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
+                    if (isset($request->package[$a]['rice_menu'])) {
+                        PackageRice::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'rice_menu_id' => $request->package[$a]['rice_menu'],
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
+                    if (isset($request->package[$a]['vegetable_menu'])) {
+                        PackageVegetable::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'vegetable_menu_id' => $request->package[$a]['vegetable_menu'],
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
+                    if (isset($request->package[$a]['egg_menu'])) {
+                        PackageEgg::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'egg_menu_id' => $request->package[$a]['egg_menu'],
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
+                    if (isset($request->package[$a]['chicken_menu'])) {
+                        PackageChicken::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'chicken_menu_id' => $request->package[$a]['chicken_menu'],
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
                 }
             }
 
@@ -731,6 +724,7 @@ class OrderController extends Controller
             'created_at' => Carbon::now()
         ];
         $dataOrder = [
+            'market_temperature' => $request->market_temperature,
             'payment_id' => $request->payment,
             'branch_id' => $request->branchId,
             'send_date' => $request->send_date . ' ' . $request->send_time,
@@ -740,8 +734,8 @@ class OrderController extends Controller
             'number_of_goats' => $request->number_of_goats,
             'gender_of_goats' => $request->gender_of_goats,
             'type_order_id' => $request->type_order,
-            'maklon' => $request->maklon,
-            'qty' => $request->qty_order,
+            'maklon' => $request->maklon ?? 0,
+            'qty' => $request->qty_order ?? 0,
             'shipping_id' => $request->shipping,
             'source_order_id' => $request->source_order,
             'total' => $request->total,
@@ -750,58 +744,49 @@ class OrderController extends Controller
         ];
 
         // validation input field
-        $customerValue = array_values($dataCustomer);
-        $orderValue = array_values($dataOrder);
-        for ($aa = 0; $aa < count($customerValue); $aa++) {
-            if ($customerValue[$aa] == null || $customerValue[$aa] == '') {
-                return response()->json([
-                    'status' => 400,
-                    'message' => 'Pastikan semua field terisi'
-                ]);
-            }
-        }
-        for ($bb = 0; $bb < count($orderValue); $bb++) {
-            if ($orderValue[$bb] == null || $orderValue[$bb] == '') {
-                return response()->json([
-                    'status' => 400,
-                    'message' => 'Pastikan semua field terisi'
-                ]);
-            }
+        if ($request->name == "" || $request->phone_1 == ''||
+        $request->source_order == '' || $request->market_temperature == '') {
+            return response()->json([
+                'message' => 'Pastikan semua field data leads terisi',
+                'data' => []
+            ]);
         }
 
         // validate quota
-        $validate = $this->validateQuota([
-            'branch_id' => $request->branchId,
-            'send_date' => $request->send_date,
-            'send_time' => $request->send_time,
-            'qty' => $request->qty_order
-        ]);
-        if (!$validate['status']) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'Jumlah order tidak boleh melebihi ' . $validate['quota']
+        if ($request->qty_order != '' || $request->qty_order == 0) {
+            $validate = $this->validateQuota([
+                'branch_id' => $request->branchId,
+                'send_date' => $request->send_date,
+                'send_time' => $request->send_time,
+                'qty' => $request->qty_order
             ]);
-        }
-
-        // validation image
-        if ($request->static_file_id == 0) {
-            if (!$request->has('proof_of_payment') && !$request->has('kk') && !$request->has('ktp')) {
+            if (!$validate['status']) {
                 return response()->json([
-                    'message' => 'Gambar harus di upload',
-                    'status' => 400
+                    'status' => 400,
+                    'message' => 'Jumlah order tidak boleh melebihi ' . $validate['quota']
                 ]);
             }
         }
 
+        // validation image
+        // if ($request->static_file_id == 0) {
+        //     if (!$request->has('proof_of_payment') && !$request->has('kk') && !$request->has('ktp')) {
+        //         return response()->json([
+        //             'message' => 'Gambar harus di upload',
+        //             'status' => 400
+        //         ]);
+        //     }
+        // }
+
         // validation package
-        $reqPackage = $request->package;
-        $validatePackage = $this->validatePackage($reqPackage);
-        if (!$validatePackage) {
-            return response()->json([
-                'message' => 'Pastikan detail menu tiap paket telah terisi',
-                'status' => 400
-            ]);
-        }  
+        // $reqPackage = $request->package;
+        // $validatePackage = $this->validatePackage($reqPackage);
+        // if (!$validatePackage) {
+        //     return response()->json([
+        //         'message' => 'Pastikan detail menu tiap paket telah terisi',
+        //         'status' => 400
+        //     ]);
+        // }  
 
         // append new value to dataOrder
         $dataOrder['notes'] = $request->notes;
@@ -847,88 +832,90 @@ class OrderController extends Controller
                 ->update($dataOrder);
 
             // delete current reletion
-            for ($x = 0; $x < count($currentData->orderPackage); $x++) {
-                // delete current realtion
-                PackageMeat::where('order_id', $currentData->orderPackage[$x]['id'])
-                    ->delete();
-                 // delete current realtion
-                 PackageOffal::where('order_id', $currentData->orderPackage[$x]['id'])
-                    ->delete();
-                // delete current realtion
-                PackageRice::where('order_id', $currentData->orderPackage[$x]['id'])
-                    ->delete();
-                 // delete current realtion
-                PackageVegetable::where('order_id', $currentData->orderPackage[$x]['id'])
-                    ->delete();
-                // delete current realtion
-                PackageEgg::where('order_id', $currentData->orderPackage[$x]['id'])
-                    ->delete();
-                // delete current realtion
-                PackageChicken::where('order_id', $currentData->orderPackage[$x]['id'])
-                    ->delete();
-                
-                // delete current orderPackage
-                OrderPackage::where('id', $currentData->orderPackage[$x]['id'])
-                    ->delete();
-            }
-
-            // insert many to many relation
-            for ($a = 0; $a < count($request->package); $a++) {
-                // insert to order package table
-                $orderPackge = OrderPackage::insertGetId([
-                    'package_id' => $request->package[$a]['package_id'],
-                    'order_id' => $id,
-                    'created_at' => Carbon::now()
-                ]);
-
-                // insert to relation
-                if (isset($request->package[$a]['meat_menu'])) {
-                    PackageMeat::insert([
-                        'order_id' => $orderPackge,
-                        'package_id' => $request->package[$a]['package_id'],
-                        'meat_menu_id' => $request->package[$a]['meat_menu'],    
-                        'created_at' => Carbon::now()
-                    ]);
+            if ($request->has('package')) {
+                for ($x = 0; $x < count($currentData->orderPackage); $x++) {
+                    // delete current realtion
+                    PackageMeat::where('order_id', $currentData->orderPackage[$x]['id'])
+                        ->delete();
+                     // delete current realtion
+                     PackageOffal::where('order_id', $currentData->orderPackage[$x]['id'])
+                        ->delete();
+                    // delete current realtion
+                    PackageRice::where('order_id', $currentData->orderPackage[$x]['id'])
+                        ->delete();
+                     // delete current realtion
+                    PackageVegetable::where('order_id', $currentData->orderPackage[$x]['id'])
+                        ->delete();
+                    // delete current realtion
+                    PackageEgg::where('order_id', $currentData->orderPackage[$x]['id'])
+                        ->delete();
+                    // delete current realtion
+                    PackageChicken::where('order_id', $currentData->orderPackage[$x]['id'])
+                        ->delete();
+                    
+                    // delete current orderPackage
+                    OrderPackage::where('id', $currentData->orderPackage[$x]['id'])
+                        ->delete();
                 }
-                if (isset($request->package[$a]['offal_menu'])) {
-                    PackageOffal::insert([
-                        'order_id' => $orderPackge,
+    
+                // insert many to many relation
+                for ($a = 0; $a < count($request->package); $a++) {
+                    // insert to order package table
+                    $orderPackge = OrderPackage::insertGetId([
                         'package_id' => $request->package[$a]['package_id'],
-                        'offal_menu_id' => $request->package[$a]['offal_menu'],
+                        'order_id' => $id,
                         'created_at' => Carbon::now()
                     ]);
-                }
-                if (isset($request->package[$a]['rice_menu'])) {
-                    PackageRice::insert([
-                        'order_id' => $orderPackge,
-                        'package_id' => $request->package[$a]['package_id'],
-                        'rice_menu_id' => $request->package[$a]['rice_menu'],
-                        'created_at' => Carbon::now()
-                    ]);
-                }
-                if (isset($request->package[$a]['vegetable_menu'])) {
-                    PackageVegetable::insert([
-                        'order_id' => $orderPackge,
-                        'package_id' => $request->package[$a]['package_id'],
-                        'vegetable_menu_id' => $request->package[$a]['vegetable_menu'],
-                        'created_at' => Carbon::now()
-                    ]);
-                }
-                if (isset($request->package[$a]['egg_menu'])) {
-                    PackageEgg::insert([
-                        'order_id' => $orderPackge,
-                        'package_id' => $request->package[$a]['package_id'],
-                        'egg_menu_id' => $request->package[$a]['egg_menu'],
-                        'created_at' => Carbon::now()
-                    ]);
-                }
-                if (isset($request->package[$a]['chicken_menu'])) {
-                    PackageChicken::insert([
-                        'order_id' => $orderPackge,
-                        'package_id' => $request->package[$a]['package_id'],
-                        'chicken_menu_id' => $request->package[$a]['chicken_menu'],
-                        'created_at' => Carbon::now()
-                    ]);
+    
+                    // insert to relation
+                    if (isset($request->package[$a]['meat_menu'])) {
+                        PackageMeat::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'meat_menu_id' => $request->package[$a]['meat_menu'],    
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
+                    if (isset($request->package[$a]['offal_menu'])) {
+                        PackageOffal::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'offal_menu_id' => $request->package[$a]['offal_menu'],
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
+                    if (isset($request->package[$a]['rice_menu'])) {
+                        PackageRice::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'rice_menu_id' => $request->package[$a]['rice_menu'],
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
+                    if (isset($request->package[$a]['vegetable_menu'])) {
+                        PackageVegetable::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'vegetable_menu_id' => $request->package[$a]['vegetable_menu'],
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
+                    if (isset($request->package[$a]['egg_menu'])) {
+                        PackageEgg::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'egg_menu_id' => $request->package[$a]['egg_menu'],
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
+                    if (isset($request->package[$a]['chicken_menu'])) {
+                        PackageChicken::insert([
+                            'order_id' => $orderPackge,
+                            'package_id' => $request->package[$a]['package_id'],
+                            'chicken_menu_id' => $request->package[$a]['chicken_menu'],
+                            'created_at' => Carbon::now()
+                        ]);
+                    }
                 }
             }
 

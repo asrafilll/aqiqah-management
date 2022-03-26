@@ -9,7 +9,7 @@
             <td>
                 <div class="order_details">
                     <p class="order_details_text">
-                        {{ $d->packageMenu }}
+                        {{ $d->packageMenu == null ? 'Belum ada paket yang dipilih' : $d->packageMenu }}
                     </p>
                     <p class="order_details_helper">
                         Updated 1 day ago
@@ -39,7 +39,7 @@
             <td>
                 <div class="order_details">
                     <p class="order_details_text">
-                        {{ $d->shipping->name }}
+                        {{ $d->shipping ?? '-' }}
                     </p>
                 </div>
             </td>

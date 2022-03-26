@@ -270,7 +270,7 @@
                     <th>Order Details</th>
                     <th>Customer Name</th>
                     <th>Date</th>
-                    <th>Priority</th>
+                    <th>Keterangan</th>
                     <th></th>
                 </tr>
             </thead>
