@@ -14,6 +14,29 @@
 </style>
 @endsection
 @section('content')
+@php
+    // address
+    $address = "";
+    $village = "";
+    $district = "";
+    $postalcode = "";
+    if ($data->customer->village != '') {
+        $village = $data->customer->village->name;
+    }
+    if ($data->customer->district != '') {
+        $district = $data->customer->district->name;
+    }
+    if ($data->customer->postalcode != '') {
+        $postalcode = $data->customer->postalcode;
+    }
+    $address = $data->customer->address . ' ' . $village . ' ' . $district . ' ' . $postalcode;
+
+    // payment
+    $payment = "";
+    if ($data->payment != '') {
+        $payment = $data->payment->name;
+    }
+@endphp
 <div class="row">
     <div class="col">
         <div class="card card-body">
@@ -77,7 +100,7 @@
                         <td>Alamat</td>
                         <td>:</td>
                         <td>
-                            {{ $data->customer->address . ', ' . $data->customer->village->name . ', ' . $data->customer->district->name . ', ' . $data->customer->postalcode }}
+                            {{ $address }}
                         </td>
                     </tr>
                 </tbody>
@@ -92,7 +115,7 @@
                         <td>Jenis Pembayaran</td>
                         <td>:</td>
                         <td>
-                            {{ $data->payment->name }}
+                            {{ $payment }}
                         </td>
                     </tr>
                     <tr>
@@ -191,7 +214,7 @@
                         <td>Metode Pembayaran</td>
                         <td>:</td>
                         <td>
-                            {{ $data->payment->name }}
+                            {{ $payment }}
                         </td>
                     </tr>
                 </tbody>
@@ -199,12 +222,4 @@
         </div>
     </div>
 </div>
-@endsection
-@section('scripts')
-<script>
-    $(document).ready(function() {
-        // set ajax header
-        
-    })
-</script>
 @endsection
