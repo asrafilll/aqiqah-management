@@ -672,12 +672,22 @@
             },
             dataType: 'json',
             success: (res) => {
-                console.log(res)
                 if (res.status == 200) {
                     $('#target-package-detail-' + index).html(res.data.view);
                 }
             }
         })
+    }
+
+    function freeTextChange(value, param) {
+        if (value == 'free_text') {
+            $('#' + param + '_menu_option').removeClass('d-none');
+            $('#' + param + '_menu_input').removeClass('d-none');
+            $('#' + param + '_menu_input').focus();
+        } else {
+            $('#' + param + '_menu_input').addClass('d-none');
+            $('#' + param + '_menu_input_text').val('');
+        }
     }
 </script>
 @endsection

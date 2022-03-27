@@ -296,19 +296,25 @@ class OrderController extends Controller
     public function getDetailPackage(Request $request) {
         $id = $request->packageId;
         $index = $request->index;
-        $meat = MeatMenu::all();
-        $offal = OffalMenu::all();
-        $egg = EggMenu::all();
-        $chicken = ChickenMenu::all();
+        $meat = MeatMenu::where('is_custom', false)->get();
+        $offal = OffalMenu::where('is_custom', false)->get();
+        $egg = EggMenu::where('is_custom', false)->get();
+        $chicken = ChickenMenu::where('is_custom', false)->get();
         $rice = RiceMenu::all();
         $vegie = VegetableMenu::all();
 
         $order = "";
         if ($request->isEdit == 'edit') {
             $order = Orders::where('id', $request->orderId)
-                ->with(['orderPackage.package'])->first();
-        } else {
-            $order = "";
+                ->with([
+                    'orderPackage.package',
+                    'orderPackage.meat.meat',
+                    'orderPackage.offal.offal',
+                    'orderPackage.chicken.chicken',
+                    'orderPackage.vegie.vegie',
+                    'orderPackage.rice.rice',
+                    'orderPackage.egg.egg', 
+                ])->first();
         }
         // return response()->json([
         //     'req' => $request->isEdit,
@@ -330,6 +336,7 @@ class OrderController extends Controller
                 'meats' => $meat,
                 'offals' => $offal,
                 'rices' => $rice,
+                'vegies' => $vegie,
                 'index' => $index,
                 'order' => $order
             ])->render();
@@ -521,6 +528,9 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
+        // return response()->json([
+        //     'data' => $request->all()
+        // ]);
         $dataCustomer = [
             'name' => $request->name,
             'name_of_aqiqah' => $request->name_of_aqiqah,
@@ -641,20 +651,58 @@ class OrderController extends Controller
     
                     // insert to relation
                     if (isset($request->package[$a]['meat_menu'])) {
-                        PackageMeat::insert([
+                        $packageMeatItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
                             'meat_menu_id' => $request->package[$a]['meat_menu'],    
                             'created_at' => Carbon::now()
-                        ]);
+                        ];
+                        if ($request->package[$a]['meat_menu'] == 'free_text') {
+                            // insert new type free text in meat menu table
+                            if ($request->package[$a]['meat_menu_custom'] != '') {
+                                // check if new name is already saved in database
+                                $checkFreeMeat = MeatMenu::whereRaw("LOWER(name) = '" . strtolower($request->package[$a]['meat_menu_custom']) . "'")
+                                    ->first();
+                                if ($checkFreeMeat != '' || $checkFreeMeat != null) {
+                                    $freeMeatId = $checkFreeMeat->id;
+                                } else {
+                                    $freeMeatId = MeatMenu::insertGetId([
+                                        'name' => $request->package[$a]['meat_menu_custom'],
+                                        'is_custom' => true,
+                                        'created_at' => Carbon::now()
+                                    ]);
+                                }
+                                $packageMeatItem['meat_menu_id'] = $freeMeatId;
+                            }
+                        }
+                        PackageMeat::insert($packageMeatItem);
                     }
                     if (isset($request->package[$a]['offal_menu'])) {
-                        PackageOffal::insert([
+                        $packageOffalItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
                             'offal_menu_id' => $request->package[$a]['offal_menu'],
                             'created_at' => Carbon::now()
-                        ]);
+                        ];
+                        if ($request->package[$a]['offal_menu'] == 'free_text') {
+                            // insert new type free text in offal menu table
+                            if ($request->package[$a]['offal_menu_custom'] != '') {
+                                // check if new name is already saved in database
+                                $checkFreeOffal = OffalMenu::whereRaw("LOWER(name) = '" . strtolower($request->package[$a]['offal_menu_custom']) . "'")
+                                    ->first();
+                                if ($checkFreeOffal != '' || $checkFreeOffal != null) {
+                                    $freeOffalId = $checkFreeOffal->id;
+                                } else {
+                                    $freeOffalId = OffalMenu::insertGetId([
+                                        'name' => $request->package[$a]['offal_menu_custom'],
+                                        'is_custom' => true,
+                                        'created_at' => Carbon::now()
+                                    ]);
+                                }
+                                $packageOffalItem['offal_menu_id'] = $freeOffalId;
+                            }
+                        }
+                        PackageOffal::insert($packageOffalItem);
                     }
                     if (isset($request->package[$a]['rice_menu'])) {
                         PackageRice::insert([
@@ -673,12 +721,31 @@ class OrderController extends Controller
                         ]);
                     }
                     if (isset($request->package[$a]['egg_menu'])) {
-                        PackageEgg::insert([
+                        $packageEggItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
                             'egg_menu_id' => $request->package[$a]['egg_menu'],
                             'created_at' => Carbon::now()
-                        ]);
+                        ];
+                        if ($request->package[$a]['egg_menu'] == 'free_text') {
+                            // insert new type free text in Egg menu table
+                            if ($request->package[$a]['egg_menu_custom'] != '') {
+                                // check if new name is already saved in database
+                                $checkFreeEgg = EggMenu::whereRaw("LOWER(name) = '" . strtolower($request->package[$a]['egg_menu_custom']) . "'")
+                                    ->first();
+                                if ($checkFreeEgg != '' || $checkFreeEgg != null) {
+                                    $freeEggId = $checkFreeEgg->id;
+                                } else {
+                                    $freeEggId = EggMenu::insertGetId([
+                                        'name' => $request->package[$a]['egg_menu_custom'],
+                                        'is_custom' => true,
+                                        'created_at' => Carbon::now()
+                                    ]);
+                                }
+                                $packageEggItem['egg_menu_id'] = $freeEggId;
+                            }
+                        }
+                        PackageEgg::insert($packageEggItem);
                     }
                     if (isset($request->package[$a]['chicken_menu'])) {
                         PackageChicken::insert([
@@ -869,20 +936,58 @@ class OrderController extends Controller
     
                     // insert to relation
                     if (isset($request->package[$a]['meat_menu'])) {
-                        PackageMeat::insert([
+                        $packageMeatItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
                             'meat_menu_id' => $request->package[$a]['meat_menu'],    
                             'created_at' => Carbon::now()
-                        ]);
+                        ];
+                        if ($request->package[$a]['meat_menu'] == 'free_text') {
+                            // insert new type free text in meat menu table
+                            if ($request->package[$a]['meat_menu_custom'] != '') {
+                                // check if new name is already saved in database
+                                $checkFreeMeat = MeatMenu::whereRaw("LOWER(name) = '" . strtolower($request->package[$a]['meat_menu_custom']) . "'")
+                                    ->first();
+                                if ($checkFreeMeat != '' || $checkFreeMeat != null) {
+                                    $freeMeatId = $checkFreeMeat->id;
+                                } else {
+                                    $freeMeatId = MeatMenu::insertGetId([
+                                        'name' => $request->package[$a]['meat_menu_custom'],
+                                        'is_custom' => true,
+                                        'created_at' => Carbon::now()
+                                    ]);
+                                }
+                                $packageMeatItem['meat_menu_id'] = $freeMeatId;
+                            }
+                        }
+                        PackageMeat::insert($packageMeatItem);
                     }
                     if (isset($request->package[$a]['offal_menu'])) {
-                        PackageOffal::insert([
+                        $packageOffalItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
                             'offal_menu_id' => $request->package[$a]['offal_menu'],
                             'created_at' => Carbon::now()
-                        ]);
+                        ];
+                        if ($request->package[$a]['offal_menu'] == 'free_text') {
+                            // insert new type free text in offal menu table
+                            if ($request->package[$a]['offal_menu_custom'] != '') {
+                                // check if new name is already saved in database
+                                $checkFreeOffal = OffalMenu::whereRaw("LOWER(name) = '" . strtolower($request->package[$a]['offal_menu_custom']) . "'")
+                                    ->first();
+                                if ($checkFreeOffal != '' || $checkFreeOffal != null) {
+                                    $freeOffalId = $checkFreeOffal->id;
+                                } else {
+                                    $freeOffalId = OffalMenu::insertGetId([
+                                        'name' => $request->package[$a]['offal_menu_custom'],
+                                        'is_custom' => true,
+                                        'created_at' => Carbon::now()
+                                    ]);
+                                }
+                                $packageOffalItem['offal_menu_id'] = $freeOffalId;
+                            }
+                        }
+                        PackageOffal::insert($packageOffalItem);
                     }
                     if (isset($request->package[$a]['rice_menu'])) {
                         PackageRice::insert([
@@ -901,12 +1006,31 @@ class OrderController extends Controller
                         ]);
                     }
                     if (isset($request->package[$a]['egg_menu'])) {
-                        PackageEgg::insert([
+                        $packageEggItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
                             'egg_menu_id' => $request->package[$a]['egg_menu'],
                             'created_at' => Carbon::now()
-                        ]);
+                        ];
+                        if ($request->package[$a]['egg_menu'] == 'free_text') {
+                            // insert new type free text in Egg menu table
+                            if ($request->package[$a]['egg_menu_custom'] != '') {
+                                // check if new name is already saved in database
+                                $checkFreeEgg = EggMenu::whereRaw("LOWER(name) = '" . strtolower($request->package[$a]['egg_menu_custom']) . "'")
+                                    ->first();
+                                if ($checkFreeEgg != '' || $checkFreeEgg != null) {
+                                    $freeEggId = $checkFreeEgg->id;
+                                } else {
+                                    $freeEggId = EggMenu::insertGetId([
+                                        'name' => $request->package[$a]['egg_menu_custom'],
+                                        'is_custom' => true,
+                                        'created_at' => Carbon::now()
+                                    ]);
+                                }
+                                $packageEggItem['egg_menu_id'] = $freeEggId;
+                            }
+                        }
+                        PackageEgg::insert($packageEggItem);
                     }
                     if (isset($request->package[$a]['chicken_menu'])) {
                         PackageChicken::insert([

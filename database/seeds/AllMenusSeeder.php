@@ -60,7 +60,7 @@ class AllMenusSeeder extends Seeder
 
         // egg menu table
         EggMenu::insert([
-            ['name' => 'telur baladod', 'created_at'    => Carbon::now()],
+            ['name' => 'telur balado', 'created_at'    => Carbon::now()],
             ['name' => 'telur rebus', 'created_at'    => Carbon::now()]
         ]);
 

@@ -704,9 +704,6 @@
     }
 
     function selectDetailPackage(value, index, paramEdit) {
-        console.log(value)
-        console.log(index)
-        console.log(paramEdit)
         $.ajax({
             type: "POST",
             url : "{{ route('order.getDetailPackage') }}",
@@ -724,6 +721,17 @@
                 }
             }
         })
+    }
+
+    function freeTextChange(value, param) {
+        if (value == 'free_text') {
+            $('#' + param + '_menu_option').removeClass('d-none');
+            $('#' + param + '_menu_input').removeClass('d-none');
+            $('#' + param + '_menu_input').focus();
+        } else {
+            $('#' + param + '_menu_input').addClass('d-none');
+            $('#' + param + '_menu_input_text').val('');
+        }
     }
 </script>
 @endsection
