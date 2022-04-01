@@ -260,13 +260,13 @@
                 let selectRole = '<option value="" selected disabled>-- Pilih Role</option>';
                 for (let a = 0; a < res.data.role.length; a++) {
                     selectRole += '<option value="'+ res.data.role[a].id +'">'+
-                        res.data.role[a].nama +    
+                        res.data.role[a].nama +
                         '</option>';
                 }
                 let selectBranch = '<option value="" selected disabled>-- Pilih Branch</option>';
                 for (let a = 0; a < res.data.branch.length; a++) {
                     selectBranch += '<option value="'+ res.data.branch[a].id +'">'+
-                        res.data.branch[a].name +    
+                        res.data.branch[a].name +
                         '</option>';
                 }
                 $('#edit_user_branch_field').html(selectBranch);
@@ -289,7 +289,7 @@
                         title: "Success",
                         text: res.message,
                         icon: "success",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                     // close modal
                     $('#modalUser').modal('hide');
@@ -301,7 +301,7 @@
                         title: "Failed",
                         text: message,
                         icon: "warning",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                 }
             },
@@ -325,7 +325,7 @@
                         title: "Success",
                         text: res.message,
                         icon: "success",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                     // close modal
                     $('#modalUser').modal('hide');
@@ -337,7 +337,7 @@
                         title: "Failed",
                         text: message,
                         icon: "warning",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                 }
             },
@@ -352,7 +352,7 @@
         $('.edit-body').removeClass('d-none');
         $('.detail-body').addClass('d-none');
 
-        let uri = {!! response()->json(url('users/edit')) !!}
+        let uri = {!! json_encode(url('users/edit')) !!}
         let url = uri + '/' + id
         $.ajax({
             type: "GET",
@@ -364,13 +364,13 @@
                 let selectRole = '<option value="" selected disabled>-- Pilih Role</option>';
                 for (let a = 0; a < res.data.role.length; a++) {
                     selectRole += '<option value="'+ res.data.role[a].id +'">'+
-                        res.data.role[a].nama +    
+                        res.data.role[a].nama +
                         '</option>';
                 }
                 let selectBranch = '<option value="" selected disabled>-- Pilih Branch</option>';
                 for (let a = 0; a < res.data.branch.length; a++) {
                     selectBranch += '<option value="'+ res.data.branch[a].id +'">'+
-                        res.data.branch[a].name +    
+                        res.data.branch[a].name +
                         '</option>';
                 }
                 let valueBranch = res.data.user.branches != null ? res.data.user.branches.branch_id : '';
@@ -399,7 +399,7 @@
         $('.edit-body').addClass('d-none');
         $('.detail-body').removeClass('d-none');
 
-        let uri = {!! response()->json(url('users/detail')) !!}
+        let uri = {!! json_encode(url('users/detail')) !!}
         let url = uri + '/' + id
         $.ajax({
             type: "GET",
@@ -419,7 +419,7 @@
     }
 
     function getData(page = 0, limit = 10) {
-        let uri = {!! response()->json(url('users/json')) !!};
+        let uri = {!! json_encode(url('users/json')) !!};
         let url = uri + '/' + page + '/' + limit;
         $.ajax({
             type: "GET",

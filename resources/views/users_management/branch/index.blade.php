@@ -121,7 +121,7 @@
                         <label for="">Name</label>
                         <input type="text" class="form-control"
                             name="name" id="edit_branch_name_field">
-                        
+
                         {{-- hidden id for edit action --}}
                         <input type="text" name="id" id="id_branch_field" hidden>
                     </div>
@@ -192,7 +192,7 @@
                         title: "Success",
                         text: res.message,
                         icon: "success",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                     // close modal
                     $('#modalBranch').modal('hide');
@@ -204,7 +204,7 @@
                         title: "Failed",
                         text: message,
                         icon: "warning",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                 }
             },
@@ -228,7 +228,7 @@
                         title: "Success",
                         text: res.message,
                         icon: "success",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                     // close modal
                     $('#modalBranch').modal('hide');
@@ -240,7 +240,7 @@
                         title: "Failed",
                         text: message,
                         icon: "warning",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                 }
             },
@@ -255,7 +255,7 @@
         $('.edit-body').removeClass('d-none');
         $('.detail-body').addClass('d-none');
 
-        let uri = {!! response()->json(url('branch/edit')) !!}
+        let uri = {!! json_encode(url('branch/edit')) !!}
         let url = uri + '/' + id
         $.ajax({
             type: "GET",
@@ -281,7 +281,7 @@
         $('.edit-body').addClass('d-none');
         $('.detail-body').removeClass('d-none');
 
-        let uri = {!! response()->json(url('branch/detail')) !!}
+        let uri = {!! json_encode(url('branch/detail')) !!}
         let url = uri + '/' + id
         $.ajax({
             type: "GET",
@@ -301,7 +301,7 @@
     }
 
     function getData(page = 0, limit = 10) {
-        let uri = {!! response()->json(url('branch/json')) !!};
+        let uri = {!! json_encode(url('branch/json')) !!};
         let url = uri + '/' + page + '/' + limit;
         $.ajax({
             type: "GET",

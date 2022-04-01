@@ -98,7 +98,7 @@ class OrderController extends Controller
                 'orderPackage.vegie.vegie',
                 'orderPackage.rice.rice',
                 'orderPackage.egg.egg',
-                'customer.district', 'payment'    
+                'customer.district', 'payment'
             ])
             ->findOrFail($id);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
@@ -124,7 +124,7 @@ class OrderController extends Controller
                 'orderPackage.rice.rice',
                 'orderPackage.egg.egg',
                 'customer.district', 'payment',
-                'createdBy'  
+                'createdBy'
             ])
             ->findOrFail($id)->makeVisible(['created_at']);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
@@ -150,7 +150,7 @@ class OrderController extends Controller
             'orderPackage.rice.rice',
             'orderPackage.egg.egg',
             'customer.district', 'payment',
-            'createdBy'  
+            'createdBy'
         ])
         ->findOrFail($id)->makeVisible(['created_at']);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
@@ -161,6 +161,9 @@ class OrderController extends Controller
     }
 
     public function exportInvoice(Request $request) {
+        // 1 ITU WEEK
+        // 2 ITU MONTH
+        // 3 ITU CUSTOM
         $timeline = $request->timeline;
         // validation
         if ($timeline == '' || $timeline == null) {
@@ -174,9 +177,9 @@ class OrderController extends Controller
                     ->withErrors('Pastikan tanggal mulai dan tanggal akhir sudah terisi')
                     ->withInput();
             }
-            $date1 = strtotime($request->start_date); 
-            $date2 = strtotime($request->end_date); 
-    
+            $date1 = strtotime($request->start_date);
+            $date2 = strtotime($request->end_date);
+
             $diff = $date2 - $date1;
             if ($diff < 0) {
                 return Redirect::back()
@@ -187,26 +190,32 @@ class OrderController extends Controller
 
 
         $branch = $request->branch;
+
+
         if ($timeline == 1) {
             $start = date('Y-m-d', strtotime('-7days'));
             $end = date('Y-m-d');
             $title = 'Report Weekly ' . date('d F Y', strtotime($start)) . ' - ' . date('d F Y', strtotime($end));
         } else if ($timeline == 2) {
-            $start = date('Y-m-d', strtotime('-1month'));
-            $end = date('Y-m-d');
+            $start = date('Y-m-01' );
+            $end = date('Y-m-t');
             $title = 'Report Monthly ' . date('d F Y', strtotime($start)) . ' - ' . date('d F Y', strtotime($end));
         } else {
             $start = $request->start_date;
             $end = $request->end_date;
             $title = 'Report Custom ' . date('d F Y', strtotime($start)) . ' - ' . date('d F Y', strtotime($end));
         }
-        
+
         $param = [
             'start' => $start . ' 00:00:00',
             'end' => $end . ' 23:59:59',
-            'branch' => $branch,
             'title' => $title
         ];
+
+        if (!$request->user()->canSeeAllBranches()) {
+            $param['branch'] = $branch;
+        }
+
         return Excel::download(new InvoiceExport($param), $title . '.xlsx');
     }
 
@@ -313,7 +322,7 @@ class OrderController extends Controller
                     'orderPackage.chicken.chicken',
                     'orderPackage.vegie.vegie',
                     'orderPackage.rice.rice',
-                    'orderPackage.egg.egg', 
+                    'orderPackage.egg.egg',
                 ])->first();
         }
         // return response()->json([
@@ -321,7 +330,7 @@ class OrderController extends Controller
         //     'order' => $order
         // ]);
 
-        
+
         $view = "";
         if ($id == 1) {
             $view = view('order.partials.package1', [
@@ -437,7 +446,7 @@ class OrderController extends Controller
                 'orderPackage.vegie.vegie',
                 'orderPackage.rice.rice',
                 'orderPackage.egg.egg',
-                'customer.district', 'payment'    
+                'customer.district', 'payment'
             ])
             ->findOrFail($id);
         $villages = Village::where('district_id', $orders->customer->district_id)->get();
@@ -463,7 +472,7 @@ class OrderController extends Controller
                 'orderPackage.vegie.vegie',
                 'orderPackage.rice.rice',
                 'orderPackage.egg.egg',
-                'customer.district', 'payment'    
+                'customer.district', 'payment'
             ])
             ->findOrFail($id);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
@@ -648,13 +657,13 @@ class OrderController extends Controller
                         'order_id' => $order,
                         'created_at' => Carbon::now()
                     ]);
-    
+
                     // insert to relation
                     if (isset($request->package[$a]['meat_menu'])) {
                         $packageMeatItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
-                            'meat_menu_id' => $request->package[$a]['meat_menu'],    
+                            'meat_menu_id' => $request->package[$a]['meat_menu'],
                             'created_at' => Carbon::now()
                         ];
                         if ($request->package[$a]['meat_menu'] == 'free_text') {
@@ -853,7 +862,7 @@ class OrderController extends Controller
         //         'message' => 'Pastikan detail menu tiap paket telah terisi',
         //         'status' => 400
         //     ]);
-        // }  
+        // }
 
         // append new value to dataOrder
         $dataOrder['notes'] = $request->notes;
@@ -919,12 +928,12 @@ class OrderController extends Controller
                     // delete current realtion
                     PackageChicken::where('order_id', $currentData->orderPackage[$x]['id'])
                         ->delete();
-                    
+
                     // delete current orderPackage
                     OrderPackage::where('id', $currentData->orderPackage[$x]['id'])
                         ->delete();
                 }
-    
+
                 // insert many to many relation
                 for ($a = 0; $a < count($request->package); $a++) {
                     // insert to order package table
@@ -933,13 +942,13 @@ class OrderController extends Controller
                         'order_id' => $id,
                         'created_at' => Carbon::now()
                     ]);
-    
+
                     // insert to relation
                     if (isset($request->package[$a]['meat_menu'])) {
                         $packageMeatItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
-                            'meat_menu_id' => $request->package[$a]['meat_menu'],    
+                            'meat_menu_id' => $request->package[$a]['meat_menu'],
                             'created_at' => Carbon::now()
                         ];
                         if ($request->package[$a]['meat_menu'] == 'free_text') {
@@ -1068,9 +1077,9 @@ class OrderController extends Controller
         }
         $view = "";
         if ($id == 1) {
-            $view = view('order.partials.file-cash', ['order' => $order, 'isEdit' => $isEdit])->render(); 
+            $view = view('order.partials.file-cash', ['order' => $order, 'isEdit' => $isEdit])->render();
         } else {
-            $view = view('order.partials.file-credit', ['order' => $order, 'isEdit' => $isEdit])->render(); 
+            $view = view('order.partials.file-credit', ['order' => $order, 'isEdit' => $isEdit])->render();
         }
         return response()->json([
             'message' => 'Data retrieve',
@@ -1162,7 +1171,7 @@ class OrderController extends Controller
                         $isValid = false;
                     }
                     break;
-                
+
                 default:
                     $isValid = true;
                     break;

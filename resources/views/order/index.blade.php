@@ -205,7 +205,7 @@
     .timeline_box.active {
         background: #007bff;
     }
-    
+
     .timeline_box.active > .timeline_text {
         color: #fff;
     }
@@ -240,12 +240,6 @@
                             <p class="search_text">Search</p>
                         </div>
                     </div>
-                </div>
-                <div class="sort">
-                    <p class="sort_text" id="sort-filter">Sort</p>
-                </div>
-                <div class="filter">
-                    <p class="filter_text">filter</p>
                 </div>
                 @if ($user == null)
                     <div class="branch_search">
@@ -329,7 +323,7 @@
                             <p class="timeline_text">Custom</p>
                         </div>
                     </div>
-                    
+
                     <div class="form-group d-none" id="form-group-export">
                         {{-- hidden input field timeline --}}
                         <input type="text" hidden name="timeline" id="timeline_field">
@@ -417,7 +411,7 @@
                         for (let a = 0; a < res.data.length; a++) {
                             option += '<option value="'+ res.data[a].id +'">'+
                             res.data[a].name +
-                            '</option>'   
+                            '</option>'
                         }
 
                         $('#branch_export').html(option);
@@ -471,7 +465,7 @@
             })
         }
         function search() {
-            // Declare variables 
+            // Declare variables
             var input, filter, table, tr, i, j, column_length, count_td;
             column_length = document.getElementById('table_list_order').rows[0].cells.length;
             input = document.getElementById("search_input");
@@ -484,7 +478,7 @@
                     td = tr[i].getElementsByTagName("td")[j];
                     /* ADD columns here that you want you to filter to be used on */
                     if (td) {
-                    if ( td.innerHTML.toUpperCase().indexOf(filter) > -1)  {            
+                    if ( td.innerHTML.toUpperCase().indexOf(filter) > -1)  {
                         count_td++;
                     }
                     }

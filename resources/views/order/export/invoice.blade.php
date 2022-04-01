@@ -10,6 +10,7 @@
         </tr>
         <tr>
             <th>Nama CS</th>
+            <th>Nama Cabang</th>
             <th>Nama Customer</th>
             <th>Nomor Telepon 1</th>
             <th>Nomor Telepon 2</th>
@@ -94,7 +95,7 @@
                     case '3':
                         $groupBranch = 'Banten';
                         break;
-                    
+
                     default:
                         $groupBranch = '';
                         break;
@@ -110,6 +111,9 @@
             <tr>
                 <td>
                     {{ $order->createdBy->name }}
+                </td>
+                <td>
+                    {{ $order->branch->name }}
                 </td>
                 <td>
                     {{ $order->customer->name }}

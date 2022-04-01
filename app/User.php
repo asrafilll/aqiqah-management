@@ -62,4 +62,13 @@ class User extends Authenticatable
     public function branches() {
         return $this->hasOne(UsersBranch::class, 'users_id', 'id');
     }
+
+    public function canSeeAllBranches()
+    {
+        return in_array($this->roles_id, [
+            6,
+            7,
+            8,
+        ]);
+    }
 }

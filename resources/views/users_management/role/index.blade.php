@@ -87,7 +87,6 @@
         <div class="card card-body">
             <div class="header_group">
                 <p class="card_title_text mb-0">Role List</p>
-                <button class="btn btn-primary" onclick="add()">Add Role</button>
             </div>
 
             <table class="table" id="table_list_role">
@@ -121,7 +120,7 @@
                         <label for="">Name</label>
                         <input type="text" class="form-control"
                             name="name" id="edit_role_name_field">
-                        
+
                         {{-- hidden id for edit action --}}
                         <input type="text" name="id" id="id_role_field" hidden>
                     </div>
@@ -164,20 +163,6 @@
         })
     })
 
-    function add() {
-        // hide detail body and show edit / add body
-        $('.edit-body').removeClass('d-none');
-        $('.detail-body').addClass('d-none');
-        // show modal
-        $('#modalRole').modal('show');
-        // add title
-        $('#modalRoleLabel').text('Add Branch');
-        // add id to form
-        $('.form-role').attr('id', 'form_add_role');
-        // add action onclick
-        $('#btn_save_role').attr('onclick', 'store()');
-    }
-
     function store() {
         let data = $('#form_add_role').serialize();
         $.ajax({
@@ -192,7 +177,7 @@
                         title: "Success",
                         text: res.message,
                         icon: "success",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                     // close modal
                     $('#modalRole').modal('hide');
@@ -204,7 +189,7 @@
                         title: "Failed",
                         text: message,
                         icon: "warning",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                 }
             },
@@ -228,7 +213,7 @@
                         title: "Success",
                         text: res.message,
                         icon: "success",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                     // close modal
                     $('#modalRole').modal('hide');
@@ -240,7 +225,7 @@
                         title: "Failed",
                         text: message,
                         icon: "warning",
-                        button: "Ok",      
+                        button: "Ok",
                     })
                 }
             },
@@ -250,38 +235,12 @@
         })
     }
 
-    function edit(id) {
-        // hide detail body and show edit / add body
-        $('.edit-body').removeClass('d-none');
-        $('.detail-body').addClass('d-none');
-
-        let uri = {!! response()->json(url('role/edit')) !!}
-        let url = uri + '/' + id
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: 'json',
-            success: function(res) {
-                $('#edit_role_name_field').val(res.data.nama);
-                $('#id_role_field').val(res.data.id);
-                // show modal
-                $('#modalRole').modal('show');
-                // add title
-                $('#modalRoleLabel').text('Edit Role');
-                // add id to form
-                $('.form-role').attr('id', 'form_edit_role');
-                // add action onclick
-                $('#btn_save_role').attr('onclick', 'update()');
-            }
-        })
-    }
-
     function detail(id) {
         // hide detail body and show edit / add body
         $('.edit-body').addClass('d-none');
         $('.detail-body').removeClass('d-none');
 
-        let uri = {!! response()->json(url('role/detail')) !!}
+        let uri = {!! json_encode(url('role/detail')) !!}
         let url = uri + '/' + id
         $.ajax({
             type: "GET",
@@ -301,7 +260,7 @@
     }
 
     function getData(page = 0, limit = 10) {
-        let uri = {!! response()->json(url('role/json')) !!};
+        let uri = {!! json_encode(url('role/json')) !!};
         let url = uri + '/' + page + '/' + limit;
         $.ajax({
             type: "GET",
@@ -320,56 +279,6 @@
                 $('.target-role-body').html(res.data.view);
             }
         })
-    }
-
-    function deleteData(id) {
-        swal({
-            title: "Are you sure?",
-            text: "This branch will delete permanently from database",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-            if (willDelete) {
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('role.delete') }}",
-                    data: {
-                        id: id
-                    },
-                    dataType: 'json',
-                    success: function(res) {
-                        console.log(res);
-                        if (res.status == 200) {
-                            swal({
-                                title: 'Success',
-                                text: res.message,
-                                icon: 'success',
-                                button: 'Ok'
-                            });
-
-                            getData(0,10);
-                        } else {
-                            swal({
-                                title: 'Failed',
-                                text: res.message,
-                                icon: 'warning',
-                                button: 'Ok'
-                            });
-                        }
-                    },
-                    error: function(err) {
-                        swal({
-                                title: 'Failed',
-                                text: err.responseJSON.message,
-                                icon: 'warning',
-                                button: 'Ok'
-                            });
-                    }
-                })
-            }
-        });
     }
 </script>
 @endsection

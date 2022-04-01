@@ -18,7 +18,7 @@ class InvoiceExport implements FromView,ShouldAutoSize
     {
         $this->start = $payload['start'];
         $this->end = $payload['end'];
-        $this->branch = $payload['branch'];
+        $this->branch = $payload['branch'] ?? null;
         $this->title = $payload['title'];
     }
 
@@ -39,8 +39,14 @@ class InvoiceExport implements FromView,ShouldAutoSize
                 'createdBy',
                 'branch'
             ])
-            ->whereRaw("send_date >= '$this->start' AND send_date <= '$this->end' AND branch_id = $this->branch")
-            ->get();
+            ->where('send_date', '>=', $this->start)
+            ->where('send_date', '<=', $this->end);
+
+        if ($this->branch) {
+            $orders = $orders->where('branch_id', $this->branch);
+        }
+
+        $orders = $orders->get();
 
         $orderPackage = [];
         foreach($orders as $or) {
