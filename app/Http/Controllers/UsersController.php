@@ -104,7 +104,7 @@ class UsersController extends Controller
         $currentUser = User::withTrashed()
                 ->with('branches')
                 ->findOrFail($id);
-            
+
         if ($currentUser->username != $request->username) {
             $check = User::whereRaw("LOWER(username) = '$request->username'")
                 ->first();
@@ -115,7 +115,7 @@ class UsersController extends Controller
                 ]);
             }
         }
-        
+
         // update
         $payload = [
             'name' => $request->name,
@@ -127,25 +127,18 @@ class UsersController extends Controller
         if ($request->has('password') || $request->password != '') {
             $payload['password'] = Hash::make($request->password);
         }
-        
+
         try {
             DB::beginTransaction();
 
-            if ($request->has('branch') || $request->branch != '') {
-                if ($currentUser->branches != null) {
-                    // update user branch table
-                    UsersBranch::where('id', $currentUser->branches->id)
-                        ->update([
-                            'branch_id' => $request->branch,
-                            'updated_at' => Carbon::now()
-                        ]);
-                } else {
-                    // insert new branches if request has branch_id
-                    UsersBranch::insert([
-                        'branch_id' => $request->branch,
-                        'created_at' => Carbon::now()
-                    ]);
-                }
+            UsersBranch::where('users_id', $currentUser->id)->delete();
+
+            if ($request->filled('branch')) {
+                UsersBranch::insert([
+                    'users_id' => $currentUser->id,
+                    'branch_id' => $request->branch,
+                    'created_at' => Carbon::now()
+                ]);
             }
 
             // update user table
@@ -203,21 +196,25 @@ class UsersController extends Controller
             'password' => Hash::make($request->password),
             'created_at' => Carbon::now()
         ];
-        $payloadBranch = [
-            'branch_id' => $request->branch,
-            'created_at'    => Carbon::now()
-        ];
         try {
             DB::beginTransaction();
 
             $userId = User::insertGetId($payload);
-            $payloadBranch['users_id'] = $userId;
-            UsersBranch::inserT($payloadBranch);
+
+            if ($request->filled('branch')) {
+                UsersBranch::insert([
+                    'users_id' => $userId,
+                    'branch_id' => $request->branch,
+                    'created_at'    => Carbon::now(),
+                ]);
+
+            }
+
             DB::commit();
             return response()->json([
                 'message' => 'Save success',
                 'status' => 200,
-                'data' => [] 
+                'data' => []
             ]);
         } catch (\Throwable $th) {
             DB::rollback();

@@ -248,6 +248,8 @@
         $('.form-user').attr('id', 'form_add_user');
         // add action onclick
         $('#btn_save_user').attr('onclick', 'store()');
+        // disable select branch
+        $('#edit_user_branch_field').attr('disabled', true);
 
         // get data role and branch
         $.ajax({
@@ -351,6 +353,7 @@
         // hide detail body and show edit / add body
         $('.edit-body').removeClass('d-none');
         $('.detail-body').addClass('d-none');
+        $('#edit_user_branch_field').attr('disabled', true);
 
         let uri = {!! json_encode(url('users/edit')) !!}
         let url = uri + '/' + id
@@ -373,7 +376,11 @@
                         res.data.branch[a].name +
                         '</option>';
                 }
-                let valueBranch = res.data.user.branches != null ? res.data.user.branches.branch_id : '';
+
+                let valueBranch = res.data.user.branches != null ? res.data.user.branches.branch_id : null;
+                if (valueBranch) {
+                    $('#edit_user_branch_field').removeAttr('disabled');
+                }
                 $('#edit_user_branch_field').html(selectBranch);
                 $('#edit_user_branch_field').val(valueBranch);
                 $('#edit_user_role_field').html(selectRole);
@@ -489,5 +496,15 @@
             }
         });
     }
+
+    $('#edit_user_role_field').on('change', function (e) {
+        if (![6,7,8].includes(Number(e.target.value))) {
+            $('#edit_user_branch_field').removeAttr('disabled');
+        } else {
+            $('#edit_user_branch_field')
+                .attr('disabled', true)
+                .val(null);
+        }
+    });
 </script>
 @endsection
