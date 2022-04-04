@@ -108,27 +108,87 @@
 @section('content')
 <div class="row">
     <div class="col">
-        <div class="card card-body">
-            <div class="header_group">
-                <p class="card_title_text mb-0">User List</p>
-                <button class="btn btn-primary" onclick="add()">Add User</button>
-            </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="header_group">
+                    <p class="card_title_text mb-0">User List</p>
+                    <button class="btn btn-primary" onclick="add()">Add User</button>
+                </div>
 
-            <table class="table" id="table_list_user">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Branch</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody class="target-user-body">
-                </tbody>
-            </table>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Branch</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($users as $user)
+                            @php
+                                $branch = '';
+                                $role = '';
+                                if ($user->branches == null) {
+                                    $branch = 'HO';
+                                } else {
+                                    $branch = $user->branches->branch->name;
+                                }
+                                if ($user->roles == null) {
+                                    $role = '-';
+                                } else {
+                                    $role = $user->roles->nama;
+                                }
+                            @endphp
+                            <tr>
+                                <td>
+                                    {{ $user->name }}
+                                </td>
+                                <td>
+                                    {{ $user->username }}
+                                </td>
+                                <td>
+                                    {{ $user->email }}
+                                </td>
+                                <td>
+                                    {{ $branch }}
+                                </td>
+                                <td>
+                                    {{ $role }}
+                                </td>
+                                <td>
+                                    <div class="status_user {{ $user->deleted_at == null ? 'status_green' : 'status_red' }}">
+                                        <p class="status_user_text">
+                                            {{ $user->deleted_at == null ? 'Active' : 'Nonactive' }}
+                                        </p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="detail_icon text-success">
+                                        <button class="table_action btn" onclick="detail({{ $user->id }})">
+                                            <i class="fa fa-eye text-success fa-1x"></i>
+                                        </button>
+                                        <button  class="table_action btn" onclick="edit({{ $user->id }})">
+                                            <i class="fa fa-pencil-square-o text-primary"></i>
+                                        </button>
+                                        <button  class="table_action btn" onclick="deleteData({{ $user->id }})">
+                                            <i class="fa fa-trash text-danger"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-end">
+                    {!! $users->withQueryString()->links() !!}
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -217,13 +277,6 @@
     });
 
     $(document).ready(function() {
-        getData(0,10);
-        // init table sort
-        let table = $('#table_list_order');
-        new Tablesort(document.getElementById('table_list_user'), {
-            descending: true
-        });
-
         // handle onchange event in modal
         $('#modalUser').on('hidden.bs.modal', function (event) {
             $('#edit_user_name_field').val('');
@@ -421,28 +474,6 @@
                     // set title
                     $('#modalUserLabel').text('Detail Branch');
                 }
-            }
-        })
-    }
-
-    function getData(page = 0, limit = 10) {
-        let uri = {!! json_encode(url('users/json')) !!};
-        let url = uri + '/' + page + '/' + limit;
-        $.ajax({
-            type: "GET",
-            url: url,
-            dataType: 'json',
-            beforeSend: function() {
-                // set loading
-                let loading = `<tr>
-                    <td colspan="6" class="text-center">
-                        Processing data ...
-                    </td>
-                    </tr>`
-                $('.target-user-body').html(loading);
-            },
-            success: function(res) {
-                $('.target-user-body').html(res.data.view);
             }
         })
     }

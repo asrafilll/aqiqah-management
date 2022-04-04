@@ -23,14 +23,13 @@ class UsersController extends Controller
     }
 
     public function index() {
-        $user = User::with(['roles', 'branches.branch'])->get();
-        $data = [
-            'users' => $user
-        ];
+        $users = User::withTrashed()
+            ->with(['roles', 'branches'])
+            ->paginate(request('per_page', 10));
 
-        // return response()->json($data);
-        return view($this->viewPath . '.index')
-            ->with($data);
+        return view($this->viewPath . '.index', [
+            'users' => $users,
+        ]);
     }
 
     /**
