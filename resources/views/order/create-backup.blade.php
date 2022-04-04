@@ -146,9 +146,9 @@
                                     <div class="col-6">
                                         <label for="">Source Order</label>
                                         <select name="source_order" class="form-control" id="">
-                                            <option value="1">IG</option>
-                                            <option value="2">FB</option>
-                                            <option value="3">Google Ads</option>
+                                            <option value="1">Instagram</option>
+                                            <option value="2">Facebook</option>
+                                            <option value="3">Google</option>
                                             <option value="4">Others</option>
                                         </select>
                                     </div>
