@@ -45,13 +45,13 @@
         @foreach ($orders as $order)
         @php
             if ($order->source_order_id == 1) {
-                $source = 'IG';
+                $source = 'Instagram';
             } else if ($order->source_order_id == 2) {
-                $source = 'FB';
+                $source = 'Facebook';
             } else if ($order->source_order_id == 3) {
-                $source = 'Google Ads';
+                $source = 'Google';
             } else {
-                $source = 'Offline';
+                $source = 'Others';
             }
 
             // gender
