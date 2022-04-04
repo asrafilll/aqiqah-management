@@ -17,28 +17,20 @@ class DashboardController extends Controller
         $formatIdrNumber = function ($number) {
             return number_format($number, 0, ',', '.');
         };
-        $totalOrders = $formatIdrNumber(Order::query()->count());
-        $totalGoogleOrders = $formatIdrNumber(
-            Order::query()
-                ->where('source_order_id', 3)
-                ->count()
-        );
-        $totalFacebookOrders = $formatIdrNumber(
-            Order::query()
-                ->where('source_order_id', 2)
-                ->count()
-        );
-        $totalOthersOrders = $formatIdrNumber(
-            Order::query()
-                ->where('source_order_id', 4)
-                ->count()
-        );
+        $countOrdersBySourceOrderId = function ($sourceOrderId) use ($formatIdrNumber) {
+            return $formatIdrNumber(
+                Order::query()
+                    ->where('source_order_id', $sourceOrderId)
+                    ->count()
+            );
+        };
 
         return view('dashboard', [
-            'totalOrders' => $totalOrders,
-            'totalGoogleOrders' => $totalGoogleOrders,
-            'totalFacebookOrders' => $totalFacebookOrders,
-            'totalOthersOrders' => $totalOthersOrders,
+            'totalOrders' => $formatIdrNumber(Order::query()->count()),
+            'totalInstagramOrders' => $countOrdersBySourceOrderId(1),
+            'totalFacebookOrders' => $countOrdersBySourceOrderId(2),
+            'totalGoogleOrders' => $countOrdersBySourceOrderId(3),
+            'totalOthersOrders' => $countOrdersBySourceOrderId(4),
         ]);
     }
 }

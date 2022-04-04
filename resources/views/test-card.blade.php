@@ -19,36 +19,46 @@
         color: #3751FF;
     }
 </style>
-<div class="row" id="div-dashboard">
-    <div class="col-lg-3 col-6">
-        <div class="small-box">
-            <div class="inner">
-                <p>Total</p>
-                <h3>{{ $totalOrders }}</h3>
+<div id="div-dashboard">
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="small-box">
+                <div class="inner">
+                    <p>Total</p>
+                    <h3>{{ $totalOrders }}</h3>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-3 col-6">
-        <div class="small-box">
-            <div class="inner">
-                <p>Google</p>
-                <h3>{{ $totalGoogleOrders }}</h3>
+        <div class="col-lg-3 col-6">
+            <div class="small-box">
+                <div class="inner">
+                    <p>Instagram</p>
+                    <h3>{{ $totalInstagramOrders }}</h3>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-3 col-6">
-        <div class="small-box">
-            <div class="inner">
-                <p>Facebook</p>
-                <h3>{{ $totalFacebookOrders }}</h3>
+        <div class="col-lg-3 col-6">
+            <div class="small-box">
+                <div class="inner">
+                    <p>Facebook</p>
+                    <h3>{{ $totalFacebookOrders }}</h3>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-3 col-6">
-        <div class="small-box">
-            <div class="inner">
-                <p>Others</p>
-                <h3>{{ $totalOthersOrders }}</h3>
+        <div class="col-lg-3 col-6">
+            <div class="small-box">
+                <div class="inner">
+                    <p>Google</p>
+                    <h3>{{ $totalGoogleOrders }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box">
+                <div class="inner">
+                    <p>Others</p>
+                    <h3>{{ $totalOthersOrders }}</h3>
+                </div>
             </div>
         </div>
     </div>
