@@ -66,7 +66,7 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
-      <a href="index3.html" class="brand-link" style="height: 100px;">
+      <a href="{{ url('/') }}" class="brand-link" style="height: 100px;">
         <img src="{{asset('img/logo.png')}}" alt="Syamil Aqiqah" class="brand-image img-circle" style="width: 60px;max-height: 60px;">
         <p class="brand-text mt-2" style="font-style: normal;font-size: 19px;letter-spacing: 0.4px;color: #FAFAFA;opacity: 0.7;">Syamil Aqiqah</p>
       </a>
@@ -91,10 +91,10 @@
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         @yield('content')
-        
+
         <!-- /.row -->
         <!-- Main row -->
-        
+
       <!-- /.row (main row) -->
     </div><!-- /.container-fluid -->
   </section>
