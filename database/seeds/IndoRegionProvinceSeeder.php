@@ -8,7 +8,8 @@
  */
 
 use Illuminate\Database\Seeder;
-use AzisHapidin\IndoRegion\RawDataGetter;
+use Illuminate\Support\Facades\DB;
+use ParseCsv\Csv;
 
 class IndoRegionProvinceSeeder extends Seeder
 {
@@ -16,15 +17,27 @@ class IndoRegionProvinceSeeder extends Seeder
      * Run the database seeds.
      *
      * @deprecated
-     * 
+     *
      * @return void
      */
     public function run()
     {
-        // Get Data
-        $provinces = RawDataGetter::getProvinces();
-
-        // Insert Data to Database
-        DB::table('indoregion_provinces')->insert($provinces);
+        $csv = new Csv(public_path('/data/provinces.csv'));
+        // [
+        //     "Code" => "94"
+        //     "Parent" => "62"
+        //     "Name" => "PAPUA"
+        //     "Latitude" => "-4.0912830155479"
+        //     "Longitude" => "137.65753146755"
+        //     "Postal" => "90000,98000,99000"
+        //   ]
+        DB::table('indoregion_provinces')->truncate();
+        foreach ($csv->data as $province) {
+            DB::table('indoregion_provinces')
+                ->insert([
+                    'id' => $province['Code'],
+                    'name' => $province['Name'],
+                ]);
+        }
     }
 }

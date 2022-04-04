@@ -8,7 +8,8 @@
  */
 
 use Illuminate\Database\Seeder;
-use AzisHapidin\IndoRegion\RawDataGetter;
+use Illuminate\Support\Facades\DB;
+use ParseCsv\Csv;
 
 class IndoRegionVillageSeeder extends Seeder
 {
@@ -21,16 +22,30 @@ class IndoRegionVillageSeeder extends Seeder
      */
     public function run()
     {
-        // Get Data
-        $villages = RawDataGetter::getVillages();
+        $csv = new Csv(public_path('/data/villages.csv'));
+        // [
+        //     "Code" => "1101010001"
+        //     "Parent" => "1101010"
+        //     "Name" => "LATIUNG"
+        //     "Latitude" => ""
+        //     "Longitude" => ""
+        //     "Postal" => "23895,23898"
+        // ]
+        $totalData = count($csv->data);
+        $temp = [];
+        DB::table('indoregion_villages')->truncate();
+        foreach ($csv->data as $index => $village) {
+            $temp[] = [
+                'id' => $village['Code'],
+                'district_id' => $village['Parent'],
+                'name' => $village['Name'],
+            ];
 
-        // Insert Data with Chunk
-        DB::transaction(function() use($villages) {
-            $collection = collect($villages);
-            $parts = $collection->chunk(1000);
-            foreach ($parts as $subset) {
-                DB::table('indoregion_villages')->insert($subset->toArray());
+            if (count($temp) > 50 || $index == $totalData - 1) {
+                DB::table('indoregion_villages')
+                    ->insert($temp);
+                $temp = [];
             }
-        });
+        }
     }
 }
