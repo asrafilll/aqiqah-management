@@ -4,34 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-     <!-- jQuery -->
-    {{-- <script src="{{asset('template/plugins/jquery/jquery.min.js')}}"></script> --}}
-    <!-- Google Font: Source Sans Pro -->
-    {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> --}}
-    <!-- Font Awesome -->
-    {{-- <link rel="stylesheet" href="{{asset('template/plugins/fontawesome-free/css/all.min.css')}}"> --}}
-    <!-- Tempusdominus Bootstrap 4 -->
-    {{-- <link rel="stylesheet" href="{{asset('template/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}"> --}}
+    <title>{{ $fileName }}</title>
 
     <style>
-        .logo-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
-        .logo-group-text-1 {
-            font-style: normal;
-            font-weight: 700;
-            font-size: 16px;
-            line-height: 19px;
-            color: #000000;
-            margin-bottom: 0 !important;
-            margin-top: 0;
-            margin-left: 20px;
-        }
-
         .custom-header-table > th {
             border-bottom: 3px solid #000 !important;
             text-align: left;
@@ -63,21 +38,18 @@
     </style>
 </head>
 <body>
-    <div class="row">
+    <div style="padding: 0 25px">
         <div class="col">
             <div class="logo-group">
                 <!-- Brand Logo -->
                 {{-- <div>
                     <img src="{{asset('img/logo.png')}}" alt="Syamil Aqiqah" class="brand-image img-circle" style="width: 60px;max-height: 60px;">
                 </div> --}}
-                <div class="logo-group-text">
-                    <p class="brand-text logo-group-text-1">Syamil</p>
-                    <p class="brand-text logo-group-text-1">Aqiqah & Catering</p>
-                </div>
+                <p class="brand-text" style="font-size: 36px">Syamil Aqiqah & Catering</p>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div style="padding: 0 25px">
         <div class="col">
             <div class="card card-body">
                 <table class="table table-borderless table-detail">
@@ -140,11 +112,26 @@
                             <td class="custom-td-1">Alamat</td>
                             <td class="custom-td-1">:</td>
                             <td class="custom-td-1">
-                                {{ $data->customer->address . ', ' . $data->customer->village->name . ', ' . $data->customer->district->name . ', ' . $data->customer->postalcode }}
+                                @php
+                                    $addresses = [];
+                                    if (!is_null($data->customer->address)) {
+                                        $addresses[] = $data->customer->address;
+                                    }
+                                    if (!is_null($data->customer->village)) {
+                                        $addresses[] = $data->customer->village->name;
+                                    }
+                                    if (!is_null($data->customer->district)) {
+                                        $addresses[] = $data->customer->district->name;
+                                    }
+                                    if (!is_null($data->customer->postalcode)) {
+                                        $addresses[] = $data->customer->postalcode;
+                                    }
+                                @endphp
+                                {{ implode(', ', $addresses) }}
                             </td>
                         </tr>
                     </tbody>
-                    
+
                     <thead>
                         <tr class="custom-header-table">
                             <th>Data Order</th>
@@ -155,7 +142,7 @@
                             <td class="custom-td">Jenis Pembayaran</td>
                             <td class="custom-td">:</td>
                             <td class="custom-td">
-                                {{ $data->payment->name }}
+                                {{ $data->payment->name ?? '-' }}
                             </td>
                         </tr>
                         <tr>
@@ -215,7 +202,7 @@
                             </td>
                         </tr>
                     </tbody>
-    
+
                     <thead>
                         <tr class="custom-header-table">
                             <th>Total Pesanan</th>
@@ -243,7 +230,7 @@
                                 {{ number_format($data->discount_price) }}
                             </td>
                         </tr>
-                        <tr>    
+                        <tr>
                             <td>Catatan Tambahan</td>
                             <td>:</td>
                             <td>
@@ -254,7 +241,7 @@
                             <td>Metode Pembayaran</td>
                             <td>:</td>
                             <td>
-                                {{ $data->payment->name }}
+                                {{ $data->payment->name ?? '-' }}
                             </td>
                         </tr>
                     </tbody>
@@ -262,11 +249,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            window.print();
-        })
-    </script>
 </body>
 </html>

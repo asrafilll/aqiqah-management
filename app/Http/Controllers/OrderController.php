@@ -102,7 +102,9 @@ class OrderController extends Controller
             ])
             ->findOrFail($id);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
+        $fileName = $orders->id . '_' . $orders->customer->name;
         $data = [
+            'fileName' => $fileName,
             'data' => $orders,
             'allMenu' => $orderPackage['allMenus'],
             'rices' => $orderPackage['rices'],
@@ -111,7 +113,7 @@ class OrderController extends Controller
         $view = view('order.print-invoice')->with($data)
             ->render();
         $pdf = PDF::loadHTML($view)->setPaper('a4', 'landscape');
-        return $pdf->download($orders->id . '_' . $orders->customer->name . '.pdf');
+        return $pdf->stream( $fileName . '.pdf');
     }
 
     public function kitchenInvoice($id) {

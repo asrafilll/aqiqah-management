@@ -46,12 +46,12 @@
             <td>
                 <div id="detail_icon text-success">
                     <a href="{{ route('order.show', [$d->id]) }}" class="table_action">
-                        <i class="fa fa-eye text-success fa-1x"></i> 
+                        <i class="fa fa-eye text-success fa-1x"></i>
                     </a>
                     <a href="{{ route('order.edit', [$d->id]) }}" class="table_action">
-                        <i class="fa fa-pencil-square-o text-primary"></i> 
+                        <i class="fa fa-pencil-square-o text-primary"></i>
                     </a>
-                    <a href="{{ route('order.invoice', [$d->id]) }}" class="table_action">
+                    <a href="{{ route('order.invoice', [$d->id]) }}" target="_blank" class="table_action">
                         <i class="fa fa-print text-success"></i>
                     </a>
                     <a href="{{ route('order.kitchen-invoice', [$d->id]) }}" class="table_action">
