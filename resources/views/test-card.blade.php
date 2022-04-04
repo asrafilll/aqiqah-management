@@ -23,32 +23,32 @@
     <div class="col-lg-3 col-6">
         <div class="small-box">
             <div class="inner">
-                <p>Unresolved</p>
-                <h3>60</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-6">
-        <div class="small-box box-active">
-            <div class="inner">
-                <p>Overdue</p>
-                <h3>16</h3>
+                <p>Total</p>
+                <h3>{{ $totalOrders }}</h3>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
         <div class="small-box">
             <div class="inner">
-                <p>Open</p>
-                <h3>43</h3>
+                <p>Google</p>
+                <h3>{{ $totalGoogleOrders }}</h3>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-6">
         <div class="small-box">
             <div class="inner">
-                <p>On Hold</p>
-                <h3>64</h3>
+                <p>Facebook</p>
+                <h3>{{ $totalFacebookOrders }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box">
+            <div class="inner">
+                <p>Others</p>
+                <h3>{{ $totalOthersOrders }}</h3>
             </div>
         </div>
     </div>
