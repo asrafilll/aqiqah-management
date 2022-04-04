@@ -8,8 +8,8 @@
                 </p>
             </a>
         </li>
-        <li class="nav-item {{\Request::is('order*') ? 'menu-open' : ''}}">
-            <a href="#" class="nav-link">
+        <li class="nav-item {{ \Request::is('order*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ \Request::is('order*') ? 'active' : '' }}">
                 <i class="nav-icon fa fa-book"></i>
                 <p>
                     Order Management
@@ -17,12 +17,12 @@
                 </p>
             </a>
             <ul class="nav nav-treeview" style="padding-left: 25px;">
-                <li class="nav-item {{\Request::routeIs('order.create') ? 'active' : ''}}">
+                <li class="nav-item {{ \Request::routeIs('order.create') ? 'active' : '' }}">
                     <a href="{{route('order.create')}}" class="nav-link" style="width: 100%">
                         <p>New Order</p>
                     </a>
                 </li>
-                <li class="nav-item {{\Request::routeIs('order.index') ? 'active' : ''}}">
+                <li class="nav-item {{ \Request::routeIs('order.index') ? 'active' : '' }}">
                     <a href="{{ route('order.index') }}" class="nav-link" style="width: 100%">
                         <p>Order List</p>
                     </a>
@@ -32,8 +32,8 @@
         {{-- @if ()
 
         @endif --}}
-        <li class="nav-item custom-auth-sidebar {{\Request::is('users*') || \Request::is('branch*') || \Request::is('role*') ? 'menu-open' : ''}}" class="menu">
-            <a href="#" class="nav-link">
+        <li class="nav-item custom-auth-sidebar {{ \Request::is('users*') || \Request::is('branch*') || \Request::is('role*') ? 'menu-open' : '' }}" class="menu">
+            <a href="#" class="nav-link {{ \Request::is('users*') || \Request::is('branch*') || \Request::is('role*') ? 'active' : '' }}">
                 <i class="nav-icon fa fa-users"></i>
                 <p>
                     User Management
