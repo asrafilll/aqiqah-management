@@ -45,10 +45,26 @@ class OrderController extends Controller
         $branch = Branch::all();
         $data['user'] = $userBranch;
         $data['branches'] = $branch;
+        $data['orders'] = Orders::query()
+            ->with(['orderPackage.package', 'shipping'])
+            ->select([
+                'orders.*',
+                'customers.name as customer_name',
+                'customers.phone_1 as customer_phone_1',
+            ])
+            ->join('customers', 'orders.customer_id', 'customers.id')
+            ->when(request()->filled('search'), function ($query) {
+                $query->where('customers.name', 'LIKE', '%' . request('search') . '%');
+            })
+            ->when(request()->filled('branch_id'), function ($query) {
+                $query->where('branch_id', request('branch_id'));
+            })
+            ->paginate(request('per_page', 10));
         return view('order.index')->with($data);
     }
 
-    public function json() {
+    public function json()
+    {
         $params = FacadesRoute::current()->parameters();
         $page = $params['page'];
         $limit = $params['limit'];
@@ -75,7 +91,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function dataByBranch(Request $request) {
+    public function dataByBranch(Request $request)
+    {
         $branch = $request->branch;
         $order = Orders::with(['orderPackage.package', 'shipping'])
             ->whereRaw('branch_id = ' . $branch)
@@ -89,17 +106,18 @@ class OrderController extends Controller
         ]);
     }
 
-    public function invoice($id) {
+    public function invoice($id)
+    {
         $orders = Orders::with([
-                'orderPackage.package', 'customer.village',
-                'orderPackage.offal.offal',
-                'orderPackage.meat.meat',
-                'orderPackage.chicken.chicken',
-                'orderPackage.vegie.vegie',
-                'orderPackage.rice.rice',
-                'orderPackage.egg.egg',
-                'customer.district', 'payment'
-            ])
+            'orderPackage.package', 'customer.village',
+            'orderPackage.offal.offal',
+            'orderPackage.meat.meat',
+            'orderPackage.chicken.chicken',
+            'orderPackage.vegie.vegie',
+            'orderPackage.rice.rice',
+            'orderPackage.egg.egg',
+            'customer.district', 'payment'
+        ])
             ->findOrFail($id);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
         $fileName = $orders->id . '_' . $orders->customer->name;
@@ -113,21 +131,22 @@ class OrderController extends Controller
         $view = view('order.print-invoice')->with($data)
             ->render();
         $pdf = PDF::loadHTML($view)->setPaper('a4', 'landscape');
-        return $pdf->stream( $fileName . '.pdf');
+        return $pdf->stream($fileName . '.pdf');
     }
 
-    public function kitchenInvoice($id) {
+    public function kitchenInvoice($id)
+    {
         $orders = Orders::with([
-                'orderPackage.package', 'customer.village',
-                'orderPackage.offal.offal',
-                'orderPackage.meat.meat',
-                'orderPackage.chicken.chicken',
-                'orderPackage.vegie.vegie',
-                'orderPackage.rice.rice',
-                'orderPackage.egg.egg',
-                'customer.district', 'payment',
-                'createdBy'
-            ])
+            'orderPackage.package', 'customer.village',
+            'orderPackage.offal.offal',
+            'orderPackage.meat.meat',
+            'orderPackage.chicken.chicken',
+            'orderPackage.vegie.vegie',
+            'orderPackage.rice.rice',
+            'orderPackage.egg.egg',
+            'customer.district', 'payment',
+            'createdBy'
+        ])
             ->findOrFail($id)->makeVisible(['created_at']);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
         $data = [
@@ -135,13 +154,14 @@ class OrderController extends Controller
             'orders' => $orders
         ];
         $view = view('order.testing')->with($data)->render();
-        $pdf = PDF::loadHTML($view)->setPaper('a4','landscape');
+        $pdf = PDF::loadHTML($view)->setPaper('a4', 'landscape');
 
         return $pdf->download('laporan.pdf');
         // return view('order.testing')->with($data);
     }
 
-    public function helpers(Request $request) {
+    public function helpers(Request $request)
+    {
         $id = $request->id;
         $orders = Orders::with([
             'orderPackage.package', 'customer.village',
@@ -154,7 +174,7 @@ class OrderController extends Controller
             'customer.district', 'payment',
             'createdBy'
         ])
-        ->findOrFail($id)->makeVisible(['created_at']);
+            ->findOrFail($id)->makeVisible(['created_at']);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
         return response()->json([
             'data' => $orders,
@@ -162,7 +182,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function exportInvoice(Request $request) {
+    public function exportInvoice(Request $request)
+    {
         // 1 ITU WEEK
         // 2 ITU MONTH
         // 3 ITU CUSTOM
@@ -199,7 +220,7 @@ class OrderController extends Controller
             $end = date('Y-m-d');
             $title = 'Report Weekly ' . date('d F Y', strtotime($start)) . ' - ' . date('d F Y', strtotime($end));
         } else if ($timeline == 2) {
-            $start = date('Y-m-01' );
+            $start = date('Y-m-01');
             $end = date('Y-m-t');
             $title = 'Report Monthly ' . date('d F Y', strtotime($start)) . ' - ' . date('d F Y', strtotime($end));
         } else {
@@ -237,7 +258,8 @@ class OrderController extends Controller
         return view('order.create-backup')->with($data);
     }
 
-    public function validateQuota($param) {
+    public function validateQuota($param)
+    {
         $branchId = $param['branch_id'];
         $qty = $param['qty'];
         $time = $param['send_time'];
@@ -254,7 +276,7 @@ class OrderController extends Controller
             $return['quota'] = 300;
         } else {
             $sum = [];
-            foreach($data as $d) {
+            foreach ($data as $d) {
                 $sum[] = $d->qty;
             }
             $quota = 300 - array_sum($sum);
@@ -271,7 +293,8 @@ class OrderController extends Controller
         return $return;
     }
 
-    public function checkQuota(Request $request) {
+    public function checkQuota(Request $request)
+    {
         $branchId = $request->branch;
         $time = $request->times;
         $splitTime = explode(':', $time);
@@ -286,7 +309,7 @@ class OrderController extends Controller
             $quota = 300;
         } else {
             $sum = [];
-            foreach($data as $d) {
+            foreach ($data as $d) {
                 $sum[] = $d->qty;
             }
             $quota = 300 - array_sum($sum);
@@ -304,7 +327,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getDetailPackage(Request $request) {
+    public function getDetailPackage(Request $request)
+    {
         $id = $request->packageId;
         $index = $request->index;
         $meat = MeatMenu::where('is_custom', false)->get();
@@ -418,7 +442,8 @@ class OrderController extends Controller
         ]);
     }
 
-    function showCardPackage(Request $request) {
+    function showCardPackage(Request $request)
+    {
         $index = $request->id;
         $view = view('order.partials.card-package', [
             'id' => $index,
@@ -440,16 +465,16 @@ class OrderController extends Controller
         $branch = UsersBranch::where('branch_id', $user->id)->with('branch')->first();
         $orders = Orders::where('id', $id)->with(['orderPackage.package', 'customer', 'branch'])->first();
         $orders = Orders::with([
-                'orderPackage.package', 'customer.village',
-                'branch',
-                'orderPackage.offal.offal',
-                'orderPackage.meat.meat',
-                'orderPackage.chicken.chicken',
-                'orderPackage.vegie.vegie',
-                'orderPackage.rice.rice',
-                'orderPackage.egg.egg',
-                'customer.district', 'payment'
-            ])
+            'orderPackage.package', 'customer.village',
+            'branch',
+            'orderPackage.offal.offal',
+            'orderPackage.meat.meat',
+            'orderPackage.chicken.chicken',
+            'orderPackage.vegie.vegie',
+            'orderPackage.rice.rice',
+            'orderPackage.egg.egg',
+            'customer.district', 'payment'
+        ])
             ->findOrFail($id);
         $villages = Village::where('district_id', $orders->customer->district_id)->get();
         $data['branch'] = $branch;
@@ -465,17 +490,18 @@ class OrderController extends Controller
         return view('order.show')->with($data);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $orders = Orders::with([
-                'orderPackage.package', 'customer.village',
-                'orderPackage.offal.offal',
-                'orderPackage.meat.meat',
-                'orderPackage.chicken.chicken',
-                'orderPackage.vegie.vegie',
-                'orderPackage.rice.rice',
-                'orderPackage.egg.egg',
-                'customer.district', 'payment'
-            ])
+            'orderPackage.package', 'customer.village',
+            'orderPackage.offal.offal',
+            'orderPackage.meat.meat',
+            'orderPackage.chicken.chicken',
+            'orderPackage.vegie.vegie',
+            'orderPackage.rice.rice',
+            'orderPackage.egg.egg',
+            'customer.district', 'payment'
+        ])
             ->findOrFail($id);
         $orderPackage = $this->getAllMenu($orders->orderPackage);
         return view('order.detail', [
@@ -486,7 +512,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getAllMenu($orderPackage) {
+    public function getAllMenu($orderPackage)
+    {
         $allMenus = [];
         $rices = [];
         $isArabic = [];
@@ -578,8 +605,10 @@ class OrderController extends Controller
         ];
 
         // validation input field
-        if ($request->name == "" || $request->phone_1 == ''||
-        $request->source_order == '' || $request->market_temperature == '') {
+        if (
+            $request->name == "" || $request->phone_1 == '' ||
+            $request->source_order == '' || $request->market_temperature == ''
+        ) {
             return response()->json([
                 'message' => 'Pastikan semua field data leads terisi',
                 'data' => []
@@ -822,8 +851,10 @@ class OrderController extends Controller
         ];
 
         // validation input field
-        if ($request->name == "" || $request->phone_1 == ''||
-        $request->source_order == '' || $request->market_temperature == '') {
+        if (
+            $request->name == "" || $request->phone_1 == '' ||
+            $request->source_order == '' || $request->market_temperature == ''
+        ) {
             return response()->json([
                 'message' => 'Pastikan semua field data leads terisi',
                 'data' => []
@@ -915,13 +946,13 @@ class OrderController extends Controller
                     // delete current realtion
                     PackageMeat::where('order_id', $currentData->orderPackage[$x]['id'])
                         ->delete();
-                     // delete current realtion
-                     PackageOffal::where('order_id', $currentData->orderPackage[$x]['id'])
+                    // delete current realtion
+                    PackageOffal::where('order_id', $currentData->orderPackage[$x]['id'])
                         ->delete();
                     // delete current realtion
                     PackageRice::where('order_id', $currentData->orderPackage[$x]['id'])
                         ->delete();
-                     // delete current realtion
+                    // delete current realtion
                     PackageVegetable::where('order_id', $currentData->orderPackage[$x]['id'])
                         ->delete();
                     // delete current realtion
@@ -1069,11 +1100,12 @@ class OrderController extends Controller
         }
     }
 
-    public function showFileUploader(Request $request) {
+    public function showFileUploader(Request $request)
+    {
         $id = $request->id;
         $order = "";
         $isEdit = false;
-        if ($request->has('isEdit')){
+        if ($request->has('isEdit')) {
             $order = Orders::where('id', $request->orderId)->first();
             $isEdit = true;
         }
@@ -1091,7 +1123,8 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getVillages(Request $request) {
+    public function getVillages(Request $request)
+    {
         $id = $request->id;
         $villages = Village::where('district_id', $id)->get();
 
@@ -1101,75 +1134,92 @@ class OrderController extends Controller
         ]);
     }
 
-    public function validatePackage($reqPackage) {
+    public function validatePackage($reqPackage)
+    {
         $isValid = true;
         for ($cc = 0; $cc < count($reqPackage); $cc++) {
             switch ($reqPackage[$cc]['package_id']) {
                 case '1':
-                    if (!isset($reqPackage[$cc]['meat_menu']) ||
-                        !isset($reqPackage[$cc]['offal_menu'])) {
+                    if (
+                        !isset($reqPackage[$cc]['meat_menu']) ||
+                        !isset($reqPackage[$cc]['offal_menu'])
+                    ) {
                         $isValid = false;
                     }
                     break;
 
                 case '2':
-                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                    if (
+                        !isset($reqPackage[$cc]['meat_menu']) ||
                         !isset($reqPackage[$cc]['offal_menu']) ||
-                        !isset($reqPackage[$cc]['rice_menu'])) {
+                        !isset($reqPackage[$cc]['rice_menu'])
+                    ) {
                         $isValid = false;
                     }
                     break;
 
                 case '3':
-                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                    if (
+                        !isset($reqPackage[$cc]['meat_menu']) ||
                         !isset($reqPackage[$cc]['offal_menu']) ||
                         !isset($reqPackage[$cc]['rice_menu']) ||
                         !isset($reqPackage[$cc]['egg_menu']) ||
-                        !isset($reqPackage[$cc]['vegetable_menu'])) {
+                        !isset($reqPackage[$cc]['vegetable_menu'])
+                    ) {
                         $isValid = false;
                     }
                     break;
 
                 case '4':
-                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                    if (
+                        !isset($reqPackage[$cc]['meat_menu']) ||
                         !isset($reqPackage[$cc]['offal_menu']) ||
                         !isset($reqPackage[$cc]['rice_menu']) ||
                         !isset($reqPackage[$cc]['chicken_menu']) ||
-                        !isset($reqPackage[$cc]['vegetable_menu'])) {
+                        !isset($reqPackage[$cc]['vegetable_menu'])
+                    ) {
                         $isValid = false;
                     }
                     break;
 
                 case '5':
-                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                    if (
+                        !isset($reqPackage[$cc]['meat_menu']) ||
                         !isset($reqPackage[$cc]['offal_menu']) ||
-                        !isset($reqPackage[$cc]['rice_menu'])) {
+                        !isset($reqPackage[$cc]['rice_menu'])
+                    ) {
                         $isValid = false;
                     }
                     break;
 
                 case '6':
-                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                    if (
+                        !isset($reqPackage[$cc]['meat_menu']) ||
                         !isset($reqPackage[$cc]['vegetable_menu']) ||
-                        !isset($reqPackage[$cc]['rice_menu'])) {
+                        !isset($reqPackage[$cc]['rice_menu'])
+                    ) {
                         $isValid = false;
                     }
                     break;
 
                 case '7':
-                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                    if (
+                        !isset($reqPackage[$cc]['meat_menu']) ||
                         !isset($reqPackage[$cc]['chicken_menu']) ||
-                        !isset($reqPackage[$cc]['rice_menu'])) {
+                        !isset($reqPackage[$cc]['rice_menu'])
+                    ) {
                         $isValid = false;
                     }
                     break;
 
                 case '8':
-                    if (!isset($reqPackage[$cc]['meat_menu']) ||
+                    if (
+                        !isset($reqPackage[$cc]['meat_menu']) ||
                         !isset($reqPackage[$cc]['offal_menu']) ||
                         !isset($reqPackage[$cc]['rice_menu']) ||
                         !isset($reqPackage[$cc]['egg_menu']) ||
-                        !isset($reqPackage[$cc]['vegetable_menu'])) {
+                        !isset($reqPackage[$cc]['vegetable_menu'])
+                    ) {
                         $isValid = false;
                     }
                     break;

@@ -84,27 +84,6 @@
         color: #C5C7CD;
     }
 
-    .search_input_group {
-        position: relative;
-    }
-
-    .search_input_group_text {
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        display: flex;
-        align-items: center;
-        z-index: 100;
-    }
-
-    #search_input {
-        padding-right: 100px;
-        border: 1px solid transparent;
-        transition: all .3s;
-        width: 0;
-        z-index: 90;
-    }
-
     .table_action {
         margin-left: 15px;
     }
@@ -231,63 +210,115 @@
             <div class="text_group">
                 <p class="card_title_text">All Order List</p>
             </div>
-            <div class="filter_group">
-                <div class="search">
-                    <div class="search_input_group">
-                        <input type="text" class="form-control" id="search_input" onkeyup="search()">
-                        <div class="search_input_group_text" onclick="showSearch()">
-                            <i class="fa fa-search"></i>
-                            <p class="search_text">Search</p>
+            <form action="" method="GET">
+                <div class="filter_group">
+                    <div class="search">
+                        <input
+                            type="search"
+                            class="form-control"
+                            name="search"
+                            value="{{ request('search') }}"
+                            placeholder="Search here"
+                        />
+                    </div>
+                    @if ($user == null)
+                        <div class="branch_search">
+                            <select name="branch_id" class="form-control" onchange="this.form.submit()">
+                                <option value="">-- All branches --</option>
+                                @foreach ($branches as $branch)
+                                    <option
+                                        value="{{ $branch->id }}"
+                                        @if(request('branch_id') == $branch->id) selected @endif
+                                    >{{ $branch->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
+                    @endif
+                    <div class="export">
+                        <button type="button" class="btn btn-primary" onclick="optionExport()">Export</button>
                     </div>
-                </div>
-                @if ($user == null)
-                    <div class="branch_search">
-                        <select name="branch_search" class="form-control"
-                            id="" onchange="filterBranch(this.value)">
-                            <option value="" selected disabled>-- Search Branch --</option>
-                            @foreach ($branches as $branch)
-                                <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                @endif
-                <div class="export">
-                    <button class="btn btn-primary" onclick="optionExport()">Export</button>
                 </div>
             </div>
-        </div>
-        <table class="table table_list_order list" id="table_list_order">
+            </form>
+        <table class="table">
             <thead>
                 <tr>
-                    <th></th>
                     <th>Order Details</th>
                     <th>Customer Name</th>
-                    <th>Date</th>
+                    <th>Tanggal Dikirim</th>
                     <th>Keterangan</th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody id="target-body-order"></tbody>
+            <tbody>
+                @forelse ($orders as $order)
+                    <tr>
+                        <td>
+                            <div class="order_details">
+                                <p class="order_details_text">
+                                    {{ $order->packageMenu == null ? 'Belum ada paket yang dipilih' : $order->packageMenu }}
+                                </p>
+                                <p class="order_details_helper">
+                                    {{ $order->created_at->diffFOrHumans() }}
+                                </p>
+                            </div>
+                        </td>
+                        <td class="table-customer-name">
+                            <div class="order_details">
+                                <p class="order_details_text">
+                                    {{ $order->customer_name }}
+                                </p>
+                                <p class="order_details_helper">
+                                    {{ $order->customer_phone_1 }}
+                                </p>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="order_details">
+                                <p class="order_details_text">
+                                    {{ date('F d, Y', strtotime($order->send_date)) }}
+                                </p>
+                                <p class="order_details_helper">
+                                    {{ $order->send_time }}
+                                </p>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="order_details">
+                                <p class="order_details_text">
+                                    {{ $order->shipping->name ?? '-' }}
+                                </p>
+                            </div>
+                        </td>
+                        <td>
+                            <div id="detail_icon text-success">
+                                <a href="{{ route('order.show', [$order->id]) }}" class="table_action">
+                                    <i class="fa fa-eye text-success fa-1x"></i>
+                                </a>
+                                <a href="{{ route('order.edit', [$order->id]) }}" class="table_action">
+                                    <i class="fa fa-pencil-square-o text-primary"></i>
+                                </a>
+                                <a href="{{ route('order.invoice', [$order->id]) }}" target="_blank" class="table_action">
+                                    <i class="fa fa-print text-success"></i>
+                                </a>
+                                <a href="{{ route('order.kitchen-invoice', [$order->id]) }}" class="table_action">
+                                    <i class="fa fa-cutlery text-primary"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center">Data not found</td>
+                    </tr>
+                @endforelse
+            </tbody>
         </table>
-        {{-- pagination --}}
-        {{-- <div style="display: flex; justify-content: end; margin-right: 30px;">
-            <nav aria-label="...">
-                <ul class="pagination">
-                  <li class="page-item disabled">
-                    <span class="page-link">Previous</span>
-                  </li>
-                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                  <li class="page-item" aria-current="page">
-                    <span class="page-link">2</span>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                  </li>
-                </ul>
-            </nav>
-        </div> --}}
+    </div>
+    <div class="card-footer">
+        <div class="d-flex justify-content-end">
+            {!! $orders->withQueryString()->links() !!}
+        </div>
     </div>
 </div>
 
@@ -374,14 +405,6 @@
         });
 
         $(document).ready(function() {
-            getData(0,100);
-
-            // init table sort
-            let table = $('#table_list_order');
-            new Tablesort(document.getElementById('table_list_order'), {
-                descending: true
-            });
-
             // init popover
             $("#myPopover").popover({
                 title : "Default popover title"
@@ -440,83 +463,6 @@
             } else {
                 $("#timeline_field").val(3);
             }
-        }
-        function filterBranch(value) {
-            $.ajax({
-                type: 'POST',
-                url: "{{ route('order.dataByBranch') }}",
-                data: {
-                    branch: value
-                },
-                dataType: 'json',
-                beforeSend: function() {
-                    // set loading
-                    let loading = `<tr>
-                        <td colspan="5" class="text-center">
-                            Processing data ...
-                        </td>
-                        </tr>`
-                    $('#target-body-order').html(loading);
-                },
-                success: function(res) {
-                    console.log(res);
-                    $('#target-body-order').html(res.data.view);
-                }
-            })
-        }
-        function search() {
-            // Declare variables
-            var input, filter, table, tr, i, j, column_length, count_td;
-            column_length = document.getElementById('table_list_order').rows[0].cells.length;
-            input = document.getElementById("search_input");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("table_list_order");
-            tr = table.getElementsByTagName("tr");
-            for (i = 1; i < tr.length; i++) { // except first(heading) row
-                count_td = 0;
-                for(j = 1; j < column_length-1; j++){ // except first column
-                    td = tr[i].getElementsByTagName("td")[j];
-                    /* ADD columns here that you want you to filter to be used on */
-                    if (td) {
-                    if ( td.innerHTML.toUpperCase().indexOf(filter) > -1)  {
-                        count_td++;
-                    }
-                    }
-                }
-                if(count_td > 0){
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-        function showSearch() {
-            $('#search_input').css({
-                'border': '1px solid #000',
-                'width': '100%'
-            })
-        }
-        function getData(page = 0, limit = 1) {
-            let uri = {!! json_encode(url('order/json')) !!}
-            let url = uri + '/' + page + '/' + limit;
-            $.ajax({
-                type: "GET",
-                url: url,
-                dataType: "JSON",
-                beforeSend: function() {
-                    // set loading
-                    let loading = `<tr>
-                        <td colspan="5" class="text-center">
-                            Processing data ...
-                        </td>
-                        </tr>`
-                    $('#target-body-order').html(loading);
-                },
-                success: function(res) {
-                    console.log(res);
-                    $('#target-body-order').html(res.data.view);
-                }
-            })
         }
     </script>
 @endsection
