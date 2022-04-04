@@ -1,15 +1,15 @@
 <nav class="mt-2">
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-            <a href="{{ url('/dashboard') }}" class="nav-link">
+            <a href="{{ url('/dashboard') }}" class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}">
                 <i class="nav-icon fa fa-pie-chart"></i>
                 <p>
                     Dashboard
                 </p>
             </a>
         </li>
-        <li class="nav-item {{\Request::is('order*') ? 'menu-open' : ''}}" class="menu @yield('order')">
-            <a href="#" class="nav-link @yield('order')">
+        <li class="nav-item {{\Request::is('order*') ? 'menu-open' : ''}}">
+            <a href="#" class="nav-link">
                 <i class="nav-icon fa fa-book"></i>
                 <p>
                     Order Management
@@ -30,7 +30,7 @@
             </ul>
         </li>
         {{-- @if ()
-            
+
         @endif --}}
         <li class="nav-item custom-auth-sidebar {{\Request::is('users*') || \Request::is('branch*') || \Request::is('role*') ? 'menu-open' : ''}}" class="menu">
             <a href="#" class="nav-link">
