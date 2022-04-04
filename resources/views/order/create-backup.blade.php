@@ -73,7 +73,7 @@
                             <span>Cek Kuota Ketersediaan</span>
                             <i class="fa fa-plus"></i>
                         </button>
-                
+
                         <div class="collapse" id="collapseCheckQuota">
                             <div class="card card-body">
                                 <div class="form-row">
@@ -81,7 +81,7 @@
                                         <label for="">Cabang</label>
                                         @if ($branch != null)
                                             <input type="text" class="form-control"
-                                                name="branch" disabled 
+                                                name="branch" disabled
                                                 value="{{ $branch->branch->name }}">
                                             <input type="text" class="form-control" id="branchId" hidden
                                                 value="{{ $branch->branch->id }}" name="branchId">
@@ -128,7 +128,7 @@
                             <span>Data Leads</span>
                             <i class="fa fa-plus"></i>
                         </button>
-                
+
                         {{-- collapse item --}}
                         <div class="collapse" id="collapseDataLeads">
                             <div class="card card-body">
@@ -149,7 +149,7 @@
                                             <option value="1">IG</option>
                                             <option value="2">FB</option>
                                             <option value="3">Google Ads</option>
-                                            <option value="4">Offline</option>
+                                            <option value="4">Others</option>
                                         </select>
                                     </div>
                                 </div>
@@ -177,7 +177,7 @@
                             <span>Customer information</span>
                             <i class="fa fa-plus"></i>
                         </button>
-                
+
                         {{-- collapse item --}}
                         <div class="collapse" id="collapseCustomerInformation">
                             <div class="card card-body">
@@ -262,7 +262,7 @@
                                         <label for="">Cabang</label>
                                         @if ($branch != null)
                                             <input type="text" class="form-control" value="{{ $branch->branch->name }}" disabled>
-                                        @else 
+                                        @else
                                             <select name="branchId" class="form-control" id="branch_2">
                                                 <option value="" selected disabled>-- Pilih cabang --</option>
                                                 @foreach ($allBranch as $ab)
@@ -286,7 +286,7 @@
                             <span>Order Informasi</span>
                             <i class="fa fa-plus"></i>
                         </button>
-                
+
                         {{-- collapse item --}}
                         <div class="collapse" id="collapseOrderInformation">
                             <div class="card card-body">
@@ -387,7 +387,7 @@
                                 <div class="form-row">
                                     <div class="col">
                                         <label for="">Keterangan</label>
-                                        <textarea name="notes" class="form-control" 
+                                        <textarea name="notes" class="form-control"
                                             id="" cols="5" rows="3"></textarea>
                                     </div>
                                 </div>
@@ -545,7 +545,7 @@
             });
         }))
     })
-    
+
     function clearDropify() {
         var drEvent = $('#input-file-max-fs').dropify();
         drEvent = drEvent.data('dropify');
