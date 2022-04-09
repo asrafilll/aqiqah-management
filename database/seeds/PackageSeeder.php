@@ -15,7 +15,7 @@ class PackageSeeder extends Seeder
     {
         Package::insert([
             [
-                'name' => 'paket kambing masak',
+                'name' => 'Paket Kambing Masak',
                 'is_meat' => true,
                 'is_offal' => true,
                 'is_egg' => false,
@@ -25,7 +25,7 @@ class PackageSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'name' => 'paket nasi box hemat',
+                'name' => 'Paket Nasi Box Hemat',
                 'is_meat' => true,
                 'is_offal' => true,
                 'is_egg' => false,
@@ -35,7 +35,7 @@ class PackageSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'name' => 'paket nasi box praktis',
+                'name' => 'Paket Nasi Box Praktis',
                 'is_meat' => true,
                 'is_offal' => true,
                 'is_egg' => true,
@@ -45,7 +45,7 @@ class PackageSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'name' => 'paket nasi box spesial',
+                'name' => 'Paket Nasi Box Spesial',
                 'is_meat' => true,
                 'is_offal' => true,
                 'is_egg' => false,
@@ -55,7 +55,7 @@ class PackageSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'name' => 'paket nasi box arab',
+                'name' => 'Paket Nasi Box Arab',
                 'is_meat' => true,
                 'is_offal' => true,
                 'is_egg' => false,
@@ -65,7 +65,7 @@ class PackageSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'name' => 'paket ekonomis mewah (bento)',
+                'name' => 'Paket Ekonomis Mewah (Bento)',
                 'is_meat' => true,
                 'is_offal' => false,
                 'is_egg' => false,
@@ -75,7 +75,7 @@ class PackageSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'name' => 'paket ekonomis manis (bento)',
+                'name' => 'Paket Ekonomis Manis (Bento)',
                 'is_meat' => true,
                 'is_offal' => false,
                 'is_egg' => false,
@@ -85,7 +85,7 @@ class PackageSeeder extends Seeder
                 'created_at' => Carbon::now()
             ],
             [
-                'name' => 'paket aqiqah tumpeng',
+                'name' => 'Paket Aqiqah Tumpeng',
                 'is_meat' => true,
                 'is_offal' => true,
                 'is_egg' => true,
