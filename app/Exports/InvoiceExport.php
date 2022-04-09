@@ -97,8 +97,8 @@ class InvoiceExport implements FromView,ShouldAutoSize
                 $menu4[] = 'Telur ' . $orderPackage[$a]['egg']['egg']['name'];
             }
             if ($orderPackage[$a]['vegie'] != null) {
-                $allMenus[] = 'Mix vegetable ' . $orderPackage[$a]['vegie']['vegie']['name'];
-                $menu5[] = 'Mix vegetable ' . $orderPackage[$a]['vegie']['vegie']['name'];
+                $allMenus[] = 'Menu Pilihan 2 ' . $orderPackage[$a]['vegie']['vegie']['name'];
+                $menu5[] = 'Menu Pilihan 2 ' . $orderPackage[$a]['vegie']['vegie']['name'];
             }
             if ($orderPackage[$a]['rice'] != null) {
                 $allMenus[] = 'Beras ' . $orderPackage[$a]['rice']['rice']['name'];
