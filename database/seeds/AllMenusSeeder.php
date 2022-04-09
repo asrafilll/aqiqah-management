@@ -21,15 +21,15 @@ class AllMenusSeeder extends Seeder
         // meet menu table
         MeatMenu::insert([
             [
-                'name' => 'semur',
+                'name' => 'Semur',
                 'created_at'    => Carbon::now()
             ],
             [
-                'name' => 'rendang',
+                'name' => 'Rendang',
                 'created_at'    => Carbon::now()
             ],
             [
-                'name' => 'teriyaki',
+                'name' => 'Teriyaki',
                 'created_at'    => Carbon::now()
             ],
             [
@@ -45,48 +45,49 @@ class AllMenusSeeder extends Seeder
                 'created_at'    => Carbon::now()
             ],
             [
-                'name' => 'tongseng',
+                'name' => 'Tongseng',
                 'created_at'    => Carbon::now()
             ],
             [
-                'name' => 'sop',
+                'name' => 'Sop',
                 'created_at'    => Carbon::now()
             ],
             [
-                'name' => 'empal gentong',
+                'name' => 'Empal Gentong',
                 'created_at'    => Carbon::now()
             ],
         ]);
 
         // egg menu table
         EggMenu::insert([
-            ['name' => 'telur balado', 'created_at'    => Carbon::now()],
-            ['name' => 'telur rebus', 'created_at'    => Carbon::now()]
+            ['name' => 'Telur Balado', 'created_at'    => Carbon::now()],
+            ['name' => 'Telur Rebus', 'created_at'    => Carbon::now()]
         ]);
 
         // chicken menu table
         ChickenMenu::insert([
-            ['name' => 'ayam goreng', 'created_at'    => Carbon::now()],
-            ['name' => 'ayam bakar', 'created_at'    => Carbon::now()]
+            ['name' => 'Ayam Goreng', 'created_at'    => Carbon::now()],
+            ['name' => 'Ayam Bakar', 'created_at'    => Carbon::now()]
         ]);
 
         // vegetale menu table
         VegetableMenu::insert([
-            ['name' => 'tumis buncis', 'created_at'    => Carbon::now()],
-            ['name' => 'tumis putren', 'created_at'    => Carbon::now()],
-            ['name' => 'tumis mie', 'created_at'    => Carbon::now()],
-            ['name' => 'tumis bihun', 'created_at'    => Carbon::now()],
+            ['name' => 'Mix Vegetables', 'created_at'    => Carbon::now()],
+            ['name' => 'Tumis Buncis', 'created_at'    => Carbon::now()],
+            ['name' => 'Tumis Putren', 'created_at'    => Carbon::now()],
+            ['name' => 'Mie', 'created_at'    => Carbon::now()],
+            ['name' => 'Bihun', 'created_at'    => Carbon::now()],
         ]);
 
         // rice menu table
         RiceMenu::insert([
-            ['name' => 'nasi putih', 'created_at'    => Carbon::now()],
-            ['name' => 'nasi mandhi', 'created_at'    => Carbon::now()],
-            ['name' => 'nasi kebuli', 'created_at'    => Carbon::now()],
-            ['name' => 'nasi biryani', 'created_at'    => Carbon::now()],
-            ['name' => 'nasi kabsah', 'created_at'    => Carbon::now()],
-            ['name' => 'nasi kuning', 'created_at'    => Carbon::now()],
-            ['name' => 'nasi uduk', 'created_at'    => Carbon::now()],
+            ['name' => 'Nasi Putih', 'created_at'    => Carbon::now()],
+            ['name' => 'Nasi Mandhi', 'created_at'    => Carbon::now()],
+            ['name' => 'Nasi Kebuli', 'created_at'    => Carbon::now()],
+            ['name' => 'Nasi Biryani', 'created_at'    => Carbon::now()],
+            ['name' => 'Nasi Kabsah', 'created_at'    => Carbon::now()],
+            ['name' => 'Nasi Kuning', 'created_at'    => Carbon::now()],
+            ['name' => 'Nasi Uduk', 'created_at'    => Carbon::now()],
         ]);
     }
 }
