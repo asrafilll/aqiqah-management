@@ -336,7 +336,7 @@ class OrderController extends Controller
         $egg = EggMenu::where('is_custom', false)->get();
         $chicken = ChickenMenu::where('is_custom', false)->get();
         $rice = RiceMenu::all();
-        $vegie = VegetableMenu::all();
+        $vegie = VegetableMenu::where('is_custom', false)->get();
 
         $order = "";
         if ($request->isEdit == 'edit') {
@@ -752,12 +752,32 @@ class OrderController extends Controller
                         ]);
                     }
                     if (isset($request->package[$a]['vegetable_menu'])) {
-                        PackageVegetable::insert([
+                        $packageVegetableItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
                             'vegetable_menu_id' => $request->package[$a]['vegetable_menu'],
                             'created_at' => Carbon::now()
-                        ]);
+                        ];
+
+                        if ($request->package[$a]['vegetable_menu'] == 'free_text') {
+                            // insert new type free text in Egg menu table
+                            if ($request->package[$a]['vegetable_menu_custom'] != '') {
+                                // check if new name is already saved in database
+                                $checkFreeVegetable = VegetableMenu::whereRaw("LOWER(name) = '" . strtolower($request->package[$a]['vegetable_menu_custom']) . "'")
+                                    ->first();
+                                if ($checkFreeVegetable != '' || $checkFreeVegetable != null) {
+                                    $freeEggId = $checkFreeVegetable->id;
+                                } else {
+                                    $freeEggId = VegetableMenu::insertGetId([
+                                        'name' => $request->package[$a]['vegetable_menu_custom'],
+                                        'is_custom' => true,
+                                        'created_at' => Carbon::now()
+                                    ]);
+                                }
+                                $packageVegetableItem['vegetable_menu_id'] = $freeEggId;
+                            }
+                        }
+                        PackageVegetable::insert($packageVegetableItem);
                     }
                     if (isset($request->package[$a]['egg_menu'])) {
                         $packageEggItem = [

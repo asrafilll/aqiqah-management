@@ -29,6 +29,10 @@ class AlterIsCustomToAllMenuTable extends Migration
         Schema::table('chicken_menu', function (Blueprint $table) {
             $table->boolean('is_custom')->nullable()->default(false);
         });
+        // vegetable menu
+        Schema::table('vegetable_menu', function (Blueprint $table) {
+            $table->boolean('is_custom')->nullable()->default(false);
+        });
     }
 
     /**
@@ -48,6 +52,9 @@ class AlterIsCustomToAllMenuTable extends Migration
             $table->dropColumn('is_custom');
         });
         Schema::table('chicken_menu', function (Blueprint $table) {
+            $table->dropColumn('is_custom');
+        });
+        Schema::table('vegetable_menu', function (Blueprint $table) {
             $table->dropColumn('is_custom');
         });
     }
