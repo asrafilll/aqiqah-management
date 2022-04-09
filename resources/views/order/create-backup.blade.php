@@ -174,7 +174,7 @@
                         <button class="btn btn-collapse w-100 text-left"
                             type="button" data-toggle="collapse" data-target="#collapseCustomerInformation"
                             aria-expanded="false" aria-controls="collapseCustomerInformation">
-                            <span>Customer information</span>
+                            <span>Customer Information</span>
                             <i class="fa fa-plus"></i>
                         </button>
 
