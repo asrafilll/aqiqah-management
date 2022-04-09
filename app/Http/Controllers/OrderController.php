@@ -371,7 +371,6 @@ class OrderController extends Controller
                 'meats' => $meat,
                 'offals' => $offal,
                 'rices' => $rice,
-                'vegies' => $vegie,
                 'index' => $index,
                 'order' => $order
             ])->render();
