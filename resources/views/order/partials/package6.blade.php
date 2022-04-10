@@ -3,14 +3,20 @@ $meatId = '';
 $riceId = '';
 $vegieId = '';
 $meatName = '';
+$vegieName = '';
 if ($order != '') {
     $packages = $order->orderPackage[$index];
     $meatName = $order->orderPackage[$index]->meat->meat->is_custom == true ? $order->orderPackage[$index]->meat->meat->name : '';
+    $vegieName = $order->orderPackage[$index]->vegie->vegie->is_custom == true ? $order->orderPackage[$index]->vegie->vegie->name : '';
     if ($order->orderPackage[$index]->meat != '') {
         $meatId = $order->orderPackage[$index]->meat->meat->is_custom == true ? 'free_text' : $order->orderPackage[$index]->meat->meat->id;
     }
-    $riceId = $order->orderPackage[$index]->rice->rice->id;
-    $vegieId = $order->orderPackage[$index]->vegetable->vegetable->id;
+    if ($order->orderPackage[$index]->rice != '') {
+        $riceId = $order->orderPackage[$index]->rice->rice->id;
+    }
+    if ($order->orderPackage[$index]->vegie != '') {
+        $vegieId = $order->orderPackage[$index]->vegie->vegie->is_custom == true ? 'free_text' : $order->orderPackage[$index]->vegie->vegie->id;
+    }
 }
 @endphp
 <div class="col-12 form-group">
@@ -66,8 +72,7 @@ if ($order != '') {
             <select
                 name="package[{{ $index }}][vegetable_menu]"
                 class="form-control"
-                id=""
-                value="{{ $vegieId }}"
+                onchange="freeTextChange(this.value, 'vegetable')"
             >
                 <option
                     value=""
@@ -82,30 +87,46 @@ if ($order != '') {
                         {{ $vegie->name }}
                     </option>
                 @endforeach
+                <option
+                    value="free_text"
+                    {{ $vegieId == 'free_text' ? 'selected' : '' }}
+                >Custom</option>
             </select>
         </div>
-        <div class="col-6">
-            <label for="">Nasi</label>
-            <select
-                name="package[{{ $index }}][rice_menu]"
+        <div
+            class="col-6 {{ $vegieId == 'free_text' ? '' : 'd-none' }}"
+            id="vegetable_menu_input"
+        >
+            <label for="">Custom Menu Pilihan 2</label>
+            <input
+                type="text"
                 class="form-control"
-                id=""
-                value="{{ $riceId }}"
+                id="vegetable_menu_input_text"
+                name="package[{{ $index }}][vegetable_menu_custom]"
+                value="{{ $vegieName }}"
             >
-                <option
-                    value=""
-                    selected
-                    disabled
-                >-- Pilih Nasi --</option>
-                @foreach ($rices as $rice)
-                    <option
-                        value="{{ $rice->id }}"
-                        {{ $riceId == $rice->id ? 'selected' : '' }}
-                    >
-                        {{ $rice->name }}
-                    </option>
-                @endforeach
-            </select>
+        </div>
+    </div>
+</div>
+
+<div class="col-12">
+    <div class="form-group row">
+        <div class="col-6">
+            @php
+                $rice = $rices->first();
+            @endphp
+            <label for="">Nasi</label>
+            <input
+                type="hidden"
+                name="package[{{ $index }}][rice_menu]"
+                value="{{ $rice->id }}"
+            >
+            <input
+                type="text"
+                class="form-control"
+                value="{{ $rice->name }}"
+                disabled
+            >
         </div>
     </div>
 </div>
