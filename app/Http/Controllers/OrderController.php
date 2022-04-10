@@ -59,6 +59,7 @@ class OrderController extends Controller
             ->when(request()->filled('branch_id'), function ($query) {
                 $query->where('branch_id', request('branch_id'));
             })
+            ->latest()
             ->paginate(request('per_page', 10));
         return view('order.index')->with($data);
     }
@@ -79,6 +80,7 @@ class OrderController extends Controller
             ->whereRaw($where)
             // ->skip($page)
             // ->take($limit)
+            ->latest()
             ->get();
         $view = view('order.partials.table-list', ['data' => $order])->render();
         return response()->json([
