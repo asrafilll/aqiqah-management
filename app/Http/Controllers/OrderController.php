@@ -807,12 +807,31 @@ class OrderController extends Controller
                         PackageEgg::insert($packageEggItem);
                     }
                     if (isset($request->package[$a]['chicken_menu'])) {
-                        PackageChicken::insert([
+                        $packageChickenItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
                             'chicken_menu_id' => $request->package[$a]['chicken_menu'],
                             'created_at' => Carbon::now()
-                        ]);
+                        ];
+                        if ($request->package[$a]['chicken_menu'] == 'free_text') {
+                            // insert new type free text in Egg menu table
+                            if ($request->package[$a]['chicken_menu_custom'] != '') {
+                                // check if new name is already saved in database
+                                $checkFreeEgg = ChickenMenu::whereRaw("LOWER(name) = '" . strtolower($request->package[$a]['chicken_menu_custom']) . "'")
+                                    ->first();
+                                if ($checkFreeEgg != '' || $checkFreeEgg != null) {
+                                    $freeEggId = $checkFreeEgg->id;
+                                } else {
+                                    $freeEggId = ChickenMenu::insertGetId([
+                                        'name' => $request->package[$a]['chicken_menu_custom'],
+                                        'is_custom' => true,
+                                        'created_at' => Carbon::now()
+                                    ]);
+                                }
+                                $packageChickenItem['chicken_menu_id'] = $freeEggId;
+                            }
+                        }
+                        PackageChicken::insert($packageChickenItem);
                     }
                 }
             }
@@ -1114,12 +1133,31 @@ class OrderController extends Controller
                         PackageEgg::insert($packageEggItem);
                     }
                     if (isset($request->package[$a]['chicken_menu'])) {
-                        PackageChicken::insert([
+                        $packageChickenItem = [
                             'order_id' => $orderPackge,
                             'package_id' => $request->package[$a]['package_id'],
                             'chicken_menu_id' => $request->package[$a]['chicken_menu'],
                             'created_at' => Carbon::now()
-                        ]);
+                        ];
+                        if ($request->package[$a]['chicken_menu'] == 'free_text') {
+                            // insert new type free text in Egg menu table
+                            if ($request->package[$a]['chicken_menu_custom'] != '') {
+                                // check if new name is already saved in database
+                                $checkFreeEgg = ChickenMenu::whereRaw("LOWER(name) = '" . strtolower($request->package[$a]['chicken_menu_custom']) . "'")
+                                    ->first();
+                                if ($checkFreeEgg != '' || $checkFreeEgg != null) {
+                                    $freeEggId = $checkFreeEgg->id;
+                                } else {
+                                    $freeEggId = ChickenMenu::insertGetId([
+                                        'name' => $request->package[$a]['chicken_menu_custom'],
+                                        'is_custom' => true,
+                                        'created_at' => Carbon::now()
+                                    ]);
+                                }
+                                $packageChickenItem['chicken_menu_id'] = $freeEggId;
+                            }
+                        }
+                        PackageChicken::insert($packageChickenItem);
                     }
                 }
             }

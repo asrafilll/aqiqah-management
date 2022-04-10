@@ -6,10 +6,14 @@ $chickenId = '';
 $vegieId = '';
 $meatName = '';
 $offalName = '';
+$chickenName = '';
+$vegieName = '';
 if ($order != '') {
     $packages = $order->orderPackage[$index];
     $meatName = $order->orderPackage[$index]->meat->meat->is_custom == true ? $order->orderPackage[$index]->meat->meat->name : '';
     $offalName = $order->orderPackage[$index]->offal->offal->is_custom == true ? $order->orderPackage[$index]->offal->offal->name : '';
+    $chickenName = $order->orderPackage[$index]->chicken->chicken->is_custom == true ? $order->orderPackage[$index]->chicken->chicken->name : '';
+    $vegieName = $order->orderPackage[$index]->vegie->vegie->is_custom == true ? $order->orderPackage[$index]->vegie->vegie->name : '';
     if ($order->orderPackage[$index]->meat != '') {
         $meatId = $order->orderPackage[$index]->meat->meat->is_custom == true ? 'free_text' : $order->orderPackage[$index]->meat->meat->id;
     }
@@ -20,10 +24,10 @@ if ($order != '') {
         $riceId = $order->orderPackage[$index]->rice->rice->id;
     }
     if ($order->orderPackage[$index]->chicken != '') {
-        $chickenId = $order->orderPackage[$index]->chicken->chicken->id;
+        $chickenId = $order->orderPackage[$index]->chicken->chicken->is_custom == true ? 'free_text' : $order->orderPackage[$index]->chicken->chicken->id;
     }
     if ($order->orderPackage[$index]->vegie != '') {
-        $vegieId = $order->orderPackage[$index]->vegie->vegie->id;
+        $vegieId = $order->orderPackage[$index]->vegie->vegie->is_custom == true ? 'free_text' : $order->orderPackage[$index]->vegie->vegie->id;
     }
 }
 @endphp
@@ -122,18 +126,19 @@ if ($order != '') {
 <div class="col-12 form-group">
     <div class="row">
         <div class="col-6">
-            <label for="">Olahan Ayam</label>
+            <label for="">Menu Pilihan 1</label>
             <select
                 name="package[{{ $index }}][chicken_menu]"
                 class="form-control"
                 id=""
                 value="{{ $chickenId }}"
+                onchange="freeTextChange(this.value, 'chicken')"
             >
                 <option
                     value=""
                     selected
                     disabled
-                >-- Pilih Olahan Ayam --</option>
+                >-- Pilih Menu Pilihan 1 --</option>
                 @foreach ($chickens as $chicken)
                     <option
                         value="{{ $chicken->id }}"
@@ -142,7 +147,24 @@ if ($order != '') {
                         {{ $chicken->name }}
                     </option>
                 @endforeach
+                <option
+                    value="free_text"
+                    {{ $chickenId == 'free_text' ? 'selected' : '' }}
+                >Custom</option>
             </select>
+        </div>
+        <div
+            class="col-6 {{ $chickenId == 'free_text' ? '' : 'd-none' }}"
+            id="chicken_menu_input"
+        >
+            <label for="">Custom Menu Pilihan 1</label>
+            <input
+                type="text"
+                class="form-control"
+                id="chicken_menu_input_text"
+                name="package[{{ $index }}][chicken_menu_custom]"
+                value="{{ $chickenName }}"
+            >
         </div>
     </div>
 </div>
@@ -154,8 +176,7 @@ if ($order != '') {
             <select
                 name="package[{{ $index }}][vegetable_menu]"
                 class="form-control"
-                id=""
-                value="{{ $vegieId }}"
+                onchange="freeTextChange(this.value, 'vegetable')"
             >
                 <option
                     value=""
@@ -170,35 +191,46 @@ if ($order != '') {
                         {{ $vegie->name }}
                     </option>
                 @endforeach
+                <option
+                    value="free_text"
+                    {{ $vegieId == 'free_text' ? 'selected' : '' }}
+                >Custom</option>
             </select>
+        </div>
+        <div
+            class="col-6 {{ $vegieId == 'free_text' ? '' : 'd-none' }}"
+            id="vegetable_menu_input"
+        >
+            <label for="">Custom Menu Pilihan 2</label>
+            <input
+                type="text"
+                class="form-control"
+                id="vegetable_menu_input_text"
+                name="package[{{ $index }}][vegetable_menu_custom]"
+                value="{{ $vegieName }}"
+            >
         </div>
     </div>
 </div>
 
-<div class="col-12 form-group">
-    <div class="row">
+<div class="col-12">
+    <div class="form-group row">
         <div class="col-6">
+            @php
+                $rice = $rices->first();
+            @endphp
             <label for="">Nasi</label>
-            <select
+            <input
+                type="hidden"
                 name="package[{{ $index }}][rice_menu]"
-                class="form-control"
-                id=""
-                value="{{ $riceId }}"
+                value="{{ $rice->id }}"
             >
-                <option
-                    value=""
-                    selected
-                    disabled
-                >-- Pilih Nasi --</option>
-                @foreach ($rices as $rice)
-                    <option
-                        value="{{ $rice->id }}"
-                        {{ $riceId == $rice->id ? 'selected' : '' }}
-                    >
-                        {{ $rice->name }}
-                    </option>
-                @endforeach
-            </select>
+            <input
+                type="text"
+                class="form-control"
+                value="{{ $rice->name }}"
+                disabled
+            >
         </div>
     </div>
 </div>
