@@ -504,12 +504,8 @@ class OrderController extends Controller
             'customer.district', 'payment'
         ])
             ->findOrFail($id);
-        $orderPackage = $this->getAllMenu($orders->orderPackage);
         return view('order.detail', [
             'data' => $orders,
-            'allMenu' => $orderPackage['allMenus'],
-            'rices' => $orderPackage['rices'],
-            'isArabic' => $orderPackage['isArabic']
         ]);
     }
 
