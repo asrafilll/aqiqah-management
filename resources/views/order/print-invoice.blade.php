@@ -55,7 +55,7 @@
             <tr>
                 <td>
                     <img
-                        src="{{ public_path('img/logo.png') }}"
+                        src="img/logo.png"
                         alt="Syamil Aqiqah"
                         class="brand-image img-circle"
                     >
