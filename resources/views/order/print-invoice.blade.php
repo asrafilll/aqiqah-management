@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="ie=edge"
+    >
     <title>{{ $fileName }}</title>
 
     <style>
-        .custom-header-table > th {
+        .custom-header-table>th {
             border-bottom: 3px solid #000 !important;
             text-align: left;
             padding-bottom: 10px;
@@ -29,25 +36,35 @@
             size: A4;
             margin: 0;
         }
+
         @media print {
-            html, body {
+
+            html,
+            body {
                 width: 210mm;
                 height: 297mm;
             }
         }
+
     </style>
 </head>
+
 <body>
     <div style="padding: 0 25px">
-        <div class="col">
-            <div class="logo-group">
-                <!-- Brand Logo -->
-                {{-- <div>
-                    <img src="{{asset('img/logo.png')}}" alt="Syamil Aqiqah" class="brand-image img-circle" style="width: 60px;max-height: 60px;">
-                </div> --}}
-                <p class="brand-text" style="font-size: 36px">Syamil Aqiqah & Catering</p>
-            </div>
-        </div>
+        <table border="0">
+            <tr>
+                <td>
+                    <img
+                        src="{{ public_path('img/logo.png') }}"
+                        alt="Syamil Aqiqah"
+                        class="brand-image img-circle"
+                    >
+                </td>
+                <td>
+                    <p style="font-size: 36px; font-weight: bold; padding: 0 1rem">Syamil<br/>Aqiqah & Catering</p>
+                </td>
+            </tr>
+        </table>
     </div>
     <div style="padding: 0 25px">
         <div class="col">
@@ -250,4 +267,5 @@
         </div>
     </div>
 </body>
+
 </html>
