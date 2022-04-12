@@ -261,6 +261,13 @@
                                 {{ $data->payment->name ?? '-' }}
                             </td>
                         </tr>
+                        <tr style="font-weight: bold;">
+                            <td>Total Pembayaran</td>
+                            <td>:</td>
+                            <td>
+                                {{ number_format($data->total) }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

@@ -262,6 +262,13 @@
                                 {{ $payment }}
                             </td>
                         </tr>
+                        <tr class="font-weight-bold">
+                            <td>Total Pembayaran</td>
+                            <td>:</td>
+                            <td>
+                                {{ number_format($data->total) }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
