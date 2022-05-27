@@ -59,6 +59,9 @@ class OrderController extends Controller
             ->when(request()->filled('branch_id'), function ($query) {
                 $query->where('branch_id', request('branch_id'));
             })
+            ->when(request()->filled('send_date'), function ($query) {
+                $query->whereDate('send_date', request('send_date'));
+            })
             ->latest()
             ->paginate(request('per_page', 10));
         return view('order.index')->with($data);

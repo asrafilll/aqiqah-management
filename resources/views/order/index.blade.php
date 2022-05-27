@@ -212,6 +212,20 @@
             </div>
             <form action="" method="GET">
                 <div class="filter_group">
+                    <div class="d-flex align-items-center">
+                        <label for="send_date" class="mb-0 mr-2">Tanggal Kirim:</label>
+                        <div>
+                            <input
+                                type="date"
+                                class="form-control"
+                                id="send_date"
+                                name="send_date"
+                                placeholder="Send Date"
+                                value="{{ request('send_date') }}"
+                                onchange="this.form.submit()"
+                            />
+                        </div>
+                    </div>
                     <div class="search">
                         <input
                             type="search"
