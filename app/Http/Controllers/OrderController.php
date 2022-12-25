@@ -62,6 +62,9 @@ class OrderController extends Controller
             ->when(request()->filled('send_date'), function ($query) {
                 $query->whereDate('send_date', request('send_date'));
             })
+            ->when(!is_null($userBranch), function ($query) use ($userBranch) {
+                $query->where('branch_id', $userBranch->branch_id);
+            })
             ->latest()
             ->paginate(request('per_page', 10));
         return view('order.index')->with($data);

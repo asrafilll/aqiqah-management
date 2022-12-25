@@ -72,7 +72,7 @@
         color: #252733;
         margin-bottom: 0 !important;
         text-transform: capitalize;
-        width: 200px;
+        width: 150px;
     }
 
     .order_details > .order_details_helper {
@@ -261,7 +261,8 @@
                     <th>Customer Name</th>
                     <th>Tanggal Dikirim</th>
                     <th>Keterangan</th>
-                    <th></th>
+                    <th>Cabang</th>
+                    <th>Options</th>
                 </tr>
             </thead>
             <tbody>
@@ -287,6 +288,7 @@
                                 </p>
                             </div>
                         </td>
+                        
                         <td>
                             <div class="order_details">
                                 <p class="order_details_text">
@@ -304,6 +306,14 @@
                                 </p>
                             </div>
                         </td>
+                        <td>
+                            <div class="order_details">
+                                <p class="order_details_text">
+                                    {{ $order->branch->name ?? '-'}}
+                                </p>
+                            </div>
+                        </td>
+       
                         <td>
                             <div id="detail_icon text-success">
                                 <a href="{{ route('order.show', [$order->id]) }}" class="table_action">
